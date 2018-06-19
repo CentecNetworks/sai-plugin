@@ -38,7 +38,7 @@ Centec SAI support SAI V1.2.4/SAI V1.3.
 | L2mcgroup      |     Y       |                |                |
 | Mcastfdb       |     Y       |                |                |
 | Rpfgroup       |     Y       |                |                |
-| Segmentroute   |     N       |                |  ipv6 based SR |
+| Segmentroute   |     N       |                | IPv6 based SR |
 | TAM            |     Planed  |                |                |
 | uBurst         |     Planed  |                |                |
 | Dtel           |     Planed  |                |                |
