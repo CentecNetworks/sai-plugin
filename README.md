@@ -16,9 +16,17 @@ Centec support PTF framework, and add more than 300 case,more detail information
 # Release Log
 ## 2018-06-22
 ### Feauture Added:
-    Support SAI 1.2.4 & V1.3  
-    Support CTC7148 & CTC8096 Chips        
-    Support warmboot          
+    Support CTC7148 & CTC8096 Chips 
+    Support SAI 1.2.4 & V1.3           
+    Support Switch/Bridge/Port/Lag
+    Support L2/L3
+    Support L2/L3 Mcast
+    Support SamplePacket/Mirror
+    Support MPLS
+    Support Tunnel
+    Support Buffer/QosMaps/Queue/Policer/Scheduler
+    Support HostInterface
+    Support Warmboot         
 ### Dependencies
  This pakage depends on Centec SDK V5.3.0
 
