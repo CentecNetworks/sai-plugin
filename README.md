@@ -1,9 +1,7 @@
 # Overview
    The Switch Abstraction Interface(SAI) defines the API to provide a vendor-independent way of controlling forwarding elements, such as a switching ASIC, an NPU or a software switch in a uniform manner.
 
-   This repository contains SAI implementation for Centec switching ASICs. Customers can configure Centec switching ASICs by SAI APIs in SONiC or other networking OS. This SAI release supports the Centec CTC8096 and CTC7148.
-
-   This software release is Centec's contribution to the open community of its implementation of the SAI 1.3.0 as specified on the SAI Github at https://github.com/opencomputeproject/SAI. 
+   This repository contains SAI implementation for Centec switching ASICs. Customers can configure Centec switching ASICs by SAI APIs in SONiC or other networking OS. This software release is Centec's contribution to the open community of its implementation of the SAI 1.3.0 as specified on the SAI Github at https://github.com/opencomputeproject/SAI,and the SAI release supports the Centec CTC8096 and CTC7148.
 
 # Features
 | SAI Module     | Supported   | SAI Module     | Supported   |
