@@ -1,0 +1,816 @@
+---------------------------------------------------**** lchip: 0 ****---------------------------------------------------
+************************************************* CTC SDK DEBUG DUMP ***************************************************
+SDK Version: V5.3.0GA
+SDK Release Date: 2018-06-09
+SDK Copyright Time: 2018
+CHIP NAME: Duet2
+-----------------------------------------**** switch_id:0x0000000000000021 ****-----------------------------------------
+************************************************* CTC SAI DEBUG DUMP ***************************************************
+
+# SAI SWITCH MODULE
+Switch
+ctc_sai_switch_master_t
+----------------------------------------------------STP----------------------------------------------------------------
+Default bridge ID: 1
+---------------------------------------------------FLAGS---------------------------------------------------------------
+CPU ETH enable:           N          CPU ETH port:  0                             
+Cut through enable:       N         
+CRC check enable:         N         
+HW learning enable:       N         
+Warmboot enable:          N         
+----------------------------------------------------QOS----------------------------------------------------------------
+Ucast port queues:        16        
+Default tc:               0         
+Default WTD thrd(G):      0         
+Default WTD thrd(Y):      0         
+Default WTD thrd(R):      0         
+TC to queue map id:       0         
+----------------------------------------------QOS_DOMAIN_DOT1P---------------------------------------------------------
+Index  Dot1p_to_tc  cnt  Dot1p_to_color  cnt  Tc/color_to_dot1p  cnt
+-----------------------------------------------------------------------------------------------------------------------
+0      0x0          0x0  0x0             0x0  0x0                0x0  
+1      0x0          0x0  0x0             0x0  0x0                0x0  
+2      0x0          0x0  0x0             0x0  0x0                0x0  
+3      0x0          0x0  0x0             0x0  0x0                0x0  
+4      0x0          0x0  0x0             0x0  0x0                0x0  
+5      0x0          0x0  0x0             0x0  0x0                0x0  
+6      0x0          0x0  0x0             0x0  0x0                0x0  
+7      0x0          0x0  0x0             0x0  0x0                0x0  
+-----------------------------------------------QOS_DOMAIN_DSCP---------------------------------------------------------
+Index  Dscp_to_tc  cnt  Dscp_to_color  cnt  Tc/color_to_dscp  cnt
+-----------------------------------------------------------------------------------------------------------------------
+0      0x0         0x0  0x0            0x0  0x0               0x0  
+1      0x0         0x0  0x0            0x0  0x0               0x0  
+2      0x0         0x0  0x0            0x0  0x0               0x0  
+3      0x0         0x0  0x0            0x0  0x0               0x0  
+4      0x0         0x0  0x0            0x0  0x0               0x0  
+5      0x0         0x0  0x0            0x0  0x0               0x0  
+6      0x0         0x0  0x0            0x0  0x0               0x0  
+7      0x0         0x0  0x0            0x0  0x0               0x0  
+8      0x0         0x0  0x0            0x0  0x0               0x0  
+9      0x0         0x0  0x0            0x0  0x0               0x0  
+10     0x0         0x0  0x0            0x0  0x0               0x0  
+11     0x0         0x0  0x0            0x0  0x0               0x0  
+12     0x0         0x0  0x0            0x0  0x0               0x0  
+13     0x0         0x0  0x0            0x0  0x0               0x0  
+14     0x0         0x0  0x0            0x0  0x0               0x0  
+15     0x0         0x0  0x0            0x0  0x0               0x0  
+-------------------------------------------------ROUTE_CNT-------------------------------------------------------------
+IPv4 route cnt:           0         
+IPv6 route cnt:           0         
+------------------------------------------------NEXTHOP_CNT------------------------------------------------------------
+IPv4 nexthop cnt:         0         
+IPv6 nexthop cnt:         0         
+------------------------------------------------NEIGHBOR_CNT-----------------------------------------------------------
+IPv4 nexthop cnt:         0         
+IPv6 nexthop cnt:         0         
+---------------------------------------------MAX_FRAME_INDEX_CNT-------------------------------------------------------
+Max frame idx cnt(0):     0         
+Max frame idx cnt(1):     0         
+Max frame idx cnt(2):     0         
+Max frame idx cnt(3):     0         
+Max frame idx cnt(4):     0         
+Max frame idx cnt(5):     0         
+Max frame idx cnt(6):     0         
+Max frame idx cnt(7):     0         
+----------------------------------------------------UDF----------------------------------------------------------------
+UDF group cnt:            0         
+----------------------------------------------------FDB----------------------------------------------------------------
+Ucast fdb miss action:    0         
+Mcast fdb miss action:    0         
+Bcast fdb miss action:    0         
+---------------------------------------------------HOSTIF--------------------------------------------------------------
+Hostif acl grp id:        0         
+Epoll sock:               131       
+Epoll event:              1         
+Epoll fd:                 -1        
+---------------------------------------------------OTHER---------------------------------------------------------------
+Default trap grp id:      100000011 
+Bus No:                   0         
+Dev No:                   0         
+Fun No:                   0         
+----------------------------------------------PORT_LINK_STATUS---------------------------------------------------------
+Port          Status | Port          Status
+0             up     | 20            up       
+1             up     | 21            up       
+2             up     | 22            up       
+3             up     | 23            up       
+4             up     | 24            up       
+5             up     | 25            up       
+6             up     | 26            up       
+7             up     | 27            up       
+8             up     | 28            up       
+9             up     | 29            up       
+10            up     | 30            up       
+11            up     | 31            up       
+12            up     | 32            up       
+13            up     | 33            up       
+14            up     | 34            up       
+15            up     | 35            up       
+16            up     | 36            up       
+17            up     | 37            up       
+18            up     | 38            up       
+19            up     | 39            up       
+
+# SAI Port MODULE
+Port
+ctc_sai_port_db_t
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000400000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000600000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000d00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000e00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000b00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000200000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002200000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001c00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002700000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000a00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001d00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002100000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001800000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001b00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000900000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000000000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001300000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000300000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002400000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001a00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000800000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001500000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000f00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001700000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001900000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001000000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002000000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001400000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001200000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002500000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001f00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000700000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000100000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001e00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000500000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002300000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001100000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000002600000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000000c00000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+Port_oid                  :0x0000001600000001
+-----------------------------------------------------------------------------------------------------------------------
+policer_id                :0x00000000     stmctl_flood_policer_id  :0x00000000     stmctl_bc_policer_id  :0x00000000
+stmctl_mc_policer_id      :0x00000000     dot1p_to_tc_map_id       :0x00000000     dot1p_to_color_map_id :0x00000000
+tc_color_to_dot1p_map_id  :0x00000000     dscp_to_tc_map_id        :0x00000000     dscp_to_color_map_id  :0x00000000
+tc_color_to_dscp_map_id   :0x00000000     sched_id                 :0x00000000
+ingress_samplepacket_id   :0x0000000000000000                      egress_samplepacket_id   :0x0000000000000000
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI FDB MODULE
+FDB
+No db now, just dump key and action.
+-----------------------------------------------------------------------------------------------------------------------
+No.   Mac_address     Bv_id               Dst_port  Is_logic_port
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Vlan MODULE
+Vlan
+ctc_sai_vlan_user_t
+-----------------------------------------------------------------------------------------------------------------------
+No.   Vlan_oid            Usr_vlanptr  Vlan_id  Stats_id_in  Stats_id_eg  Stp_id  Ukwn_flood_ctr[3]
+-----------------------------------------------------------------------------------------------------------------------
+1     0x0000000100000026  1            1        0x1          0x2          0       0x0    0x0    0x0   
+
+# SAI Virtual Router MODULE
+Virtual Router
+ctc_sai_virtual_router_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     virtual_router_id   v4_state  v6_state  src_mac         
+-----------------------------------------------------------------------------------------------------------------------
+1       0x0000000000000003  1         1         -               
+
+# SAI Route MODULE
+Route
+ctc_sai_route_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     vr_id                 ip4                                             nh_obj_id             cid     action      
+-----------------------------------------------------------------------------------------------------------------------
+ctc_sai_route_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     vr_id                 ip6                                             nh_obj_id             cid     action      
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Next Hop MODULE
+Next Hop
+-----------------------------------------------------------------------------------------------------------------------
+No.     next_hop_id             type                      nh_id     
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Next Hop Group MODULE
+Next Hop Group
+ctc_sai_next_hop_grp_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     next_hop_group_id       type                    nh_id     w_nh_oid                p_nh_oid                
+-----------------------------------------------------------------------------------------------------------------------
+
+Next Hop Group Member
+ctc_sai_next_hop_grp_member_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     next_hop_group_member_id        next_hop_group_id       nh_id     
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Router Interface MODULE
+Router Interface
+ctc_sai_router_interface_t(state bitmap from left to right: v4, v6, v4_mc, v6_mc)
+-----------------------------------------------------------------------------------------------------------------------
+No.     router_interface_id vlan_oid            gport       vrf_id    bridge_id   state     mtu       src_mac             
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Neighbor MODULE
+Neighbor
+ctc_sai_neighbor_t(flag H:no_host_route, flag N:neighbor_exists)
+-----------------------------------------------------------------------------------------------------------------------
+No.   rif_id              ip4                                      nh_id  gport   arp_id  ref_cnt  flag  dest_mac      
+-----------------------------------------------------------------------------------------------------------------------
+ctc_sai_neighbor_t(flag H:no_host_route, flag N:neighbor_exists)
+-----------------------------------------------------------------------------------------------------------------------
+No.   rif_id              ip6                                      nh_id  gport   arp_id  ref_cnt  flag  dest_mac      
+-----------------------------------------------------------------------------------------------------------------------
+
+# ACL MODULE
+
+ACL Table
+ctc_sai_acl_table_t
+
+ACL Entry
+ctc_sai_acl_entry_t
+
+ACL Table Group
+ctc_sai_acl_group_t
+
+ACL Table Group Member
+ctc_sai_acl_table_group_member_t
+-----------------------------------------------------------------------------------------------------------------------
+No.     group_member_id     table_id            group_id            member_priority
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Hostif MODULE
+Hostif
+ctc_sai_hostif_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hostif_oid         Ifname                           Hostif_type Port_type Port_id            Queue_id Oper_status Vlan_tag
+-----------------------------------------------------------------------------------------------------------------------
+Hostif table entry
+ctc_sai_hostif_table_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hostif_tab_id      Type Channel_type Port_oid           Trap_id            Hostif_id         
+-----------------------------------------------------------------------------------------------------------------------
+Hostif trap
+ctc_sai_hostif_trap_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hostif_trap_id     Type Hostif_grp_id      Custom_reason_id Acl_entry_id Priority Action Enable
+-----------------------------------------------------------------------------------------------------------------------
+Hostif user defined trap
+ctc_sai_hostif_trap_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hostif_trap_id     Type Hostif_grp_id      Custom_reason_id Acl_entry_id Priority Action Enable
+-----------------------------------------------------------------------------------------------------------------------
+Hostif trap group
+ctc_sai_hostif_trap_group_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hostif_trap_grp    Queue_id Policer_id         Admin_state
+-----------------------------------------------------------------------------------------------------------------------
+1   0x0000000100000011 0        0x0000000000000000 1          
+
+# SAI MIRROR MODULE
+MIRROR
+ctc_sai_mirror_session_t
+ctc_sai_mirr_sess_res_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  session_ref_cnt session_list_cnt mc_nh_id   vec_node_index p_mirr_sess_name
+-----------------------------------------------------------------------------------------------------------------------
+>>>>DUMP p_mirr_sess List Table(ctc_sai_mirr_sess_t):ctc_sai_mirr_sess_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  p_mirr_sess_name             mirr_session_id    nh_id     
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Samplepacket MODULE
+Samplepacket
+ctc_sai_samplepacket_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Samplepacket_id    Rate     Type Mode Port_cnt
+-----------------------------------------------------------------------------------------------------------------------
+ctc_sai_samplepacket_bind_node_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Samplepacket_id    Is_acl Acl_log_id Gport  Acl_entry_id      
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI STP MODULE
+Stp
+ctc_sai_stp_info_t
+-----------------------------------------------------------------------------------------------------------------------
+No.1      Stp_oid     : 0x0000000000000010
+-----------------------------------------------------------------------------------------------------------------------
+vlan_binded:(total 1)
+1     
+port_binded:(total 0)
+
+
+# SAI Linkagg MODULE
+Linkagg
+ctc_sai_lag_info_t
+# SAI Policer MODULE
+Policer
+ctc_sai_policer_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Policer_Oid        Used_Id    M_type P_type Mode Color_src Action   Cir        Cbs        Pir        Pbs       
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Wred MODULE
+Wred
+ctc_sai_wred_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Wred_Oid           Ref_cnt Color  Enable Min_th     Max_th     Drop_prob 
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI QoS Map MODULE
+QoS Map
+ctc_sai_qos_map_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Qosmap_Oid         Domain_BMP Type Count Map_List_Table                
+-----------------------------------------------------------------------------------------------------------------------
+
+>>>>DUMP QoS Map List Table:
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Queue MODULE
+Queue
+ctc_sai_queue_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Queue_Oid          Gport  Type Index Sched_Group        Scheduler          Wred               Buffer            
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Scheduler MODULE
+Scheduler
+ctc_sai_scheduler_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Sched_Oid          Ref_cnt Type Weight Cir        Cbs        Pir        Pbs       
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Scheduler Group MODULE
+Scheduler Group
+ctc_sai_sched_group_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Sched_grp_Oid      Gport  Index Level Max_cnt Parent_Oid         Sched_Oid          C_type C_cnt Child_oid         
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Buffer MODULE
+Buffer Profile
+ctc_sai_buffer_profile_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Buf_Prof_Oid       Ref_cnt Mode Dynamic_th Static_th  Xon_th     Xoff_th   
+-----------------------------------------------------------------------------------------------------------------------
+
+Ingress Priority Group
+ctc_sai_ingress_pg_db_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Buf_Prof_Oid       Gport  Index Buf_Prof_Oid      
+-----------------------------------------------------------------------------------------------------------------------
+
+
+# SAI Hash MODULE
+Hash
+ctc_sai_ld_hash_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Hash_oid           Hash_TYPE Field_bmp  UDF_Group_Cnt UDF_Grp_oid       
+-----------------------------------------------------------------------------------------------------------------------
+1   0x000000000000001c 0         0xe40      0             -                 
+2   0x000000000000201c 1         0xe40      0             -                 
+
+# SAI UDF MODULE
+UDF GROUP
+ctc_sai_udf_group_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  UDF_Grp_oid        UDF_Grp_TYPE acl_ref_cnt hash_udf_bmp UDF_oid           
+-----------------------------------------------------------------------------------------------------------------------
+UDF MATCH
+ctc_sai_udf_match_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Match_oid          udf_ref_cnt priority ethtype(data/mask) ip_pro(data/mask) gre_pro_type(data/mask)
+-----------------------------------------------------------------------------------------------------------------------
+UDF
+ctc_sai_udf_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  UDF_oid            UDF_Grp_oid        Match_oid          Base Offset Hash_mask
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Tunnel MODULE
+Tunnel Map Entry
+ctc_sai_tunnel_map_entry_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Tnl_map_entry_id   Type Tnl_map_id         Vlan_key Vlan_val Vni_key Vni_val brg_id_key/vrf_key brg_id_val/vrf_val
+-----------------------------------------------------------------------------------------------------------------------
+Tunnel Map
+ctc_sai_tunnel_map_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Tnl_map_id         Type
+-----------------------------------------------------------------------------------------------------------------------
+Tunnel
+ctc_sai_tunnel_t
+Tunnel term table entry
+ctc_sai_tunnel_term_table_entry_t
+-----------------------------------------------------------------------------------------------------------------------
+No. Tnl_term_tab_id    Type Vrf_id             Tnl_id             Dst_ip                                  Src_ip                                 
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI L2mc MODULE
+L2mc entry
+ctc_sai_mcast_entry_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  vrfid Ip_src              Ip_dst              Pding Bridge Ctc_grp Rpf_grp_id         Group_id           Act Cid
+-----------------------------------------------------------------------------------------------------------------------
+1    2     -                   0:6ff::100:100      0     1      32719   0x0000000000000000 0x0000000000000031 1   0  
+2    2     -                   1.1.255.230         0     1      32719   0x0000000680000203 0x00007fcf0c0d55b8 0   0  
+
+# SAI Ipmc MODULE
+Ipmc entry
+ctc_sai_mcast_entry_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  vrfid Ip_src              Ip_dst              Pding Bridge Ctc_grp Rpf_grp_id         Group_id           Act Cid
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Rpf group MODULE
+Rpf group
+ctc_sai_rpf_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Rpf_grp_oid        Rpf_member_cnt
+-----------------------------------------------------------------------------------------------------------------------
+Rpf group member
+ctc_sai_mcast_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Rpf_member_id      Rpf_grp_id         Intf_id
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI L2mc group MODULE
+L2mc group
+ctc_sai_mcast_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  L2mc_grp_id        L2mc_member_cnt
+-----------------------------------------------------------------------------------------------------------------------
+L2mc group member
+ctc_sai_mcast_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  L2mc_member_id     L2mc_grp_id        Output_id         
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Ipmc group MODULE
+Ipmc group
+ctc_sai_mcast_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Ipmc_grp_id        Ipmc_member_cnt
+-----------------------------------------------------------------------------------------------------------------------
+Ipmc group member
+ctc_sai_mcast_group_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Ipmc_member_id     Ipmc_grp_id        Output_id         
+-----------------------------------------------------------------------------------------------------------------------
+
+# SAI Mcast fdb MODULE
+Mcast fdb entry
+ctc_sai_mcast_entry_property_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Mac_addr             Fid  Pding Bridge Ctc_grp Rpf_grp_id         Group_id           Act Cid
+-----------------------------------------------------------------------------------------------------------------------
+1    0100.5e7f.0101       2    1     0      32719  0x0000000000000000 0x0000000000010033 1   0  
+2    0100.5e7f.0101       2    1     0      32719  0x0000000000000000 0x0000000000010033 1   0  
+
+# SAI Bridge MODULE
+Bridge
+ctc_sai_bridge_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Bridge_oid         Bridge_type Learn_en Max_learn_addr
+-----------------------------------------------------------------------------------------------------------------------
+1    0x0000000100000039 1Q_bridge   0        0             
+Bridge port
+ctc_sai_bridge_port_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Brg_port_oid       Type      Gport  Vlan Logic_port Nhid  L3if_id Tunnel_id         
+-----------------------------------------------------------------------------------------------------------------------
+1    0x000000080000003a port      0x0008 -    -          -     -       -                 
+2    0x000000170000003a port      0x0017 -    -          -     -       -                 
+3    0x000000120000003a port      0x0012 -    -          -     -       -                 
+4    0x000000130000003a port      0x0013 -    -          -     -       -                 
+5    0x0000000d0000003a port      0x000d -    -          -     -       -                 
+6    0x0000001e0000003a port      0x001e -    -          -     -       -                 
+7    0x000000100000003a port      0x0010 -    -          -     -       -                 
+8    0x000000190000003a port      0x0019 -    -          -     -       -                 
+9    0x000000270000003a port      0x0027 -    -          -     -       -                 
+10   0x0000001b0000003a port      0x001b -    -          -     -       -                 
+11   0x000000150000003a port      0x0015 -    -          -     -       -                 
+12   0x0000000c0000003a port      0x000c -    -          -     -       -                 
+13   0x000000020000003a port      0x0002 -    -          -     -       -                 
+14   0x000000110000003a port      0x0011 -    -          -     -       -                 
+15   0x0000001d0000003a port      0x001d -    -          -     -       -                 
+16   0x000000260000003a port      0x0026 -    -          -     -       -                 
+17   0x000000010000003a port      0x0001 -    -          -     -       -                 
+18   0x0000001a0000003a port      0x001a -    -          -     -       -                 
+19   0x000000200000003a port      0x0020 -    -          -     -       -                 
+20   0x000000090000003a port      0x0009 -    -          -     -       -                 
+21   0x000000220000003a port      0x0022 -    -          -     -       -                 
+22   0x000000160000003a port      0x0016 -    -          -     -       -                 
+23   0x0000000f0000003a port      0x000f -    -          -     -       -                 
+24   0x000000040000003a port      0x0004 -    -          -     -       -                 
+25   0x000000070000003a port      0x0007 -    -          -     -       -                 
+26   0x000000000000003a port      0x0000 -    -          -     -       -                 
+27   0x000000240000003a port      0x0024 -    -          -     -       -                 
+28   0x000000050000003a port      0x0005 -    -          -     -       -                 
+29   0x000000140000003a port      0x0014 -    -          -     -       -                 
+30   0x0000000b0000003a port      0x000b -    -          -     -       -                 
+31   0x000000060000003a port      0x0006 -    -          -     -       -                 
+32   0x000000250000003a port      0x0025 -    -          -     -       -                 
+33   0x0000000e0000003a port      0x000e -    -          -     -       -                 
+34   0x000000210000003a port      0x0021 -    -          -     -       -                 
+35   0x0000000a0000003a port      0x000a -    -          -     -       -                 
+36   0x000000180000003a port      0x0018 -    -          -     -       -                 
+37   0x0000001f0000003a port      0x001f -    -          -     -       -                 
+38   0x000000230000003a port      0x0023 -    -          -     -       -                 
+39   0x000000030000003a port      0x0003 -    -          -     -       -                 
+40   0x0000001c0000003a port      0x001c -    -          -     -       -                 
+
+# SAI MPLS MODULE
+MPLS
+ctc_sai_mpls_t
+-----------------------------------------------------------------------------------------------------------------------
+No.  Label   Packet_action        Nexthop_oid       
+-----------------------------------------------------------------------------------------------------------------------

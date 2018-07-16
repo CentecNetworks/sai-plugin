@@ -1,0 +1,90 @@
+13:33:16.728  root      : INFO    : ++++++++ Fri Jun 22 13:33:16 2018 ++++++++
+13:33:17.401  scapy.runtime: WARNING : No route found for IPv6 destination :: (no default route?)
+13:33:17.506  root      : INFO    : VXLAN support found in Scapy
+13:33:17.600  root      : INFO    : ERSPAN support found in Scapy
+13:33:17.601  root      : INFO    : GENEVE support found in Scapy
+13:33:17.602  root      : INFO    : MPLS support found in Scapy
+13:33:17.603  root      : INFO    : NVGRE support found in Scapy
+13:33:19.000  root      : INFO    : Importing platform: eth
+13:33:19.019  root      : DEBUG   : Configuration: {'xunit_dir': 'xunit', 'disable_ipv6': False, 'minsize': 0, 'list_test_names': False, 'test_file': None, 'test_spec': '', 'allow_user': False, 'test_order_seed': 2746, 'default_negative_timeout': 0.1, 'platform': 'eth', 'log_dir': None, 'xunit': False, 'disable_erspan': False, 'device_sockets': [], 'disable_geneve': False, 'socket_recv_size': 4096, 'profile': False, 'default_timeout': 2.0, 'platform_args': None, 'relax': False, 'random_seed': None, 'interfaces': [(0, 0, 'eth0'), (0, 1, 'eth1'), (0, 2, 'eth2'), (0, 3, 'eth3'), (0, 4, 'eth4'), (0, 5, 'eth5'), (0, 6, 'eth6'), (0, 7, 'eth7'), (0, 8, 'eth8'), (0, 9, 'eth9'), (0, 10, 'eth10'), (0, 11, 'eth11'), (0, 12, 'eth12'), (0, 13, 'eth13'), (0, 14, 'eth14'), (0, 15, 'eth15'), (0, 16, 'eth16')], 'test_case_timeout': None, 'port_map': {(0, 1): 'eth1', (0, 0): 'eth0', (0, 15): 'eth15', (0, 14): 'eth14', (0, 13): 'eth13', (0, 7): 'eth7', (0, 12): 'eth12', (0, 6): 'eth6', (0, 11): 'eth11', (0, 16): 'eth16', (0, 5): 'eth5', (0, 10): 'eth10', (0, 4): 'eth4', (0, 9): 'eth9', (0, 3): 'eth3', (0, 8): 'eth8', (0, 2): 'eth2'}, 'disable_vxlan': False, 'disable_nvgre': False, 'qlen': 100, 'test_order': 'default', 'profile_file': 'profile.out', 'fail_skipped': False, 'test_params': "port_map_file='default_interface_to_front_map.ini';chipname='duet2'", 'test_dir': 'tests', 'list': False, 'platform_dir': '/opt/Python-2.7.13/lib/python2.7/site-packages/ptf-0.9.1-py2.7.egg/ptf/platforms', 'disable_mpls': False, 'debug': 'verbose', 'log_file': 'ptf.log', 'failfast': False}
+13:33:19.020  root      : INFO    : port map: {(0, 1): 'eth1', (0, 0): 'eth0', (0, 15): 'eth15', (0, 14): 'eth14', (0, 13): 'eth13', (0, 7): 'eth7', (0, 12): 'eth12', (0, 6): 'eth6', (0, 11): 'eth11', (0, 16): 'eth16', (0, 5): 'eth5', (0, 10): 'eth10', (0, 4): 'eth4', (0, 9): 'eth9', (0, 3): 'eth3', (0, 8): 'eth8', (0, 2): 'eth2'}
+13:33:19.021  root      : INFO    : Autogen random seed: 64080859
+13:33:19.051  root      : INFO    : *** TEST RUN START: Fri Jun 22 13:33:19 2018
+13:33:19.075  root      : INFO    : ** START TEST CASE ctc_saimirror.IngressLocalMirrorSetTestPkt
+13:33:20.697  dataplane : DEBUG   : Sending 100 bytes to device 0, port 1
+13:33:20.699  root      : DEBUG   : Checking for pkt on device 0, port 2
+13:33:20.700  dataplane : DEBUG   : Grabbing packet
+13:33:20.701  dataplane : DEBUG   : Out of packets on device 0, port 2
+13:33:20.702  dataplane : DEBUG   : Did not find packet
+13:33:21.067  dataplane : DEBUG   : Grabbing packet
+13:33:21.068  dataplane : DEBUG   : Out of packets on device 0, port 2
+13:33:21.069  dataplane : DEBUG   : Did not find packet
+13:33:21.312  dataplane : DEBUG   : Pkt len 100 in on device 0, port 3
+13:33:21.324  dataplane : DEBUG   : Pkt len 104 in on device 0, port 2
+13:33:21.334  dataplane : DEBUG   : Grabbing packet
+13:33:21.334  dataplane : DEBUG   : Checking packet from device 0, port 2
+13:33:21.336  root      : DEBUG   : Checking for pkt on device 0, port 3
+13:33:21.336  dataplane : DEBUG   : Grabbing packet
+13:33:21.337  dataplane : DEBUG   : Checking packet from device 0, port 3
+13:33:21.338  root      : DEBUG   : Checking for unexpected packets on all ports of device 0
+13:33:21.339  dataplane : DEBUG   : Grabbing packet
+13:33:21.339  dataplane : DEBUG   : Out of packets on all ports
+13:33:21.340  dataplane : DEBUG   : Did not find packet
+13:33:21.439  dataplane : DEBUG   : Poll timeout, no packet from device 0, port None
+13:33:22.446  dataplane : DEBUG   : Sending 104 bytes to device 0, port 2
+13:33:22.447  root      : DEBUG   : Checking for pkt on device 0, port 1
+13:33:22.451  dataplane : DEBUG   : Grabbing packet
+13:33:22.452  dataplane : DEBUG   : Out of packets on device 0, port 1
+13:33:22.453  dataplane : DEBUG   : Did not find packet
+13:33:22.520  dataplane : DEBUG   : Pkt len 104 in on device 0, port 3
+13:33:22.539  dataplane : DEBUG   : Pkt len 100 in on device 0, port 1
+13:33:22.569  dataplane : DEBUG   : Grabbing packet
+13:33:22.570  dataplane : DEBUG   : Checking packet from device 0, port 1
+13:33:22.571  root      : DEBUG   : Checking for pkt on device 0, port 3
+13:33:22.572  dataplane : DEBUG   : Grabbing packet
+13:33:22.572  dataplane : DEBUG   : Checking packet from device 0, port 3
+13:33:22.574  root      : DEBUG   : Checking for unexpected packets on all ports of device 0
+13:33:22.575  dataplane : DEBUG   : Grabbing packet
+13:33:22.575  dataplane : DEBUG   : Out of packets on all ports
+13:33:22.575  dataplane : DEBUG   : Did not find packet
+13:33:22.675  dataplane : DEBUG   : Poll timeout, no packet from device 0, port None
+13:33:22.699  dataplane : DEBUG   : Sending 100 bytes to device 0, port 1
+13:33:22.704  root      : DEBUG   : Checking for pkt on device 0, port 2
+13:33:22.706  dataplane : DEBUG   : Grabbing packet
+13:33:22.708  dataplane : DEBUG   : Out of packets on device 0, port 2
+13:33:22.710  dataplane : DEBUG   : Did not find packet
+13:33:22.772  dataplane : DEBUG   : Pkt len 100 in on device 0, port 0
+13:33:22.776  dataplane : DEBUG   : Grabbing packet
+13:33:22.777  dataplane : DEBUG   : Out of packets on device 0, port 2
+13:33:22.778  dataplane : DEBUG   : Did not find packet
+13:33:22.793  dataplane : DEBUG   : Pkt len 104 in on device 0, port 2
+13:33:22.796  dataplane : DEBUG   : Grabbing packet
+13:33:22.796  dataplane : DEBUG   : Checking packet from device 0, port 2
+13:33:22.797  root      : DEBUG   : Checking for pkt on device 0, port 0
+13:33:22.798  dataplane : DEBUG   : Grabbing packet
+13:33:22.798  dataplane : DEBUG   : Checking packet from device 0, port 0
+13:33:22.799  root      : DEBUG   : Checking for unexpected packets on all ports of device 0
+13:33:22.800  dataplane : DEBUG   : Grabbing packet
+13:33:22.801  dataplane : DEBUG   : Out of packets on all ports
+13:33:22.801  dataplane : DEBUG   : Did not find packet
+13:33:22.901  dataplane : DEBUG   : Poll timeout, no packet from device 0, port None
+13:33:23.903  dataplane : DEBUG   : Sending 104 bytes to device 0, port 2
+13:33:23.904  root      : DEBUG   : Checking for pkt on device 0, port 1
+13:33:23.905  dataplane : DEBUG   : Grabbing packet
+13:33:23.906  dataplane : DEBUG   : Out of packets on device 0, port 1
+13:33:23.907  dataplane : DEBUG   : Did not find packet
+13:33:23.974  dataplane : DEBUG   : Pkt len 104 in on device 0, port 0
+13:33:23.993  dataplane : DEBUG   : Pkt len 100 in on device 0, port 1
+13:33:24.023  dataplane : DEBUG   : Grabbing packet
+13:33:24.024  dataplane : DEBUG   : Checking packet from device 0, port 1
+13:33:24.026  root      : DEBUG   : Checking for pkt on device 0, port 0
+13:33:24.028  dataplane : DEBUG   : Grabbing packet
+13:33:24.029  dataplane : DEBUG   : Checking packet from device 0, port 0
+13:33:24.030  root      : DEBUG   : Checking for unexpected packets on all ports of device 0
+13:33:24.032  dataplane : DEBUG   : Grabbing packet
+13:33:24.033  dataplane : DEBUG   : Out of packets on all ports
+13:33:24.034  dataplane : DEBUG   : Did not find packet
+13:33:24.132  dataplane : DEBUG   : Poll timeout, no packet from device 0, port None
+13:33:24.230  root      : INFO    : ** END TEST CASE ctc_saimirror.IngressLocalMirrorSetTestPkt
+13:33:24.255  root      : INFO    : *** TEST RUN END  : Fri Jun 22 13:33:24 2018
+13:33:24.260  dataplane : INFO    : Thread exit
