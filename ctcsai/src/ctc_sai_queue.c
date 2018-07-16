@@ -96,7 +96,7 @@ _ctc_sai_queue_traverse_set_cb(ctc_sai_oid_property_t* bucket_data, ctc_sai_queu
                 CTC_SAI_CTC_ERROR_RETURN(ctcs_qos_set_drop_scheme(lchip, &ctc_drop));
             }
             break;
-        default:
+        default:
             return SAI_STATUS_NOT_IMPLEMENTED;
     }
 

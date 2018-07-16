@@ -121,4 +121,3 @@ Enter into lib/chipname/ folder, you can see these files here:
     lrwxrwxrwx 1 centec sdk11 Jul  9 17:50 libsai.so.1.2 -> libsai.so.1
     [centec@sw0 duet2]$
 
-These dynamic libraries are what you need.

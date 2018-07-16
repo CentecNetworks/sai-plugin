@@ -1178,7 +1178,7 @@ ctc_sai_bridge_get_property(sai_object_key_t* key, sai_attribute_t* attr, uint32
                 attr->value.u32 = (learn_limit.limit_num==0xFFFFFFFF)?0:learn_limit.limit_num;
             }
             break;
-        case SAI_BRIDGE_ATTR_LEARN_DISABLE:
+        case SAI_BRIDGE_ATTR_LEARN_DISABLE:
             CTC_SAI_ATTR_ERROR_RETURN(ctcs_vlan_get_property(lchip, fid, CTC_VLAN_PROP_LEARNING_EN, &value), attr_idx);
             attr->value.booldata = value?0:1;
             break;
@@ -1267,7 +1267,7 @@ ctc_sai_bridge_set_property(sai_object_key_t* key, const sai_attribute_t* attr)
                 CTC_SAI_CTC_ERROR_RETURN(ctcs_mac_security_set_learn_limit(lchip, &learn_limit));
             }
             break;
-        case SAI_BRIDGE_ATTR_LEARN_DISABLE:
+        case SAI_BRIDGE_ATTR_LEARN_DISABLE:
             value = attr->value.booldata?0:1;
             CTC_SAI_ATTR_ERROR_RETURN(ctcs_vlan_set_property(lchip, fid, CTC_VLAN_PROP_LEARNING_EN, value), 0);
             break;

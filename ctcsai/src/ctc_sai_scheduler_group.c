@@ -315,7 +315,7 @@ _ctc_sai_scheduler_group_get_attr(sai_object_key_t *key, sai_attribute_t* attr, 
     {
         case SAI_SCHEDULER_GROUP_ATTR_CHILD_COUNT:
             attr->value.u32 = p_sched_group->child_cnt;
-            break;
+            break;
         case SAI_SCHEDULER_GROUP_ATTR_CHILD_LIST:
             CTC_SAI_ERROR_RETURN(ctc_sai_fill_object_list(sizeof(sai_object_id_t), (void*)p_sched_group->child_list, p_sched_group->child_cnt, (void*)(&(attr->value.objlist))));
             break;
@@ -324,7 +324,7 @@ _ctc_sai_scheduler_group_get_attr(sai_object_key_t *key, sai_attribute_t* attr, 
             break;
         case SAI_SCHEDULER_GROUP_ATTR_LEVEL:
             attr->value.u8 = ctc_object_id.sub_type;
-            break;
+            break;
         case SAI_SCHEDULER_GROUP_ATTR_MAX_CHILDS:
             attr->value.u8 = p_sched_group->max_childs;
             break;
