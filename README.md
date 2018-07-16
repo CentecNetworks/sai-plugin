@@ -41,7 +41,7 @@ efer to [PTF Tests](https://github.com/CentecNetworks/sai-plugin/wiki/PTF-Tests)
  Sales email: sales@centecnetworks.com 
 
 # Release Log
-## 2018-06-22
+## 2018-07-16
 ### Feauture Added:
     Support CTC7148 & CTC8096 Chips
     Support SAI 1.2.4 & V1.3
@@ -86,10 +86,9 @@ Then you can see we have ***Makefile*** now, and let us make it:
 
     [centec@sw0 build]$ ls
     app  centec  CMakeCache.txt  CMakeFiles  cmake_install.cmake  db  Makefile
-    [centec@sw0 build]$ make
-  
+    [centec@sw0 build]$ make   
 
-## 4. Get your sai-plugin
+## 3. Get your sai-plugin
 Enter into lib/chipname/ folder, you can see these files here:
     [centec@sw0 duet2]$ ls 
     libctcsdk.so libdb.so.1 libsai.so.1
