@@ -91,7 +91,7 @@ Then you can see we have ***Makefile*** now, and let us make it:
 
 ## 4. Get your sai-plugin
 Enter into lib/chipname/ folder, you can see these files here:
-    [centec@sw0 duet2]$ ls
+    [centec@sw0 duet2]$ ls 
     libctcsdk.so libdb.so.1 libsai.so.1
   
 
