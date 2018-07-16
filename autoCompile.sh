@@ -19,9 +19,12 @@ saiprojecthome="`pwd`"
 if [ ! -d build ]; then
     mkdir build
 fi
+if [ ! -d lib/$chipname ]; then
+    mkdir -p lib/$chipname
+fi
 cd build/
 # compile SDK
-read -p "Please give your SDKHOME path:" sdkpath
+read -p "Please give your SDKHOME path(absolute path):" sdkpath
 if [[ ! -d $sdkpath ]];then
     echo "Please input a valid sdkpath!"
     exit
@@ -30,14 +33,14 @@ cd $sdkpath
 sedsdkpath=`echo $sdkpath | sed -n 's/\//\\\\\//g;p'`
 read -p "Do you need to compile SDK?(yes/no)" needCompile
 if [[ $needCompile == "yes" || $needCompile = "y" ]];then
-    make clean
+    make clean CHIPNAME=$chipname SUBCHIPNAME=$chipname targetbase=linux BOARD=linux-board ARCH=x86 auto=yes cpp=no  ChipAgent=FALSE M64=TRUE VER=r ONE_LIB=yes SO_LIB=yes
     make CHIPNAME=$chipname SUBCHIPNAME=$chipname targetbase=linux BOARD=linux-board ARCH=x86 auto=yes cpp=no  ChipAgent=FALSE M64=TRUE VER=r ONE_LIB=yes SO_LIB=yes
     if [ ! $? ];then
         echo "compile SDK fail"
     exit
     fi
 fi
-cp build.x86.d/lib.linux-board/libctcsdk.so $saiprojecthome/lib/$chipname/
+cp build.x86.r/lib.linux-board/libctcsdk.so $saiprojecthome/lib/$chipname/
 
 # modify CMakeLists.txt
 cd $saiprojecthome
@@ -53,6 +56,9 @@ elif [[ $answer == "yes" || $answer == "y" ]];then
         firstline=`cat -n CMakeLists.txt  |grep "ADD_DEFINITIONS" | awk '{print $1}'| sed -n '1p'`
         sed -i "$firstline a\ADD_DEFINITIONS(-DCONFIG_DBCLIENT)" CMakeLists.txt
     fi
+    read -p "Please give your hiredis source code path(absolute path):" redispath
+    sedRedisPath=`echo $redispath | sed -n 's/\//\\\\\//g;p'`
+    sed -i "s/^INCLUDE_DIRECTORIES.*$/INCLUDE_DIRECTORIES\(\"$sedRedisPath\"\)/g" CMakeLists.txt
 else 
     sed -i '/ADD_DEFINITIONS(-DCONFIG_DBCLIENT)/d' CMakeLists.txt
 fi

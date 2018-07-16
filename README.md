@@ -62,6 +62,7 @@ efer to [PTF Tests](https://github.com/CentecNetworks/sai-plugin/wiki/PTF-Tests)
 ## 1. Preparation
 - This SAI plugin requires Centec SDK support, so first step, you need to get Cnetec SDK for your switch chip.
 - To get SDK, please contect Centec.
+- Prepare nessary directories: build lib/$chipname
 
 ## 2. Edit CMakeLists.txt and make
 We provide a compile script called ***autoCompile.sh***, run this script and follow the prompt, you can get it.
@@ -93,4 +94,3 @@ Enter into lib/chipname/ folder, you can see these files here:
     [centec@sw0 duet2]$ ls 
     libctcsdk.so libdb.so.1 libsai.so.1
   
-

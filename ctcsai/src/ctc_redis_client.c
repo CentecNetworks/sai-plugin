@@ -1,7 +1,9 @@
 
 #include "sal.h"
+#ifdef CONFIG_DBCLIENT
 #include "hiredis.h"
 #include "ctc_redis_client.h"
+#endif
 
 #define DB_SIZE_32      32
 #define DB_SIZE_64      64
