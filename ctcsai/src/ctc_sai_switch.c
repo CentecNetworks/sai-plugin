@@ -806,6 +806,9 @@ ctc_sai_switch_set_global_property(sai_object_key_t* key, const sai_attribute_t*
         case SAI_SWITCH_ATTR_TPID_INNER_VLAN:
             CTC_SAI_CTC_ERROR_RETURN(ctcs_parser_set_tpid(lchip, CTC_PARSER_L2_TPID_CVLAN_TPID, attr->value.u16));
             break;
+        case SAI_SWITCH_ATTR_CRC_CHECK_ENABLE:
+        case SAI_SWITCH_ATTR_CRC_RECALCULATION_ENABLE:
+            break;
         case SAI_SWITCH_ATTR_RESTART_WARM:
             if (attr->value.booldata)
             {
@@ -1631,6 +1634,7 @@ static sai_status_t ctc_sai_switch_create_db(uint8 lchip)
     CTC_SAI_ERROR_RETURN(ctc_sai_buffer_db_init(lchip));
     CTC_SAI_ERROR_RETURN(ctc_sai_mpls_db_init(lchip));
     CTC_SAI_ERROR_RETURN(ctc_sai_tunnel_db_init(lchip));
+    CTC_SAI_ERROR_RETURN(ctc_sai_acl_db_init(lchip));
 
     return SAI_STATUS_SUCCESS;
 }

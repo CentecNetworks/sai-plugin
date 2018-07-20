@@ -1162,10 +1162,21 @@ ctc_sai_buffer_get_pool_attribute(
 }
 
 sai_status_t
-ctc_sai_buffer_set_pool_stats(
+ctc_sai_buffer_get_pool_stats(
         _In_ sai_object_id_t buffer_pool_id,
         _In_ uint32_t number_of_counters,
         _In_ const sai_buffer_pool_stat_t *counter_ids,
+        _Out_ uint64_t *counters)
+{
+    return SAI_STATUS_SUCCESS;
+}
+
+sai_status_t
+ctc_sai_buffer_get_pool_stats_ext(
+        _In_ sai_object_id_t buffer_pool_id,
+        _In_ uint32_t number_of_counters,
+        _In_ const sai_buffer_pool_stat_t *counter_ids,
+        _In_ sai_stats_mode_t mode,
         _Out_ uint64_t *counters)
 {
     return SAI_STATUS_SUCCESS;
@@ -1181,10 +1192,21 @@ ctc_sai_buffer_clear_pool_stats(
 }
 
 sai_status_t
-ctc_sai_ingress_pg_set_stats(
+ctc_sai_ingress_pg_get_stats(
         _In_ sai_object_id_t ingress_priority_group_id,
         _In_ uint32_t number_of_counters,
         _In_ const sai_ingress_priority_group_stat_t *counter_ids,
+        _Out_ uint64_t *counters)
+{
+    return SAI_STATUS_SUCCESS;
+}
+
+sai_status_t
+ctc_sai_ingress_pg_get_stats_ext(
+        _In_ sai_object_id_t ingress_priority_group_id,
+        _In_ uint32_t number_of_counters,
+        _In_ const sai_ingress_priority_group_stat_t *counter_ids,
+        _In_ sai_stats_mode_t mode,
         _Out_ uint64_t *counters)
 {
     return SAI_STATUS_SUCCESS;
@@ -1205,13 +1227,15 @@ sai_buffer_api_t g_ctc_sai_buffer_api = {
     ctc_sai_buffer_remove_pool_id,
     ctc_sai_buffer_set_pool_attribute,
     ctc_sai_buffer_get_pool_attribute,
-    ctc_sai_buffer_set_pool_stats,
+    ctc_sai_buffer_get_pool_stats,
+    ctc_sai_buffer_get_pool_stats_ext,
     ctc_sai_buffer_clear_pool_stats,
     ctc_sai_ingress_pg_create_group_id,
     ctc_sai_ingress_pg_remove_group_id,
     ctc_sai_ingress_pg_set_attribute,
     ctc_sai_ingress_pg_get_attribute,
-    ctc_sai_ingress_pg_set_stats,
+    ctc_sai_ingress_pg_get_stats,
+    ctc_sai_ingress_pg_get_stats_ext,
     ctc_sai_ingress_pg_clear_stats,
     ctc_sai_buffer_create_profile_id,
     ctc_sai_buffer_remove_profile_id,

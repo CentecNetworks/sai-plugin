@@ -10,9 +10,11 @@
 #include "ctcs_api.h"
 #include "ctc_sai_db.h"
 #include "ctc_sai_mirror.h"
+#include "ctc_sai_acl.h"
 #include "ctc_init.h"
 
 #define CTC_SAI_MIRROR_SESSION_CNT 4
+#define CTC_SAI_MIRROR_SAMPLE_RATE_MAX (2<<14)
 
 enum ctc_sai_mirr_op_type_e
 {
@@ -62,6 +64,7 @@ typedef struct ctc_sai_mirror_session_s
 {
     uint64                   dst_port;           /* dst_port */
     uint16                   truncated_size;     /* truncated_size */
+    uint32                   sample_rate;        /* sample_rate */
     uint16                   vlan_tpid;          /* vlan_tpid */
     uint16                   vlan_id;            /* vlan_id */
     uint16                   vlan_pri;           /* vlan_pri */
@@ -91,6 +94,7 @@ typedef struct ctc_sai_mirr_sess_res_s
     ctc_sai_mirr_sess_t* p_mirr_sess;
     uint8  session_list_cnt;
     uint32 mc_nh_id;
+    uint32 mc_grp_id;
     uint8  vec_node_index;
 } ctc_sai_mirr_sess_res_t;
 
@@ -260,6 +264,7 @@ _ctc_sai_mirror_operate_nh_mcast(uint8 lchip, uint8 operate_type, const sai_attr
                 CTC_SAI_CTC_ERROR_RETURN(ctcs_nh_update_mcast(lchip, nh_id_mcast, &nh_mcast_group));
             }
             p_mirr_sess_res->mc_nh_id = nh_id_mcast;
+            p_mirr_sess_res->mc_grp_id = mc_grp_id;
         }
     }
     else if(CTC_SAI_MIRROR_FREE_NH == operate_type)
@@ -267,7 +272,9 @@ _ctc_sai_mirror_operate_nh_mcast(uint8 lchip, uint8 operate_type, const sai_attr
         nh_id_mcast = p_mirr_sess_res->mc_nh_id;
         CTC_SAI_CTC_ERROR_RETURN(ctcs_nh_remove_mcast(lchip, nh_id_mcast));
         CTC_SAI_ERROR_RETURN(ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_NEXTHOP, nh_id_mcast));
+        CTC_SAI_ERROR_RETURN(ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_CTC_MCAST_GROUP, p_mirr_sess_res->mc_grp_id));
         p_mirr_sess_res->mc_nh_id = 0;  /* 0 is invalid nexthop id */
+        p_mirr_sess_res->mc_grp_id = 0;
     }
 
     return SAI_STATUS_SUCCESS;
@@ -429,6 +436,7 @@ _ctc_sai_mirror_operate_session(uint8 lchip, uint8 operate_type, ctc_sai_mirr_se
     {
         CTC_SAI_CTC_ERROR_RETURN(ctcs_mirror_remove_session(lchip, &ctc_mirr_dst));
     }
+
     return SAI_STATUS_SUCCESS;
 }
 
@@ -577,6 +585,15 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
         return SAI_STATUS_MANDATORY_ATTRIBUTE_MISSING;
     }
 
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE, &attr_value, &attr_index);
+    if (status == SAI_STATUS_SUCCESS )
+    {
+        if(CTC_SAI_MIRROR_SAMPLE_RATE_MAX < attr_value->s32)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
+    }
+
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_VLAN_HEADER_VALID, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS )
     {
@@ -651,12 +668,19 @@ _ctc_sai_mirror_build_mirr_session_attr(uint8 lchip, uint32_t attr_count, const 
         p_mir_session->truncated_size = attr_value->u16;
     }
 
+    p_mir_session->sample_rate = 1;
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE, &attr_value, &attr_index);
+    if (status == SAI_STATUS_SUCCESS )
+    {
+        p_mir_session->sample_rate = attr_value->u32;
+    }
+
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_TC, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS )
     {
         return SAI_STATUS_ATTR_NOT_SUPPORTED_0;
     }
-
+    p_mir_session->vlan_tpid = 0x8100;
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_VLAN_TPID, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS )
     {
@@ -705,6 +729,7 @@ _ctc_sai_mirror_build_mirr_session_attr(uint8 lchip, uint32_t attr_count, const 
         p_mir_session->tos = attr_value->u8;
     }
 
+    p_mir_session->ttl = 255;
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_TTL, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS )
     {
@@ -764,6 +789,7 @@ static sai_status_t
 _ctc_sai_mirr_set_attr(sai_object_key_t* key, const sai_attribute_t* attr)
 {
     uint8 lchip = 0;
+    uint32 sample_rate_old = 0;
     sai_status_t           status = SAI_STATUS_SUCCESS;
     ctc_sai_mirror_session_t mirr_session_old;
     ctc_sai_mirror_session_t*       p_mirr_session = NULL;
@@ -793,6 +819,19 @@ _ctc_sai_mirr_set_attr(sai_object_key_t* key, const sai_attribute_t* attr)
         break;
     case SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE:
         p_mirr_session->truncated_size = attr->value.u16;
+        break;
+    case SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE:
+        {
+            sample_rate_old = p_mirr_session->sample_rate;
+            p_mirr_session->sample_rate = attr->value.u32;
+            status = ctc_sai_acl_set_mirror_sample_rate(lchip, key->key.object_id);
+            if (SAI_STATUS_SUCCESS != status)
+            {
+                p_mirr_session->sample_rate = sample_rate_old;
+                CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to set mirror session sample rate, mirror session id: 0x%"PRIx64"!\n", key->key.object_id);
+            }
+            return SAI_STATUS_SUCCESS;
+        }
         break;
     case SAI_MIRROR_SESSION_ATTR_VLAN_ID:
         p_mirr_session->vlan_id = attr->value.u16;
@@ -881,6 +920,9 @@ _ctc_sai_mirr_get_attr(sai_object_key_t* key, sai_attribute_t* attr, uint32 attr
         case SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE:
             attr->value.u16 = p_mirr_sess->truncated_size;
             break;
+        case SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE:
+            attr->value.u32 = p_mirr_sess->sample_rate;
+            break;
         case SAI_MIRROR_SESSION_ATTR_VLAN_TPID:
             attr->value.u16 =  p_mirr_sess->vlan_tpid;
             break;
@@ -955,6 +997,7 @@ _ctc_sai_mirr_get_attr(sai_object_key_t* key, sai_attribute_t* attr, uint32 attr
     { SAI_MIRROR_SESSION_ATTR_TYPE, _ctc_sai_mirr_get_attr, NULL},
     { SAI_MIRROR_SESSION_ATTR_MONITOR_PORT,  _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
+    { SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_TC, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_VLAN_TPID, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_VLAN_ID, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
@@ -1222,7 +1265,7 @@ _ctc_sai_mirror_binding_mirr_param_chk(uint8 lchip, uint8 binding_module, const 
 {
     sai_status_t           status = SAI_STATUS_SUCCESS;
     ctc_sai_mirror_session_t* p_mir_session = NULL;
-    uint32                   truncated_size_fir = 0xFFFFFFFF;
+    uint32                   truncated_size_fst = 0xFFFFFFFF;
     uint8 loop_i = 0;
     sai_object_list_t objlist;
     char* print_str = NULL;
@@ -1253,15 +1296,21 @@ _ctc_sai_mirror_binding_mirr_param_chk(uint8 lchip, uint8 binding_module, const 
                     attr->value.aclaction.parameter.objlist.list[loop_i], print_str);
                 return SAI_STATUS_ITEM_NOT_FOUND;
             }
-            if(0xFFFFFFFF == truncated_size_fir)
+            if(0xFFFFFFFF == truncated_size_fst)
             {
-                truncated_size_fir = p_mir_session->truncated_size;
+                truncated_size_fst = p_mir_session->truncated_size;
             }
-            if (truncated_size_fir != p_mir_session->truncated_size)
+            else if (truncated_size_fst != p_mir_session->truncated_size)
             {
                 CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to binding mirror session to %s, truncated_size is not same;\
-                session_id: 0x%"PRIx64"!\n", objlist.list[loop_i], print_str);
+                    session_id: 0x%"PRIx64"!\n", print_str, objlist.list[loop_i]);
                 status = SAI_STATUS_INVALID_PARAMETER;
+            }
+            if((CTC_SAI_MIRROR_BINDING_PORT == binding_module) && (0 != p_mir_session->sample_rate))
+            {
+                CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to binding mirror session to %s, port mirror is not support sample rate;", \
+                    print_str);
+                status = SAI_STATUS_NOT_SUPPORTED;
             }
         }
     }
@@ -1274,6 +1323,7 @@ _ctc_sai_mirror_session_wb_reload_cb(uint8 lchip, void* key, void* data)
     sai_status_t           status = SAI_STATUS_SUCCESS;
     ctc_object_id_t ctc_object_id;
     sai_object_id_t obj_id = *(sai_object_id_t*)key;
+
     ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_NULL, obj_id, &ctc_object_id);
     CTC_SAI_ERROR_RETURN(ctc_sai_db_alloc_id_from_position(lchip, CTC_SAI_DB_ID_TYPE_COMMON, ctc_object_id.value));
     return status;
@@ -1326,9 +1376,6 @@ static sai_status_t
 _ctc_sai_mirror_session_res_wb_reload_cb(uint8 lchip, void* key, void* data)  /* no need void* key */
 {
     ctc_sai_mirr_sess_res_t* p_mirr_sess = (ctc_sai_mirr_sess_res_t*)data;
-    uint16 entry_cnt = 0;
-    ctc_sai_mirr_sess_res_wb_t mirr_sess_res_wb;
-    ctc_wb_query_t wb_query;
 
     p_mirr_sess->p_mirr_sess = (ctc_sai_mirr_sess_t*)mem_malloc(MEM_MIRROR_MODULE, p_mirr_sess->session_list_cnt * sizeof(ctc_sai_mirr_sess_t));
     if (NULL ==  p_mirr_sess->p_mirr_sess)
@@ -1337,27 +1384,59 @@ _ctc_sai_mirror_session_res_wb_reload_cb(uint8 lchip, void* key, void* data)  /*
     }
 
     sal_memset(p_mirr_sess->p_mirr_sess, 0, p_mirr_sess->session_list_cnt * sizeof(ctc_sai_mirr_sess_t));
-    sal_memset(&wb_query, 0, sizeof(wb_query));
-    CTC_WB_INIT_QUERY_T((&wb_query), ctc_sai_mirr_sess_res_wb_t, CTC_SAI_WB_TYPE_USER_DEF, CTC_SAI_WB_USER_DEF_SUB_TYPE_MIRROR_VEC);
-    wb_query.query_type = 1; /*query by key*/
-    wb_query.buffer = (ctc_wb_key_data_t*)(&mirr_sess_res_wb);
-    for (entry_cnt = 0; entry_cnt < p_mirr_sess->session_list_cnt; entry_cnt++)
+
+    if (0 != p_mirr_sess->mc_nh_id)
     {
-        wb_query.valid_cnt = 0;
-        mirr_sess_res_wb.vec_node_index = p_mirr_sess->vec_node_index;
-        mirr_sess_res_wb.index = entry_cnt;
-        wb_query.key = (uint8*)(&mirr_sess_res_wb);
-        ctc_wb_query_entry(&wb_query);
-        if(wb_query.valid_cnt)
-        {
-            sal_memcpy(&(p_mirr_sess->p_mirr_sess[entry_cnt]), &mirr_sess_res_wb.mirr_sess,  sizeof(ctc_sai_mirr_sess_t));
-        }
-        else
-        {
-            mem_free(p_mirr_sess->p_mirr_sess);
-            return SAI_STATUS_FAILURE;
-        }
+        CTC_SAI_ERROR_RETURN(ctc_sai_db_alloc_id_from_position(lchip, CTC_SAI_DB_ID_TYPE_NEXTHOP, p_mirr_sess->mc_nh_id));
     }
+
+    if (0 != p_mirr_sess->mc_grp_id)
+    {
+        CTC_SAI_ERROR_RETURN(ctc_sai_db_alloc_id_from_position(lchip, CTC_SAI_DB_ID_TYPE_CTC_MCAST_GROUP, p_mirr_sess->mc_grp_id));
+    }
+    return SAI_STATUS_SUCCESS;
+}
+
+static sai_status_t
+_ctc_sai_mirror_session_res_wb_reload_cb1(uint8 lchip)
+{
+    ctc_sai_mirr_sess_res_t* p_mirr_sess = NULL;
+    uint16 entry_cnt = 0;
+    ctc_sai_mirr_sess_res_wb_t mirr_sess_res_wb;
+    ctc_wb_query_t wb_query;
+    uint32 offset = 0;
+    sai_status_t           ret = SAI_STATUS_SUCCESS;
+
+    sal_memset(&wb_query, 0, sizeof(wb_query));
+    wb_query.buffer = mem_malloc(MEM_SYSTEM_MODULE,  CTC_WB_DATA_BUFFER_LENGTH);
+    if (NULL == wb_query.buffer)
+    {
+        return CTC_E_NO_MEMORY;
+    }
+    sal_memset(wb_query.buffer, 0, CTC_WB_DATA_BUFFER_LENGTH);
+    CTC_WB_INIT_QUERY_T((&wb_query), ctc_sai_mirr_sess_res_wb_t, CTC_SAI_WB_TYPE_USER_DEF, CTC_SAI_WB_USER_DEF_SUB_TYPE_MIRROR_VEC);
+    CTC_WB_QUERY_ENTRY_BEGIN((&wb_query));
+        offset = entry_cnt * (wb_query.key_len + wb_query.data_len);
+        entry_cnt++;
+        sal_memcpy(&mirr_sess_res_wb, (uint8*)(wb_query.buffer) + offset,  sizeof(ctc_sai_mirr_sess_res_wb_t));
+        p_mirr_sess = ctc_sai_db_vector_get(lchip, CTC_SAI_DB_VECTOR_TYPE_MIRROR, mirr_sess_res_wb.vec_node_index);
+        if (!p_mirr_sess)
+        {
+            continue;
+        }
+        sal_memcpy(&(p_mirr_sess->p_mirr_sess[mirr_sess_res_wb.index]), &mirr_sess_res_wb.mirr_sess,  sizeof(ctc_sai_mirr_sess_t));
+        if (0 != mirr_sess_res_wb.mirr_sess.nh_id)
+        {
+            CTC_SAI_ERROR_RETURN(ctc_sai_db_alloc_id_from_position(lchip, CTC_SAI_DB_ID_TYPE_NEXTHOP, mirr_sess_res_wb.mirr_sess.nh_id));
+        }
+    CTC_WB_QUERY_ENTRY_END((&wb_query));
+
+done:
+    if (wb_query.buffer)
+    {
+        mem_free(wb_query.buffer);
+    }
+
     return SAI_STATUS_SUCCESS;
 }
 
@@ -1617,11 +1696,18 @@ ctc_sai_mirror_get_port_mirr(uint8 lchip, uint32 gport, sai_attribute_t *attr)
 }
 
 sai_status_t
-//ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint32 acl_entry_id, sai_attribute_t *attr)
-ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint8 priority, uint8* ctc_session_id, sai_attribute_t *attr) /* called by acl SAI_ACL_ACTION_TYPE_MIRROR_INGRESS SAI_ACL_ACTION_TYPE_MIRROR_EGRESS */
-{  /* priority & dir ==> which tcam;
-    * ctc_session_id IN_OUT , save it to acl entry db */
+ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint8 priority, uint8* ctc_session_id, uint32* sample_rate, sai_attribute_t *attr)
+{   /* called by acl SAI_ACL_ACTION_TYPE_MIRROR_INGRESS SAI_ACL_ACTION_TYPE_MIRROR_EGRESS */
+    /* priority & dir ==> which tcam; */
+    /* ctc_session_id IN_OUT , save it to acl entry db */
     uint8 mirror_db_type = 0;
+    uint8 devide_result = 0xFF;
+    uint8 devide_cnt = 0;
+    uint8 devide_remainder = 0;
+    sai_object_list_t objlist;
+    ctc_sai_mirror_session_t* p_mir_session = NULL;
+
+    sal_memset(&objlist, 0, sizeof(sai_object_list_t));
 
     CTC_SAI_PTR_VALID_CHECK(attr);
     CTC_SAI_ERROR_RETURN(_ctc_sai_mirror_binding_mirr_param_chk(lchip,CTC_SAI_MIRROR_BINDING_ACL, attr));
@@ -1650,6 +1736,43 @@ ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint8 priority, uint8* ctc_session_id, 
     if (attr->value.aclaction.parameter.objlist.count)
     {
         CTC_SAI_ERROR_RETURN(_ctc_sai_mirror_alloc_sess_res(lchip, mirror_db_type, attr, ctc_session_id));
+    }
+
+    objlist.count = attr->value.aclaction.parameter.objlist.count;
+    objlist.list = attr->value.aclaction.parameter.objlist.list;
+
+    if (NULL == sample_rate)
+    {
+        return SAI_STATUS_SUCCESS;
+    }
+    if (objlist.count >= 1)  /* enable */
+    {
+        p_mir_session = ctc_sai_db_get_object_property(lchip, objlist.list[0]);
+        if (NULL == p_mir_session)
+        {
+            CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to binding mirror session to acl, invalid mirror_session_id 0x%"PRIx64"!\n", \
+                attr->value.aclaction.parameter.objlist.list[0]);
+            return SAI_STATUS_ITEM_NOT_FOUND;
+        }
+        if (0 == p_mir_session->sample_rate) /*invalid value 0xFFFFFFFF represents not sample rate*/
+        {
+            *sample_rate = 0xFFFFFFFF;
+        }
+        else if(1 == p_mir_session->sample_rate)
+        {
+            *sample_rate = CTC_LOG_PERCENT_POWER_NEGATIVE_0;
+        }
+        else
+        {
+            devide_result = p_mir_session->sample_rate;
+            while (devide_result > 1)
+            {
+                devide_remainder = devide_result%2;
+                devide_result = devide_result/2;
+                devide_cnt++;
+            }
+            *sample_rate = CTC_LOG_PERCENT_MAX - (devide_cnt + devide_remainder)-1;
+        }
     }
 
     return SAI_STATUS_SUCCESS;
@@ -1887,7 +2010,8 @@ ctc_sai_mirror_db_init(uint8 lchip)
     wb_info.data_len = sizeof(ctc_sai_mirr_sess_res_t);
     wb_info.wb_sync_cb = _ctc_sai_mirror_session_res_wb_sync_cb;
     wb_info.wb_reload_cb = _ctc_sai_mirror_session_res_wb_reload_cb;
-    ctc_sai_warmboot_register_cb(lchip, CTC_SAI_WB_TYPE_VECTOR, SAI_OBJECT_TYPE_MIRROR_SESSION, (void*)(&wb_info));
+    wb_info.wb_reload_cb1 = _ctc_sai_mirror_session_res_wb_reload_cb1;
+    ctc_sai_warmboot_register_cb(lchip, CTC_SAI_WB_TYPE_VECTOR, CTC_SAI_DB_VECTOR_TYPE_MIRROR, (void*)(&wb_info));
 
     return SAI_STATUS_SUCCESS;
 }

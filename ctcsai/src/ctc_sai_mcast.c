@@ -3720,10 +3720,10 @@ static sai_status_t ctc_sai_mcast_remove_rpf_group_member(
 sai_status_t ctc_sai_mcast_get_rpf_member_info(sai_object_key_t *key, sai_attribute_t *attr, uint32 attr_idx)
 {
     ctc_object_id_t       ctc_oid;
-    uint8 lchip = 0;
     sai_object_id_t  if_oid = 0;
     ctc_sai_router_interface_t* p_sai_router_if = NULL;
     uint8 if_type = 0;
+    uint8 lchip = 0;
 
     ctc_sai_oid_get_lchip(key->key.object_id, &lchip);
     ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_RPF_GROUP, key->key.object_id, &ctc_oid);

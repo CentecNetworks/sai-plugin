@@ -27,6 +27,7 @@ This module defines SAI VLAN.
 \t  |  create_vlan_members                                  |    CTC8096,CTC7148     |
 \t  |  remove_vlan_members                                  |    CTC8096,CTC7148     |
 \t  |  get_vlan_stats                                       |    CTC8096,CTC7148     |
+\t  |  get_vlan_stats_ext                                   |    CTC8096,CTC7148     |
 \t  |  clear_vlan_stats                                     |    CTC8096,CTC7148     |
 \b
 

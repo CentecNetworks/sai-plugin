@@ -170,8 +170,12 @@
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_INNER_VLAN_CFI                   |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_L4_SRC_PORT                      |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_L4_DST_PORT                      |           -            |
+\t  |  SAI_ACL_TABLE_ATTR_FIELD_INNER_L4_SRC_PORT                |           -            |
+\t  |  SAI_ACL_TABLE_ATTR_FIELD_INNER_L4_DST_PORT                |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_ETHER_TYPE                       |           -            |
+\t  |  SAI_ACL_TABLE_ATTR_FIELD_INNER_ETHER_TYPE                 |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_IP_PROTOCOL                      |           -            |
+\t  |  SAI_ACL_TABLE_ATTR_FIELD_INNER_IP_PROTOCOL                |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_IP_IDENTIFICATION                |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_DSCP                             |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_ECN                              |           -            |
@@ -186,6 +190,7 @@
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_ICMP_TYPE                        |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_ICMP_CODE                        |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_PACKET_VLAN                      |           -            |
+\t  |  SAI_ACL_TABLE_ATTR_FIELD_TUNNEL_VNI                       |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_FDB_DST_USER_META                |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_ROUTE_DST_USER_META              |           -            |
 \t  |  SAI_ACL_TABLE_ATTR_FIELD_NEIGHBOR_DST_USER_META           |           -            |
@@ -222,7 +227,7 @@
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_DST_IP                           |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_SRC_IP                     |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_DST_IP                     |           -            |
-\t  |  SAI_ACL_ENTRY_ATTR_FIELD_IN_PORTS                         |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_IN_PORTS                         |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_OUT_PORTS                        |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_IN_PORT                          |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_OUT_PORT                         |           -            |
@@ -235,8 +240,12 @@
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_VLAN_CFI                   |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_L4_SRC_PORT                      |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_L4_DST_PORT                      |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_L4_SRC_PORT                |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_L4_DST_PORT                |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ETHER_TYPE                       |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_ETHER_TYPE                 |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_IP_PROTOCOL                      |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_INNER_IP_PROTOCOL                |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_IP_IDENTIFICATION                |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_DSCP                             |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ECN                              |    CTC8096,CTC7148     |
@@ -251,6 +260,7 @@
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ICMP_TYPE                        |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ICMP_CODE                        |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_PACKET_VLAN                      |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_FIELD_TUNNEL_VNI                       |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_FDB_DST_USER_META                |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ROUTE_DST_USER_META              |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_NEIGHBOR_DST_USER_META           |           -            |
@@ -265,6 +275,7 @@
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_ACL_RANGE_TYPE                   |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_FIELD_IPV6_NEXT_HEADER                 |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_REDIRECT                        |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_ENDPOINT_IP                     |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_REDIRECT_LIST                   |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_PACKET_ACTION                   |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_FLOOD                           |           -            |
@@ -295,6 +306,11 @@
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_EGRESS_BLOCK_PORT_LIST          |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_SET_USER_TRAP_ID                |    CTC8096,CTC7148     |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_SET_DO_NOT_LEARN                |    CTC8096,CTC7148     |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_ACL_DTEL_FLOW_OP                |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_INT_SESSION                |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_DROP_REPORT_ENABLE         |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_FLOW_SAMPLE_PERCENT        |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_REPORT_ALL_PACKETS         |           -            |
 \b
 
 \p
@@ -459,6 +475,9 @@ extern sai_status_t
 ctc_sai_acl_api_init();
 
 extern sai_status_t
+ctc_sai_acl_db_init(uint8 lchip);
+
+extern sai_status_t
 ctc_sai_acl_db_deinit(uint8 lchip);
 
 extern sai_status_t
@@ -466,6 +485,9 @@ ctc_sai_acl_bind_point_set(sai_object_key_t *key, const sai_attribute_t *attr);
 
 extern void
 ctc_sai_acl_dump(uint8 lchip, sal_file_t p_file, ctc_sai_dump_grep_param_t *dump_grep_param);
+
+extern sai_status_t
+ctc_sai_acl_set_mirror_sample_rate(uint8 lchip,sai_object_id_t mirror_oid);
 
 #endif /*_CTC_SAI_ACL_H*/
 

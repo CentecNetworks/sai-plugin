@@ -20,6 +20,7 @@
 \t  |  set_port_attribute                  |    CTC8096,CTC7148     |
 \t  |  get_port_attribute                  |    CTC8096,CTC7148     |
 \t  |  get_port_stats                      |    CTC8096,CTC7148     |
+\t  |  get_port_stats_ext                  |    CTC8096,CTC7148     |
 \t  |  clear_port_stats                    |    CTC8096,CTC7148     |
 \t  |  clear_port_all_stats                |    CTC8096,CTC7148     |
 \t  |  create_port_pool                    |           -            |
@@ -27,6 +28,7 @@
 \t  |  set_port_pool_attribute             |           -            |
 \t  |  get_port_pool_attribute             |           -            |
 \t  |  get_port_pool_stats                 |           -            |
+\t  |  get_port_pool_stats_ext             |           -            |
 \t  |  clear_port_pool_stats               |           -            |
 \b
 

@@ -19,12 +19,15 @@
 \t  |  remove_bridge                               |    CTC8096,CTC7148     |
 \t  |  set_bridge_attribute                        |    CTC8096,CTC7148     |
 \t  |  get_bridge_attribute                        |    CTC8096,CTC7148     |
-\t  |  clear_bridge_stats                          |    CTC8096,CTC7148     |
+\t  |  get_bridge_stats                            |           -            |
+\t  |  get_bridge_stats_ext                        |           -            |
+\t  |  clear_bridge_stats                          |           -            |
 \t  |  create_bridge_port                          |    CTC8096,CTC7148     |
 \t  |  remove_bridge_port                          |    CTC8096,CTC7148     |
 \t  |  set_bridge_port_attribute                   |    CTC8096,CTC7148     |
 \t  |  get_bridge_port_attribute                   |    CTC8096,CTC7148     |
-\t  |  get_bridge_port_stats                       |           -            |
+\t  |  get_bridge_port_stats                       |    CTC8096,CTC7148     |
+\t  |  get_bridge_port_stats_ext                   |    CTC8096,CTC7148     |
 \t  |  clear_bridge_port_stats                     |           -            |
 \b
 \p
@@ -60,6 +63,7 @@
 \t  |  SAI_BRIDGE_PORT_ATTR_FDB_LEARNING_LIMIT_VIOLATION_PACKET_ACTION  |           -            |
 \t  |  SAI_BRIDGE_PORT_ATTR_ADMIN_STATE                                 |    CTC8096,CTC7148     |
 \t  |  SAI_BRIDGE_PORT_ATTR_INGRESS_FILTERING                           |    CTC8096,CTC7148     |
+\t  |  SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING                            |    CTC8096,CTC7148     |
 \b
 */
 

@@ -1004,6 +1004,102 @@ ctc_sai_policer_get_stats(
 }
 
 sai_status_t
+ctc_sai_policer_get_stats_ext(
+        _In_ sai_object_id_t policer_id,
+        _In_ uint32_t number_of_counters,
+        _In_ const sai_policer_stat_t *counter_ids,
+        _In_ sai_stats_mode_t mode,
+        _Out_ uint64_t *counters)
+{
+    uint32         attr_idx    = 0;
+    ctc_qos_policer_stats_t policer_stats;
+    ctc_sai_policer_db_t         *p_policer_db = NULL;
+    ctc_object_id_t ctc_object_id;
+    uint8 lchip = 0;
+
+    CTC_SAI_LOG_ENTER(SAI_API_POLICER);
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+    sal_memset(&policer_stats, 0x0, sizeof(ctc_qos_policer_stats_t));
+    ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_NULL, policer_id, &ctc_object_id);
+    lchip = ctc_object_id.lchip;
+    if (ctc_object_id.type != SAI_OBJECT_TYPE_POLICER)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_POLICER, "Object Type isNot SAI_OBJECT_TYPE_POLICER!\n");
+        return SAI_STATUS_INVALID_OBJECT_ID;
+    }
+
+    p_policer_db = ctc_sai_db_get_object_property(lchip, policer_id);
+    if (NULL == p_policer_db)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_POLICER, "DB not found!\n");
+        return SAI_STATUS_ITEM_NOT_FOUND;
+    }
+
+    if ((SAI_POLICER_MODE_STORM_CONTROL == p_policer_db->mode)
+        || (CTC_SAI_POLICER_APPLY_DEFAULT == p_policer_db->id.port_id))
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_POLICER, "Error getting stats, Mode:%d!\n", p_policer_db->mode);
+        return SAI_STATUS_NOT_IMPLEMENTED;
+    }
+
+    if (CTC_QOS_POLICER_TYPE_PORT == p_policer_db->type)
+    {
+        policer_stats.type = CTC_QOS_POLICER_TYPE_PORT;
+        policer_stats.dir = CTC_INGRESS;
+        policer_stats.id.gport = p_policer_db->id.port_id;
+    }
+    else
+    {
+        policer_stats.type = CTC_QOS_POLICER_TYPE_FLOW;
+        policer_stats.dir = CTC_INGRESS;
+        policer_stats.id.policer_id = p_policer_db->id.entry_id;
+    }
+    CTC_SAI_CTC_ERROR_RETURN(ctcs_qos_query_policer_stats(lchip, &policer_stats));
+
+    for(attr_idx = 0; attr_idx < number_of_counters; attr_idx++)
+    {
+        switch(counter_ids[attr_idx])
+        {
+            case SAI_POLICER_STAT_PACKETS:
+                counters[attr_idx] = policer_stats.stats.confirm_pkts + policer_stats.stats.exceed_pkts + policer_stats.stats.violate_pkts;
+                break;
+            case SAI_POLICER_STAT_ATTR_BYTES:
+                counters[attr_idx] = policer_stats.stats.confirm_bytes + policer_stats.stats.exceed_bytes + policer_stats.stats.violate_bytes;
+                break;
+            case SAI_POLICER_STAT_GREEN_PACKETS:
+                counters[attr_idx] = policer_stats.stats.confirm_pkts;
+                break;
+            case SAI_POLICER_STAT_GREEN_BYTES:
+                counters[attr_idx] = policer_stats.stats.confirm_bytes;
+                break;
+            case SAI_POLICER_STAT_YELLOW_PACKETS:
+                counters[attr_idx] = policer_stats.stats.exceed_pkts;
+                break;
+            case SAI_POLICER_STAT_YELLOW_BYTES:
+                counters[attr_idx] = policer_stats.stats.exceed_bytes;
+                break;
+            case SAI_POLICER_STAT_RED_PACKETS:
+                counters[attr_idx] = policer_stats.stats.violate_pkts;
+                break;
+            case SAI_POLICER_STAT_RED_BYTES:
+                counters[attr_idx] = policer_stats.stats.violate_bytes;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+    {
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_qos_clear_policer_stats(lchip, &policer_stats));
+    }
+
+    return SAI_STATUS_SUCCESS;
+}
+
+sai_status_t
 ctc_sai_policer_clear_stats(
         _In_ sai_object_id_t policer_id,
         _In_ uint32_t number_of_counters,
@@ -1068,6 +1164,7 @@ sai_policer_api_t g_ctc_sai_policer_api = {
     ctc_sai_policer_set_policer_attribute,
     ctc_sai_policer_get_policer_attribute,
     ctc_sai_policer_get_stats,
+    ctc_sai_policer_get_stats_ext,
     ctc_sai_policer_clear_stats
 };
 

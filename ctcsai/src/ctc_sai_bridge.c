@@ -274,7 +274,13 @@ ctc_sai_bridge_port_get_port_property(sai_object_key_t* key, sai_attribute_t* at
             }
             CTC_SAI_ATTR_ERROR_RETURN(ctcs_port_get_vlan_filter_en(lchip, p_bridge_port->gport, CTC_INGRESS, &attr->value.booldata), attr_idx);
             break;
-
+        case SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING:
+            if (SAI_BRIDGE_PORT_TYPE_PORT != p_bridge_port->port_type)
+            {
+                return SAI_STATUS_ATTR_NOT_SUPPORTED_0+attr_idx;
+            }
+            CTC_SAI_ATTR_ERROR_RETURN(ctcs_port_get_vlan_filter_en(lchip, p_bridge_port->gport, CTC_EGRESS, &attr->value.booldata), attr_idx);
+            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "bridge port attribute %d not implemented\n", attr->id);
             status = SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -414,7 +420,14 @@ ctc_sai_bridge_port_set_port_property(sai_object_key_t* key, const sai_attribute
             value = attr->value.booldata ? TRUE : FALSE;
             CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_vlan_filter_en(lchip, p_bridge_port->gport, CTC_INGRESS, value));
             break;
-
+        case SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING:
+            if (SAI_BRIDGE_PORT_TYPE_PORT != p_bridge_port->port_type)
+            {
+                return SAI_STATUS_ATTR_NOT_SUPPORTED_0;
+            }
+            value = attr->value.booldata ? TRUE : FALSE;
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_vlan_filter_en(lchip, p_bridge_port->gport, CTC_EGRESS, value));
+            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "bridge port attribute %d not implemented\n", attr->id);
             status = SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -434,7 +447,8 @@ ctc_sai_bridge_port_set_port_property(sai_object_key_t* key, const sai_attribute
  *
  * @return #SAI_STATUS_SUCCESS on success, failure status code on error
  */
-static sai_status_t ctc_sai_bridge_get_bridge_port_stats( sai_object_id_t               bridge_port_id,
+static sai_status_t
+ctc_sai_bridge_get_bridge_port_stats( sai_object_id_t               bridge_port_id,
                                                 uint32_t                      number_of_counters,
                                                 const sai_bridge_port_stat_t *counter_ids,
                                                 uint64_t                    *counters)
@@ -491,6 +505,89 @@ static sai_status_t ctc_sai_bridge_get_bridge_port_stats( sai_object_id_t       
             default:
                 CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "Unexptected type of counter - %d\n", counter_ids[index]);
                 return SAI_STATUS_INVALID_ATTRIBUTE_0 + index;
+        }
+    }
+
+    return status;
+}
+
+static sai_status_t
+ctc_sai_bridge_get_bridge_port_stats_ext( sai_object_id_t               bridge_port_id,
+                                                uint32_t                      number_of_counters,
+                                                const sai_bridge_port_stat_t *counter_ids,
+                                                sai_stats_mode_t mode,
+                                                uint64_t                    *counters)
+{
+    sai_status_t status = SAI_STATUS_SUCCESS;
+    uint8 lchip = 0;
+    uint32 index = 0;
+    ctc_sai_bridge_port_t* p_bridge_port = NULL;
+    ctc_mac_stats_t mac_rx_stats;
+    ctc_mac_stats_t mac_tx_stats;
+    bool tx_en = FALSE;
+    bool rx_en = FALSE;
+
+    CTC_SAI_LOG_ENTER(SAI_API_BRIDGE);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+
+    CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(bridge_port_id, &lchip));
+    p_bridge_port = ctc_sai_db_get_object_property(lchip, bridge_port_id);
+    if (NULL == p_bridge_port)
+    {
+        return SAI_STATUS_INVALID_OBJECT_ID;
+    }
+
+    if (p_bridge_port->port_type != SAI_BRIDGE_PORT_TYPE_SUB_PORT)
+    {
+        return SAI_STATUS_NOT_SUPPORTED;
+    }
+
+    sal_memset(&mac_rx_stats, 0, sizeof(ctc_mac_stats_t));
+    sal_memset(&mac_tx_stats, 0, sizeof(ctc_mac_stats_t));
+    mac_rx_stats.stats_mode = CTC_STATS_MODE_PLUS;
+    mac_tx_stats.stats_mode = CTC_STATS_MODE_PLUS;
+    CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_get_mac_stats(lchip, p_bridge_port->gport, CTC_STATS_MAC_STATS_RX, &mac_rx_stats));
+    CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_get_mac_stats(lchip, p_bridge_port->gport, CTC_STATS_MAC_STATS_TX, &mac_tx_stats));
+
+    for (index = 0; index < number_of_counters; index++)
+    {
+        switch (counter_ids[index])
+        {
+            case SAI_BRIDGE_PORT_STAT_IN_OCTETS:
+                rx_en = TRUE;
+                counters[index] = mac_rx_stats.u.stats_plus.stats.rx_stats_plus.all_octets;
+                break;
+
+            case SAI_BRIDGE_PORT_STAT_OUT_OCTETS:
+                tx_en = TRUE;
+                counters[index] = mac_tx_stats.u.stats_plus.stats.tx_stats_plus.all_octets;
+                break;
+
+            case SAI_BRIDGE_PORT_STAT_IN_PACKETS:
+                rx_en = TRUE;
+                counters[index] = mac_rx_stats.u.stats_plus.stats.rx_stats_plus.all_pkts;
+                break;
+
+            case SAI_BRIDGE_PORT_STAT_OUT_PACKETS:
+                tx_en = TRUE;
+                counters[index] = mac_tx_stats.u.stats_plus.stats.tx_stats_plus.all_pkts;
+                break;
+
+            default:
+                CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "Unexptected type of counter - %d\n", counter_ids[index]);
+                return SAI_STATUS_INVALID_ATTRIBUTE_0 + index;
+        }
+    }
+
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+    {
+        if (rx_en)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_clear_mac_stats(lchip, p_bridge_port->gport, CTC_STATS_MAC_STATS_RX));
+        }
+        if (tx_en)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_clear_mac_stats(lchip, p_bridge_port->gport, CTC_STATS_MAC_STATS_TX));
         }
     }
 
@@ -760,7 +857,7 @@ ctc_sai_bridge_create_bridge_port(sai_object_id_t* bridge_port_id,
     ctc_object_id_t              ctc_bridge_id = {0};
     ctc_object_id_t              ctc_bridge_port_id = {0};
     ctc_object_id_t              ctc_obj_id    = {0};
-    const sai_attribute_value_t *attr_val, *ingress_filter = NULL;
+    const sai_attribute_value_t *attr_val = NULL, *ingress_filter = NULL, *egress_filter = NULL;
     sai_bridge_port_type_t       bport_type = 0;
     uint32                       attr_idx = 0;
     uint8 lchip = 0;
@@ -819,6 +916,18 @@ ctc_sai_bridge_create_bridge_port(sai_object_id_t* bridge_port_id,
         }
     }
 
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING,
+                                         &egress_filter, &attr_idx);
+    if (!CTC_SAI_ERROR(status))
+    {
+        if (bport_type != SAI_BRIDGE_PORT_TYPE_PORT)
+        {
+            CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "Egress filter is only supported for bridge port type port\n");
+            status = SAI_STATUS_ATTR_NOT_SUPPORTED_0 + attr_idx;
+            goto roll_back_0;
+        }
+    }
+
     status = _ctc_sai_bridge_port_alloc(&p_bridge_port);
     if (CTC_SAI_ERROR(status))
     {
@@ -868,6 +977,18 @@ ctc_sai_bridge_create_bridge_port(sai_object_id_t* bridge_port_id,
                 if (CTC_SAI_ERROR(status))
                 {
                     CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "Failed to set port %x ingress filter.\n", gport);
+                    goto roll_back_0;
+                }
+            }
+
+            if (egress_filter)
+            {
+                ingress_filter_en = egress_filter->booldata ? TRUE : FALSE;
+
+                status = ctcs_port_set_vlan_filter_en(lchip, gport,  CTC_EGRESS, ingress_filter_en);
+                if (CTC_SAI_ERROR(status))
+                {
+                    CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "Failed to set port %x egress filter.\n", gport);
                     goto roll_back_0;
                 }
             }
@@ -1022,6 +1143,7 @@ static  ctc_sai_attr_fn_entry_t brg_port_attr_fn_entries[] = {
     {SAI_BRIDGE_PORT_ATTR_ADMIN_STATE, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {SAI_BRIDGE_PORT_ATTR_TAGGING_MODE, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {SAI_BRIDGE_PORT_ATTR_INGRESS_FILTERING, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
+    {SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {CTC_SAI_FUNC_ATTR_END_ID,NULL,NULL}
  };
 
@@ -1577,6 +1699,18 @@ ctc_sai_bridge_get_bridge_stats( sai_object_id_t          bridge_id,
     return SAI_STATUS_NOT_IMPLEMENTED;
 }
 
+static sai_status_t
+ctc_sai_bridge_get_bridge_stats_ext( sai_object_id_t          bridge_id,
+                                           uint32_t                 number_of_counters,
+                                           const sai_bridge_stat_t *counter_ids,
+                                           sai_stats_mode_t mode,
+                                           uint64_t               *counters)
+{
+    CTC_SAI_LOG_ENTER(SAI_API_BRIDGE);
+
+    return SAI_STATUS_NOT_IMPLEMENTED;
+}
+
 /**
  * @brief Clear bridge statistics counters.
  *
@@ -1602,12 +1736,14 @@ sai_bridge_api_t g_ctc_sai_bridge_api = {
      ctc_sai_bridge_set_bridge_attribute,
      ctc_sai_bridge_get_bridge_attribute,
      ctc_sai_bridge_get_bridge_stats,
+     ctc_sai_bridge_get_bridge_stats_ext,
      ctc_sai_bridge_clear_bridge_stats,
      ctc_sai_bridge_create_bridge_port,
      ctc_sai_bridge_remove_bridge_port,
      ctc_sai_bridge_set_bridge_port_attribute,
      ctc_sai_bridge_get_bridge_port_attribute,
      ctc_sai_bridge_get_bridge_port_stats,
+     ctc_sai_bridge_get_bridge_port_stats_ext,
      ctc_sai_bridge_clear_bridge_port_stats
 };
 

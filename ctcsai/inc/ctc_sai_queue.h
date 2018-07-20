@@ -21,6 +21,7 @@ This module defines SAI Queue.
 \t  |  set_queue_attribute                                 |    CTC8096,CTC7148     |
 \t  |  get_queue_attribute                                 |    CTC8096,CTC7148     |
 \t  |  get_queue_stats                                     |    CTC8096,CTC7148     |
+\t  |  get_queue_stats_ext                                 |    CTC8096,CTC7148     |
 \t  |  clear_queue_stats                                   |    CTC8096,CTC7148     |
 \b
 \p

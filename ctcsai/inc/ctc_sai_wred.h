@@ -39,6 +39,18 @@ This module defines SAI Wred.
 \t  |  SAI_WRED_ATTR_RED_DROP_PROBABILITY                   |    CTC8096,CTC7148     |
 \t  |  SAI_WRED_ATTR_WEIGHT                                 |           -            |
 \t  |  SAI_WRED_ATTR_ECN_MARK_MODE                          |           -            |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MIN_THRESHOLD                |           -            |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MAX_THRESHOLD                |           -            |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MARK_PROBABILITY             |           -            |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MIN_THRESHOLD               |           -            |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MAX_THRESHOLD               |           -            |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MARK_PROBABILITY            |           -            |
+\t  |  SAI_WRED_ATTR_ECN_RED_MIN_THRESHOLD                  |           -            |
+\t  |  SAI_WRED_ATTR_ECN_RED_MAX_THRESHOLD                  |           -            |
+\t  |  SAI_WRED_ATTR_ECN_RED_MARK_PROBABILITY               |           -            |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MIN_THRESHOLD        |           -            |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MAX_THRESHOLD        |           -            |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MARK_PROBABILITY     |           -            |
 \b
 */
 

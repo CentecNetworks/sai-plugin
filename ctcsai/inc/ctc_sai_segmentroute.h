@@ -23,7 +23,7 @@
 \t  |  remove_segmentroute_sidlists                             |           -            |
 \b
 \p
- The TAM Stat attributes supported by centec devices:
+ The TAM Sidlist attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
@@ -33,8 +33,8 @@
 \b
 */
 
-#ifndef _CTC_SAI_TAM_H
-#define _CTC_SAI_TAM_H
+#ifndef _CTC_SAI_SEGMENTROUTE_H
+#define _CTC_SAI_SEGMENTROUTE_H
 
 
 #include "ctc_sai.h"
@@ -44,9 +44,10 @@
 
 
 extern sai_status_t
-ctc_sai_tam_api_init();
+ctc_sai_segmentroute_api_init();
 
 extern sai_status_t
-ctc_sai_tam_db_init(uint8 lchip);
+ctc_sai_segmentroute_db_init(uint8 lchip);
 
-#endif /*_CTC_SAI_TAM_H*/
+#endif /*_CTC_SAI_SEGMENTROUTE_H*/
+

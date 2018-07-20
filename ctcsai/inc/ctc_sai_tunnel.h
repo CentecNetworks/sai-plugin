@@ -24,6 +24,7 @@ This module defines SAI Tunnel.
 \t  |  set_tunnel_attribute                                     |    CTC8096,CTC7148     |
 \t  |  get_tunnel_attribute                                     |    CTC8096,CTC7148     |
 \t  |  get_tunnel_stats                                         |    CTC8096,CTC7148     |
+\t  |  get_tunnel_stats_ext                                     |    CTC8096,CTC7148     |
 \t  |  clear_tunnel_stats                                       |    CTC8096,CTC7148     |
 \t  |  create_tunnel_term_table_entry                           |    CTC8096,CTC7148     |
 \t  |  get_hostif_trap_group_attribute                          |    CTC8096,CTC7148     |

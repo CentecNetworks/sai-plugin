@@ -20,6 +20,7 @@
 \t  |  set_policer_attribute                                |    CTC8096,CTC7148     |
 \t  |  get_policer_attribute                                |    CTC8096,CTC7148     |
 \t  |  get_policer_stats                                    |    CTC8096,CTC7148     |
+\t  |  get_policer_stats_ext                                |    CTC8096,CTC7148     |
 \t  |  clear_policer_stats                                  |    CTC8096,CTC7148     |
 \b
 \p

@@ -1460,6 +1460,94 @@ out:
     return status;
 }
 
+static sai_status_t
+ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
+                                                uint32_t               number_of_counters,
+                                                const sai_vlan_stat_t *counter_ids,
+                                                sai_stats_mode_t mode,
+                                                uint64_t             *counters)
+{
+    uint8 lchip = 0;
+    sai_status_t status = 0;
+    ctc_sai_vlan_user_t *p_dbvlan = NULL ;
+    ctc_stats_basic_t p_stats[3];
+    uint32 index = 0;
+    uint32 not_support = 0;
+
+
+    CTC_SAI_LOG_ENTER(SAI_API_VLAN);
+
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+
+    CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(sai_vlan_id, &lchip));
+    CTC_SAI_DB_LOCK(lchip);
+
+    p_dbvlan = ctc_sai_db_get_object_property(lchip,  sai_vlan_id);
+    if (NULL == p_dbvlan)
+    {
+        status =  SAI_STATUS_INVALID_OBJECT_ID;
+        goto out;
+    }
+
+    for (index = 0; index < number_of_counters; index ++ )
+    {
+        if (0 != p_dbvlan->stats_id_in && (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index] || SAI_VLAN_STAT_IN_OCTETS == counter_ids[index]))
+        {
+            sal_memset(&p_stats, 0, sizeof(p_stats));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_dbvlan->stats_id_in, p_stats), status, out);
+            if (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index])
+            {
+                counters[index] = p_stats[0].packet_count;
+            }
+            else
+            {
+                counters[index] = p_stats[0].byte_count;
+            }
+            if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+            {
+                CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_in), status, out);
+            }
+            continue;
+        }
+
+        if (0 != p_dbvlan->stats_id_eg && (SAI_VLAN_STAT_OUT_PACKETS == counter_ids[index] || SAI_VLAN_STAT_OUT_OCTETS == counter_ids[index]))
+        {
+            sal_memset(&p_stats, 0, sizeof(p_stats));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_dbvlan->stats_id_eg, p_stats), status, out);
+            if (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index])
+            {
+                counters[index] = p_stats[0].packet_count;
+            }
+            else
+            {
+                counters[index] = p_stats[0].byte_count;
+            }
+            if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+            {
+                CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_eg), status, out);
+            }
+            continue;
+        }
+
+        not_support = TRUE;
+    }
+
+    if ( TRUE == not_support)
+    {
+        status = SAI_STATUS_NOT_SUPPORTED ;
+    }
+
+out:
+    CTC_SAI_DB_UNLOCK(lchip);
+    if (SAI_STATUS_SUCCESS != status)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_VLAN, "Failed to get vlan stats,status =%d\n", status);
+    }
+    return status;
+}
+
 /**
  * @brief Clear vlan statistics counters.
  *
@@ -1527,6 +1615,7 @@ const sai_vlan_api_t ctc_sai_vlan_api = {
     ctc_sai_vlan_create_vlan_members,
     ctc_sai_vlan_remove_vlan_members,
     ctc_sai_vlan_get_vlan_stats,
+    ctc_sai_vlan_get_vlan_stats_ext,
     ctc_sai_vlan_clear_vlan_stats
 };
 

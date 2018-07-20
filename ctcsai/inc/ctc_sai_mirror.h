@@ -29,6 +29,7 @@ This module defines SAI MIRROR.
 \t  |  SAI_MIRROR_SESSION_ATTR_TYPE                         |    CTC8096,CTC7148     |
 \t  |  SAI_MIRROR_SESSION_ATTR_MONITOR_PORT                 |    CTC8096,CTC7148     |
 \t  |  SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE                |    CTC8096,CTC7148     |
+\t  |  SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE                  |    CTC8096,CTC7148     |
 \t  |  SAI_MIRROR_SESSION_ATTR_TC                           |           -            |
 \t  |  SAI_MIRROR_SESSION_ATTR_VLAN_TPID                    |           -            |
 \t  |  SAI_MIRROR_SESSION_ATTR_VLAN_ID                      |    CTC8096,CTC7148     |
@@ -62,7 +63,7 @@ ctc_sai_mirror_set_port_mirr(uint8 lchip, uint32 gport, const sai_attribute_t *a
 extern sai_status_t
 ctc_sai_mirror_get_port_mirr(uint8 lchip, uint32 gport, sai_attribute_t *attr);
 extern sai_status_t
-ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint8 priority, uint8* ctc_session_id, sai_attribute_t *attr);
+ctc_sai_mirror_set_acl_mirr(uint8 lchip, uint8 priority, uint8* ctc_session_id, uint32* sample_rate, sai_attribute_t *attr);
 extern sai_status_t
 ctc_sai_mirror_get_acl_mirr(uint8 lchip, uint8 priority, uint8 ctc_session_id, sai_attribute_t *attr);
 extern sai_status_t

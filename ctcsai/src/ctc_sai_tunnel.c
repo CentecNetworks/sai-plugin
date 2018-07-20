@@ -1652,6 +1652,88 @@ ctc_sai_tunnel_get_tunnel_stats(
 }
 
 static sai_status_t
+ctc_sai_tunnel_get_tunnel_stats_ext(
+        sai_object_id_t tunnel_id,
+        uint32_t number_of_counters,
+        const sai_tunnel_stat_t *counter_ids,
+        sai_stats_mode_t mode,
+        uint64_t *counters)
+{
+    ctc_sai_tunnel_t* p_tunnel = NULL;
+    uint8 lchip = 0;
+    ctc_object_id_t ctc_oid;
+    ctc_stats_basic_t stats_encap;
+    ctc_stats_basic_t stats_decap;
+    uint32 index = 0;
+    bool encap_en = FALSE;
+    bool decap_en = FALSE;
+
+    CTC_SAI_LOG_ENTER(SAI_API_TUNNEL);
+
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+
+    sal_memset(&ctc_oid, 0, sizeof(ctc_object_id_t));
+    sal_memset(&stats_encap, 0, sizeof(ctc_stats_basic_t));
+    sal_memset(&stats_decap, 0, sizeof(ctc_stats_basic_t));
+
+    CTC_SAI_DB_LOCK(lchip);
+    CTC_SAI_ERROR_RETURN(ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_TUNNEL, tunnel_id, &ctc_oid));
+    lchip = ctc_oid.lchip;
+    p_tunnel = ctc_sai_db_get_object_property(lchip, tunnel_id);
+    if (NULL == p_tunnel)
+    {
+        CTC_SAI_DB_UNLOCK(lchip);
+        return SAI_STATUS_INVALID_OBJECT_ID;
+    }
+
+    CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_get_stats(lchip, p_tunnel->encap_stats_id, &stats_encap));
+    CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_get_stats(lchip, p_tunnel->decap_stats_id, &stats_decap));
+    for (index = 0; index < number_of_counters; index ++ )
+    {
+        switch(counter_ids[index])
+        {
+            case SAI_TUNNEL_STAT_IN_OCTETS:
+                encap_en = TRUE;
+                counters[index] = stats_encap.byte_count;
+                break;
+            case SAI_TUNNEL_STAT_IN_PACKETS:
+                encap_en = TRUE;
+                counters[index] = stats_encap.packet_count;
+                break;
+            case SAI_TUNNEL_STAT_OUT_OCTETS:
+                decap_en = TRUE;
+                counters[index] = stats_decap.byte_count;
+                break;
+            case SAI_TUNNEL_STAT_OUT_PACKETS:
+                decap_en = TRUE;
+                counters[index] = stats_decap.packet_count;
+                break;
+            default:
+                return SAI_STATUS_INVALID_PARAMETER;
+                break;
+        }
+
+    }
+    CTC_SAI_DB_UNLOCK(lchip);
+
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+    {
+        if (encap_en)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_clear_stats(lchip, p_tunnel->encap_stats_id));
+        }
+        if (decap_en)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_stats_clear_stats(lchip, p_tunnel->decap_stats_id));
+        }
+    }
+
+    return SAI_STATUS_SUCCESS;
+}
+
+static sai_status_t
 ctc_sai_tunnel_clear_tunnel_stats(
         sai_object_id_t tunnel_id,
         uint32_t number_of_counters,
@@ -2921,6 +3003,7 @@ sai_tunnel_api_t g_ctc_sai_tunnel_api = {
      ctc_sai_tunnel_set_tunnel_attribute,
      ctc_sai_tunnel_get_tunnel_attribute,
      ctc_sai_tunnel_get_tunnel_stats,
+     ctc_sai_tunnel_get_tunnel_stats_ext,
      ctc_sai_tunnel_clear_tunnel_stats,
      ctc_sai_tunnel_create_tunnel_term_table_entry,
      ctc_sai_tunnel_remove_tunnel_term_table_entry,

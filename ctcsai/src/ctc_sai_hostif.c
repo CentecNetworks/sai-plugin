@@ -3806,7 +3806,7 @@ _ctc_sai_hostif_packet_receive_from_sdk(ctc_pkt_rx_t* p_pkt_rx)
 
         if (p_switch_master->packet_event_cb)
         {
-            p_switch_master->packet_event_cb(switch_id, p_pkt_rx->pkt_buf->data+packet_offset, p_pkt_rx->pkt_len-packet_offset, count, attr_list);
+            p_switch_master->packet_event_cb(switch_id, p_pkt_rx->pkt_len-packet_offset, p_pkt_rx->pkt_buf->data+packet_offset, count, attr_list);
         }
     }
     else if ((SAI_HOSTIF_TABLE_ENTRY_CHANNEL_TYPE_NETDEV_PHYSICAL_PORT == channel_type)
@@ -3935,8 +3935,8 @@ _ctc_sai_hostif_packet_receive_from_kernel(void *data)
 sai_status_t
 ctc_sai_hostif_recv_hostif_packet(
         _In_ sai_object_id_t hostif_id,
-        _Out_ void *buffer,
         _Inout_ sai_size_t *buffer_size,
+        _Out_ void *buffer,
         _Inout_ uint32_t *attr_count,
         _Out_ sai_attribute_t *attr_list)
 {
@@ -3965,10 +3965,10 @@ ctc_sai_hostif_recv_hostif_packet(
 sai_status_t
 ctc_sai_hostif_send_hostif_packet(
         _In_ sai_object_id_t hostif_id,
-        _In_ void *buffer,
         _In_ sai_size_t buffer_size,
+        _In_ const void *buffer,
         _In_ uint32_t attr_count,
-        _In_ sai_attribute_t *attr_list)
+        _In_ const sai_attribute_t *attr_list)
 {
     sai_status_t status = SAI_STATUS_SUCCESS;
     uint8 lchip = 0;

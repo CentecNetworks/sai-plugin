@@ -155,6 +155,19 @@
 \t  |  SAI_SWITCH_ATTR_SUPPORTED_PROTECTED_OBJECT_TYPE                        |           -            |
 \t  |  SAI_SWITCH_ATTR_TPID_OUTER_VLAN                                        |    CTC8096,CTC7148     |
 \t  |  SAI_SWITCH_ATTR_TPID_INNER_VLAN                                        |    CTC8096,CTC7148     |
+\t  |  SAI_SWITCH_ATTR_CRC_CHECK_ENABLE                                       |           -            |
+\t  |  SAI_SWITCH_ATTR_CRC_RECALCULATION_ENABLE                               |           -            |
+\t  |  SAI_SWITCH_ATTR_BFD_SESSION_STATE_CHANGE_NOTIFY                        |           -            |
+\t  |  SAI_SWITCH_ATTR_NUMBER_OF_BFD_SESSION                                  |           -            |
+\t  |  SAI_SWITCH_ATTR_MAX_BFD_SESSION                                        |           -            |
+\t  |  SAI_SWITCH_ATTR_MIN_BFD_RX                                             |           -            |
+\t  |  SAI_SWITCH_ATTR_MIN_BFD_TX                                             |           -            |
+\t  |  SAI_SWITCH_ATTR_ECN_ECT_THRESHOLD_ENABLE                               |           -            |
+\t  |  SAI_SWITCH_ATTR_VXLAN_DEFAULT_ROUTER_MAC                               |           -            |
+\t  |  SAI_SWITCH_ATTR_VXLAN_DEFAULT_PORT                                     |           -            |
+\t  |  SAI_SWITCH_ATTR_MAX_MIRROR_SESSION                                     |           -            |
+\t  |  SAI_SWITCH_ATTR_MAX_SAMPLED_MIRROR_SESSION                             |           -            |
+\t  |  SAI_SWITCH_ATTR_SUPPORTED_EXTENDED_STATS_MODE                          |           -            |
 \b
 */
 

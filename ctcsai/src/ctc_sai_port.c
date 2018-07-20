@@ -2313,6 +2313,200 @@ ctc_sai_port_get_port_stats( sai_object_id_t        port_id,
     return status;
 }
 
+static sai_status_t
+ctc_sai_port_get_port_stats_ext( sai_object_id_t        port_id,
+                            uint32_t               number_of_counters,
+                            const sai_port_stat_t *counter_ids,
+                            sai_stats_mode_t mode,
+                            uint64_t             *counters)
+{
+    ctc_object_id_t ctc_object_id ;
+    sai_status_t status = 0;
+    ctc_mac_stats_t p_stats;
+    ctc_mac_stats_t p_stats_out;
+    uint32 index = 0;
+    bool rx_en = FALSE;
+    bool tx_en = TRUE;
+
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+
+    CTC_SAI_LOG_ENTER(SAI_API_PORT);
+    sal_memset(&p_stats, 0, sizeof(p_stats));
+    sal_memset(&p_stats_out, 0, sizeof(p_stats_out));
+    ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_PORT, port_id, &ctc_object_id);
+    for (index = 0; index < number_of_counters; index ++ )
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_mac_stats(ctc_object_id.lchip, ctc_object_id.value, CTC_INGRESS, &p_stats), status, out);
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_mac_stats(ctc_object_id.lchip, ctc_object_id.value, CTC_EGRESS, &p_stats_out), status, out);
+        switch(counter_ids[index])
+        {
+            /*in*/
+        case SAI_PORT_STAT_IF_IN_OCTETS:
+            rx_en = TRUE;
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.all_octets;
+            break;
+        case SAI_PORT_STAT_IF_IN_UCAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.ucast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_IN_NON_UCAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.all_pkts - p_stats.u.stats_plus.stats.rx_stats_plus.ucast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_IN_ERRORS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.error_pkts;
+            break;
+        case SAI_PORT_STAT_IF_IN_MULTICAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.mcast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_IN_DISCARDS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.drop_events;
+            break;
+        case SAI_PORT_STAT_IF_IN_BROADCAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.bcast_pkts;
+            break;
+
+            /*out*/
+        case SAI_PORT_STAT_IF_OUT_OCTETS:
+            tx_en = TRUE;
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.all_octets;
+            break;
+        case SAI_PORT_STAT_IF_OUT_UCAST_PKTS:
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.ucast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_OUT_NON_UCAST_PKTS:
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.all_pkts- p_stats_out.u.stats_plus.stats.tx_stats_plus.ucast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_OUT_ERRORS:
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.error_pkts;
+            break;
+        case SAI_PORT_STAT_IF_OUT_MULTICAST_PKTS:
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.mcast_pkts;
+            break;
+        case SAI_PORT_STAT_IF_OUT_BROADCAST_PKTS:
+            counters[index] = p_stats_out.u.stats_plus.stats.tx_stats_plus.bcast_pkts;
+            break;
+
+        case SAI_PORT_STAT_ETHER_STATS_DROP_EVENTS:
+            counters[index] = p_stats_out.u.stats_plus.stats.rx_stats_plus.drop_events;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_MULTICAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.mcast_pkts + p_stats_out.u.stats_plus.stats.tx_stats_plus.mcast_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_BROADCAST_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.bcast_pkts + p_stats_out.u.stats_plus.stats.tx_stats_plus.bcast_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_64_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_64 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_64;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_65_TO_127_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_65_to_127 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_65_to_127;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_128_TO_255_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_128_to_255 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_128_to_255;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_256_TO_511_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_256_to_511 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_256_to_511;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_512_TO_1023_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_512_to_1023 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_512_to_1023;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_1024_TO_1518_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_1024_to_1518 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_1024_to_1518;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS_1519_TO_2047_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_1519_to_2047 + p_stats_out.u.stats_detail.stats.tx_stats.bytes_1519_to_2047;
+            break;
+        case SAI_PORT_STAT_ETHER_RX_OVERSIZE_PKTS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.good_oversize_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_JABBERS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.jabber_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_OCTETS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.all_octets + p_stats_out.u.stats_plus.stats.tx_stats_plus.all_octets;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.all_pkts + p_stats_out.u.stats_plus.stats.tx_stats_plus.all_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_CRC_ALIGN_ERRORS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.crc_pkts + p_stats_out.u.stats_plus.stats.tx_stats_plus.error_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_TX_NO_ERRORS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.good_ucast_pkts + p_stats.u.stats_detail.stats.tx_stats.good_mcast_pkts + p_stats.u.stats_detail.stats.tx_stats.good_bcast_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_STATS_RX_NO_ERRORS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.good_ucast_pkts + p_stats.u.stats_detail.stats.rx_stats.good_mcast_pkts + p_stats.u.stats_detail.stats.rx_stats.good_bcast_pkts;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_64_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_64;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_65_TO_127_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_65_to_127;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_128_TO_255_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_128_to_255;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_256_TO_511_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_256_to_511;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_512_TO_1023_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_512_to_1023;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_1024_TO_1518_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_1024_to_1518;
+            break;
+        case SAI_PORT_STAT_ETHER_IN_PKTS_1519_TO_2047_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.rx_stats.bytes_1519_to_2047;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_64_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_64;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_65_TO_127_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_65_to_127;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_128_TO_255_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_128_to_255;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_256_TO_511_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_256_to_511;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_512_TO_1023_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_512_to_1023;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_1024_TO_1518_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_1024_to_1518;
+            break;
+        case SAI_PORT_STAT_ETHER_OUT_PKTS_1519_TO_2047_OCTETS:
+            counters[index] = p_stats.u.stats_detail.stats.tx_stats.bytes_1519_to_2047;
+            break;
+        case SAI_PORT_STAT_PAUSE_RX_PKTS:
+            counters[index] = p_stats.u.stats_plus.stats.rx_stats_plus.pause_pkts;
+            break;
+        default:
+            return SAI_STATUS_NOT_SUPPORTED;
+        }
+    }
+
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
+    {
+        if (rx_en)
+        {
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_mac_stats(ctc_object_id.lchip, ctc_object_id.value, CTC_INGRESS), status, out);
+        }
+        if (tx_en)
+        {
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_mac_stats(ctc_object_id.lchip, ctc_object_id.value, CTC_EGRESS), status, out);
+        }
+    }
+
+    out:
+    if (SAI_STATUS_SUCCESS != status)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_PORT, "Failed to get port stats ,status = %d\n", status);
+    }
+    return status;
+}
 
 /*
  * Routine Description:
@@ -2477,6 +2671,16 @@ ctc_sai_port_get_port_pool_stats( sai_object_id_t             port_pool_id,
     return SAI_STATUS_NOT_IMPLEMENTED;
 }
 
+static sai_status_t
+ctc_sai_port_get_port_pool_stats_ext( sai_object_id_t             port_pool_id,
+                                              uint32_t                    number_of_counters,
+                                              const sai_port_pool_stat_t *counter_ids,
+                                              sai_stats_mode_t mode,
+                                              uint64_t                  *counters)
+{
+    return SAI_STATUS_NOT_IMPLEMENTED;
+}
+
 /**
  * @brief Clear port pool statistics counters.
  *
@@ -2500,6 +2704,7 @@ const sai_port_api_t g_ctc_sai_port_api = {
     ctc_sai_port_set_port_attribute,
     ctc_sai_port_get_port_attribute,
     ctc_sai_port_get_port_stats,
+    ctc_sai_port_get_port_stats_ext,
     ctc_sai_port_clear_port_stats,
     ctc_sai_port_clear_port_all_stats,
     ctc_sai_port_create_port_pool,
@@ -2507,6 +2712,7 @@ const sai_port_api_t g_ctc_sai_port_api = {
     ctc_sai_port_set_port_pool_attribute,
     ctc_sai_port_get_port_pool_attribute,
     ctc_sai_port_get_port_pool_stats,
+    ctc_sai_port_get_port_pool_stats_ext,
     ctc_sai_port_clear_port_pool_stats
 };
 

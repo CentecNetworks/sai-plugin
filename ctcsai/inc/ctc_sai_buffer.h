@@ -20,12 +20,14 @@
 \t  |  set_buffer_pool_attribute                     |           -            |
 \t  |  get_buffer_pool_attribute                     |           -            |
 \t  |  get_buffer_pool_stats                         |           -            |
+\t  |  get_buffer_pool_stats_ext                     |           -            |
 \t  |  clear_buffer_pool_stats                       |           -            |
 \t  |  create_ingress_priority_group                 |    CTC8096,CTC7148     |
 \t  |  remove_ingress_priority_group                 |    CTC8096,CTC7148     |
 \t  |  set_ingress_priority_group_attribute          |    CTC8096,CTC7148     |
 \t  |  get_ingress_priority_group_attribute          |    CTC8096,CTC7148     |
 \t  |  get_ingress_priority_group_stats              |           -            |
+\t  |  get_ingress_priority_group_stats_ext          |           -            |
 \t  |  clear_ingress_priority_group_stats            |           -            |
 \t  |  create_buffer_profile                         |    CTC8096,CTC7148     |
 \t  |  remove_buffer_profile                         |    CTC8096,CTC7148     |

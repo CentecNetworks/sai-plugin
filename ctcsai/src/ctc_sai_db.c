@@ -383,7 +383,7 @@ _ctc_sai_db_init_id(uint8 lchip)
     ctc_opf_init_offset(&opf, 0, 0xFFFF0000);
 
     opf.pool_type = CTC_SAI_DB_ID_TYPE_SDK_ACL_ENTRY_ID;
-    ctc_opf_init_offset(&opf, 4, 0xFFFFFFFF - 4);/* rsv 4 for copy entry */
+    ctc_opf_init_offset(&opf, 8, 0xFFFFFFFF - 8);/* rsv 8 for copy entry */
 
     opf.pool_type = CTC_SAI_DB_ID_TYPE_MAX_FRAME_SIZE;
     ctc_opf_init_offset(&opf, 0, CTC_FRAME_SIZE_MAX);
