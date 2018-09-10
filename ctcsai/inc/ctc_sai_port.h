@@ -119,6 +119,7 @@
 \t  |  SAI_PORT_ATTR_EEE_IDLE_TIME                           |           -            |
 \t  |  SAI_PORT_ATTR_EEE_WAKE_TIME                           |           -            |
 \t  |  SAI_PORT_ATTR_PORT_POOL_LIST                          |           -            |
+\t  |  SAI_PORT_ATTR_PKT_TX_ENABLE                           |    CTC8096,CTC7148     |
 \b
 */
 

@@ -876,7 +876,7 @@ class Fdb_unicast_miss_pkt_action(sai_base_test.ThriftInterfaceDataPlane):
             
             time.sleep(1)            
             # step 2
-            print '#### Sending 00:22:22:22:22:22 | 00:11:11:11:11:11 | 10.0.0.1 | 192.168.0.1 | @ ptf_intf 1 ####'
+            print '#### Sending 00:22:22:22:22:33 | 00:11:11:11:11:11 | 10.0.0.1 | 192.168.0.1 | @ ptf_intf 1 ####'
             send_packet(self, 1, str(pkt2))
             verify_each_packet_on_each_port(self, [exp_pkt2, exp_pkt2], [2, 3])  # go through: fdb default action, flooding in vlan
 
@@ -886,7 +886,7 @@ class Fdb_unicast_miss_pkt_action(sai_base_test.ThriftInterfaceDataPlane):
             attr = sai_thrift_attribute_t(id=SAI_SWITCH_ATTR_FDB_UNICAST_MISS_PACKET_ACTION , value=attr_value)
             self.client.sai_thrift_set_switch_attribute(attr)  
 
-            print '#### Sending 00:22:22:22:22:22 | 00:11:11:11:11:11 | 10.0.0.1 | 192.168.0.1 | @ ptf_intf 1 ####'
+            print '#### Sending 00:22:22:22:22:33 | 00:11:11:11:11:11 | 10.0.0.1 | 192.168.0.1 | @ ptf_intf 1 ####'
             send_packet(self, 1, str(pkt2))
             verify_no_packet(self, exp_pkt2, 2)   #  /** This is a combination of SAI packet action COPY and DROP. */
             verify_no_packet(self, exp_pkt2, 3)

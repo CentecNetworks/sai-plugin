@@ -522,8 +522,8 @@ _ctc_sai_router_interface_dump_print_cb(ctc_sai_oid_property_t* bucket_data, ctc
     sal_strcat(state, p_rif_info->v4_mc_state? "1" : "0");
     sal_strcat(state, p_rif_info->v6_mc_state? "1" : "0");
     ctc_sai_get_mac_str(p_rif_info->src_mac, src_mac);
-    CTC_SAI_LOG_DUMP(p_file, "%-8d%-20s%-20s%-12s%-10d%-12s%-10s%-10d%-20s\n",
-           num_cnt, rif_oid, vlan_oid, gport, p_rif_info->vrf_id, bridge_id, state, p_rif_info->mtu, src_mac);
+    CTC_SAI_LOG_DUMP(p_file, "%-8d%-20s%-20s%-12s%-10d%-12s%-10s%-10d%-20s\n0x%-13x0x%-13x\n",
+           num_cnt, rif_oid, vlan_oid, gport, p_rif_info->vrf_id, bridge_id, state, p_rif_info->mtu, src_mac, p_rif_info->ing_statsid, p_rif_info->egs_statsid);
 
     (*((uint32 *)(p_cb_data->value1)))++;
     return SAI_STATUS_SUCCESS;
@@ -800,7 +800,7 @@ void ctc_sai_router_interface_dump(uint8 lchip, sal_file_t p_file, ctc_sai_dump_
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "Router Interface");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "ctc_sai_router_interface_t(state bitmap from left to right: v4, v6, v4_mc, v6_mc)");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "-----------------------------------------------------------------------------------------------------------------------");
-        CTC_SAI_LOG_DUMP(p_file, "%-8s%-20s%-20s%-12s%-10s%-12s%-10s%-10s%-20s\n", "No.", "router_interface_id", "vlan_oid","gport", "vrf_id", "bridge_id", "state", "mtu", "src_mac");
+        CTC_SAI_LOG_DUMP(p_file, "%-8s%-20s%-20s%-12s%-10s%-12s%-10s%-10s%-20s\n%-15s%-20s\n", "No.", "router_interface_id", "vlan_oid","gport", "vrf_id", "bridge_id", "state", "mtu", "src_mac", "ing_statsid", "egs_statsid");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "-----------------------------------------------------------------------------------------------------------------------");
 
         sai_cb_data.value0 = p_file;
@@ -812,6 +812,213 @@ void ctc_sai_router_interface_dump(uint8 lchip, sal_file_t p_file, ctc_sai_dump_
 }
 
 #define ________SAI_API________
+static sai_status_t
+ctc_sai_router_interface_get_stats(sai_object_id_t router_interface_id, uint32_t number_of_counters,
+const sai_router_interface_stat_t *counter_ids, uint64_t *counters)
+{
+    uint8 lchip = 0;
+    uint8 index = 0;
+    uint8 not_support = 0;
+    sai_status_t           status = SAI_STATUS_SUCCESS;
+    ctc_sai_router_interface_t* p_rif_info = NULL;
+    ctc_stats_basic_t stats;
+
+    CTC_SAI_LOG_ENTER(SAI_API_ROUTER_INTERFACE);
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(router_interface_id, &lchip));
+
+    CTC_SAI_DB_LOCK(lchip);
+    p_rif_info = ctc_sai_db_get_object_property(lchip, router_interface_id);
+    if (NULL == p_rif_info)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "Failed to get route interface, invalid router_interface_id %d!\n", router_interface_id);
+        status = SAI_STATUS_ITEM_NOT_FOUND;
+        goto out;
+    }
+    for (index = 0; index < number_of_counters; index ++ )
+    {
+        if (0 != p_rif_info->ing_statsid && (SAI_ROUTER_INTERFACE_STAT_IN_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_IN_PACKETS == counter_ids[index]))
+        {
+            sal_memset(&stats, 0, sizeof(ctc_stats_basic_t));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_rif_info->ing_statsid, &stats), status, out);
+            if (SAI_ROUTER_INTERFACE_STAT_IN_PACKETS == counter_ids[index])
+            {
+                counters[index] = stats.packet_count;
+            }
+            else
+            {
+                counters[index] = stats.byte_count;
+            }
+            continue;
+        }
+
+        if (0 != p_rif_info->egs_statsid && (SAI_ROUTER_INTERFACE_STAT_OUT_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS == counter_ids[index]))
+        {
+            sal_memset(&stats, 0, sizeof(ctc_stats_basic_t));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_rif_info->egs_statsid, &stats), status, out);
+            if (SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS == counter_ids[index])
+            {
+                counters[index] = stats.packet_count;
+            }
+            else
+            {
+                counters[index] = stats.byte_count;
+            }
+            continue;
+        }
+
+        not_support = TRUE;
+    }
+
+    if ( TRUE == not_support)
+    {
+        status = SAI_STATUS_NOT_SUPPORTED ;
+    }
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+out:
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+}
+
+static sai_status_t
+ctc_sai_router_interface_get_stats_ext(sai_object_id_t router_interface_id, uint32_t number_of_counters,
+const sai_router_interface_stat_t *counter_ids, sai_stats_mode_t mode, uint64_t *counters)
+{
+    uint8 lchip = 0;
+    sai_status_t status = SAI_STATUS_SUCCESS;
+    ctc_sai_router_interface_t* p_rif_info = NULL;
+    ctc_stats_basic_t stats;
+    uint32 index = 0;
+    uint32 not_support = 0;
+    uint8 clear_ing = 0;
+    uint8 clear_egs = 0;
+
+    CTC_SAI_LOG_ENTER(SAI_API_ROUTER_INTERFACE);
+
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+    CTC_SAI_PTR_VALID_CHECK(counters);
+    CTC_SAI_MAX_VALUE_CHECK(mode, SAI_STATS_MODE_READ_AND_CLEAR);
+
+    CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(router_interface_id, &lchip));
+    CTC_SAI_DB_LOCK(lchip);
+    p_rif_info = ctc_sai_db_get_object_property(lchip, router_interface_id);
+    if (NULL == p_rif_info)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "Failed to get route interface, invalid router_interface_id %d!\n", router_interface_id);
+        status = SAI_STATUS_ITEM_NOT_FOUND;
+        goto out;
+    }
+
+    for (index = 0; index < number_of_counters; index ++ )
+    {
+        if (0 != p_rif_info->ing_statsid && (SAI_ROUTER_INTERFACE_STAT_IN_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_IN_PACKETS == counter_ids[index]))
+        {
+            sal_memset(&stats, 0, sizeof(ctc_stats_basic_t));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_rif_info->ing_statsid, &stats), status, out);
+            clear_ing = 1;
+            if (SAI_ROUTER_INTERFACE_STAT_IN_PACKETS == counter_ids[index])
+            {
+                counters[index] = stats.packet_count;
+            }
+            else
+            {
+                counters[index] = stats.byte_count;
+            }
+            continue;
+        }
+
+        if (0 != p_rif_info->egs_statsid && (SAI_ROUTER_INTERFACE_STAT_OUT_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS == counter_ids[index]))
+        {
+            sal_memset(&stats, 0, sizeof(ctc_stats_basic_t));
+            CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_rif_info->egs_statsid, &stats), status, out);
+            clear_egs = 1;
+            if (SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS == counter_ids[index])
+            {
+                counters[index] = stats.packet_count;
+            }
+            else
+            {
+                counters[index] = stats.byte_count;
+            }
+            continue;
+        }
+
+        not_support = TRUE;
+    }
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode && clear_ing)
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_rif_info->ing_statsid), status, out);
+    }
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode && clear_egs)
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_rif_info->egs_statsid), status, out);
+    }
+
+    if ( TRUE == not_support)
+    {
+        status = SAI_STATUS_NOT_SUPPORTED ;
+    }
+
+
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+
+out:
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+}
+
+static sai_status_t
+ctc_sai_router_interface_clear_stats(sai_object_id_t router_interface_id, uint32_t number_of_counters,
+const sai_router_interface_stat_t *counter_ids)
+{
+    uint8 lchip = 0;
+    sai_status_t status = SAI_STATUS_SUCCESS;
+    ctc_sai_router_interface_t* p_rif_info = NULL;
+    uint32 index = 0;
+
+    CTC_SAI_LOG_ENTER(SAI_API_ROUTER_INTERFACE);
+
+    CTC_SAI_PTR_VALID_CHECK(counter_ids);
+
+    CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(router_interface_id, &lchip));
+    CTC_SAI_DB_LOCK(lchip);
+    p_rif_info = ctc_sai_db_get_object_property(lchip, router_interface_id);
+    if (NULL == p_rif_info)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "Failed to get route interface, invalid router_interface_id %d!\n", router_interface_id);
+        status = SAI_STATUS_ITEM_NOT_FOUND;
+        goto out;
+    }
+    for (index = 0; index < number_of_counters; index++)
+    {
+        if (SAI_ROUTER_INTERFACE_STAT_IN_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_IN_PACKETS == counter_ids[index] )
+        {
+            if (0 != p_rif_info->ing_statsid)
+            {
+                CTC_SAI_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_rif_info->ing_statsid), status, out);
+            }
+        }
+
+        if (SAI_ROUTER_INTERFACE_STAT_OUT_OCTETS == counter_ids[index] || SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS == counter_ids[index] )
+        {
+            if (0 != p_rif_info->egs_statsid)
+            {
+                CTC_SAI_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_rif_info->egs_statsid), status, out);
+            }
+        }
+    }
+
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+
+out:
+    CTC_SAI_DB_UNLOCK(lchip);
+    return status;
+}
+
 static sai_status_t
 ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_object_id_t switch_id,
                                                           uint32_t attr_count, const sai_attribute_t *attr_list)
@@ -834,6 +1041,8 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     uint16 agg_member_cnt = 0;
     uint8 is_1d_bridge = 0;/*for 1d bridge, create hw l3if by bridge port*/
     uint16 vlan_ptr = 0;
+    ctc_stats_statsid_t stats_statsid_in;
+    ctc_stats_statsid_t stats_statsid_eg;
 
     CTC_SAI_LOG_ENTER(SAI_API_ROUTER_INTERFACE);
     CTC_SAI_PTR_VALID_CHECK(router_interface_id);
@@ -843,6 +1052,8 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     CTC_SAI_DB_LOCK(lchip);
 
     sal_memset(&l3if, 0, sizeof(ctc_l3if_t));
+    sal_memset(&stats_statsid_in, 0, sizeof(stats_statsid_in));
+    sal_memset(&stats_statsid_eg, 0, sizeof(stats_statsid_eg));
     l3if.l3if_type = MAX_L3IF_TYPE_NUM;
     CTC_SAI_ERROR_GOTO(ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_TYPE, &attr_value, &index), status, out);
     if (SAI_ROUTER_INTERFACE_TYPE_VLAN == attr_value->s32)
@@ -887,6 +1098,47 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     {
         CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_create(lchip, l3if_id, &l3if), status, error2);
     }
+    stats_statsid_in.dir = CTC_INGRESS;
+    stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
+    status = ctcs_stats_create_statsid(lchip, &stats_statsid_in);
+    if (CTC_E_NONE != status)
+    {
+        stats_statsid_in.stats_id = 0;/*0 means invalid*/
+        p_rif_info->ing_statsid = 0;
+    }
+    else
+    {
+        status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_STATS, stats_statsid_in.stats_id);
+        if(CTC_E_NONE != status)
+        {
+            p_rif_info->ing_statsid = 0;
+        }
+        else
+        {
+            p_rif_info->ing_statsid = stats_statsid_in.stats_id;
+        }
+
+    }
+    stats_statsid_eg.dir = CTC_EGRESS;
+    stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
+    status = ctcs_stats_create_statsid(lchip, &stats_statsid_eg);
+    if (CTC_E_NONE != status)
+    {
+        stats_statsid_eg.stats_id = 0;/*0 means invalid*/
+    }
+    else
+    {
+        status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_EGS_STATS, stats_statsid_eg.stats_id);
+        if(CTC_E_NONE != status)
+        {
+            p_rif_info->egs_statsid = 0;
+        }
+        else
+        {
+            p_rif_info->egs_statsid = stats_statsid_eg.stats_id;
+        }
+    }
+
     if (CTC_L3IF_TYPE_PHY_IF == l3if.l3if_type)
     {
         if (CTC_IS_LINKAGG_PORT(l3if.gport))
@@ -1114,6 +1366,8 @@ ctc_sai_router_interface_remove_rif(sai_object_id_t router_interface_id)
         ctcs_l3if_destory(lchip, l3if_id, &l3if);
    }
    ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
+   ctcs_stats_destroy_statsid(lchip, p_rif_info->ing_statsid);
+   ctcs_stats_destroy_statsid(lchip, p_rif_info->egs_statsid);
    _ctc_sai_router_interface_remove_db(lchip, router_interface_id);
 
 out:
@@ -1171,7 +1425,10 @@ const sai_router_interface_api_t ctc_sai_router_interface_api = {
     ctc_sai_router_interface_create_rif,
     ctc_sai_router_interface_remove_rif,
     ctc_sai_router_interface_set_rif_attr,
-    ctc_sai_router_interface_get_rif_attr
+    ctc_sai_router_interface_get_rif_attr,
+    ctc_sai_router_interface_get_stats,
+    ctc_sai_router_interface_get_stats_ext,
+    ctc_sai_router_interface_clear_stats
 };
 
 sai_status_t

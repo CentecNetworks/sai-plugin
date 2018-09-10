@@ -106,6 +106,7 @@
 \t  |  SAI_ACL_ACTION_TYPE_EGRESS_BLOCK_PORT_LIST                |           -            |
 \t  |  SAI_ACL_ACTION_TYPE_SET_USER_TRAP_ID                      |           -            |
 \t  |  SAI_ACL_ACTION_TYPE_SET_DO_NOT_LEARN                      |           -            |
+\t  |  SAI_ACL_ACTION_TYPE_DTEL_TAIL_DROP_REPORT_ENABLE          |           -            |
 \b
 
 \p
@@ -311,6 +312,7 @@
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_DROP_REPORT_ENABLE         |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_FLOW_SAMPLE_PERCENT        |           -            |
 \t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_REPORT_ALL_PACKETS         |           -            |
+\t  |  SAI_ACL_ENTRY_ATTR_ACTION_DTEL_TAIL_DROP_REPORT_ENABLE    |           -            |
 \b
 
 \p

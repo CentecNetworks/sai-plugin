@@ -19,6 +19,9 @@ This module defines SAI Routing Interface.
 \t  |  remove_router_interface                            |    CTC8096,CTC7148     |
 \t  |  set_router_interface_attribute                     |    CTC8096,CTC7148     |
 \t  |  get_router_interface_attribute                     |    CTC8096,CTC7148     |
+\t  |  get_router_interface_stats                         |    CTC8096,CTC7148     |
+\t  |  get_router_interface_stats_ext                     |    CTC8096,CTC7148     |
+\t  |  clear_router_interface_stats                       |    CTC8096,CTC7148     |
 \b
 \p
  The Routing Interface attributes supported by centec devices:
@@ -85,6 +88,8 @@ typedef struct  ctc_sai_router_interface_s
    uint32 v4_mc_state:1;
    uint32 v6_mc_state:1;
    uint32 rsv:28;
+   uint32 ing_statsid;
+   uint32 egs_statsid;
 
 }ctc_sai_router_interface_t;
 

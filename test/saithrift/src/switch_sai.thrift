@@ -31,6 +31,7 @@ typedef byte sai_thrift_port_stp_port_state_t
 typedef i32 sai_thrift_hostif_trap_id_t
 typedef i32 sai_thrift_next_hop_type_t
 typedef i32 sai_thrift_vlan_stat_counter_t
+typedef i32 sai_thrift_router_interface_stat_counter_t
 typedef i32 sai_thrift_policer_stat_counter_t
 typedef i32 sai_thrift_port_stat_counter_t
 typedef i32 sai_thrift_queue_stat_counter_t
@@ -300,6 +301,9 @@ service switch_sai_rpc {
     sai_thrift_status_t sai_thrift_remove_router_interface(1: sai_thrift_object_id_t rif_id);
     sai_thrift_status_t sai_thrift_set_router_interface_attribute(1: sai_thrift_object_id_t rif_id, 2: sai_thrift_attribute_t thrift_attr);
     sai_thrift_attribute_list_t sai_thrift_get_router_interface_attribute(1: sai_thrift_object_id_t rif_id);
+    list<i64> sai_thrift_router_interface_get_stats(1: sai_thrift_object_id_t rif_id, 2: list<sai_thrift_router_interface_stat_counter_t> thrift_counter_ids, 3: i32 number_of_counters);
+    list<i64> sai_thrift_router_interface_get_stats_ext(1: sai_thrift_object_id_t rif_id, 2: list<sai_thrift_router_interface_stat_counter_t> thrift_counter_ids, 3: i8 mode, 4: i32 number_of_counters);
+    sai_thrift_status_t sai_thrift_router_interface_clear_stats(1: sai_thrift_object_id_t rif_id, 2: list<sai_thrift_router_interface_stat_counter_t> thrift_counter_ids, 3: i32 number_of_counters);
 
     //next hop API
     sai_thrift_object_id_t sai_thrift_create_next_hop(1: list<sai_thrift_attribute_t> thrift_attr_list);

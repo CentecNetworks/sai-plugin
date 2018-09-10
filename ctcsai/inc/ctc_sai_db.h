@@ -260,6 +260,7 @@ typedef enum ctc_sai_switch_flag_e
     CTC_SAI_SWITCH_FLAG_CRC_CHECK_EN            = 1U<<2,
     CTC_SAI_SWITCH_FLAG_HW_LEARNING_EN          = 1U<<3,
     CTC_SAI_SWITCH_FLAG_WARMBOOT_EN             = 1U<<4,
+    CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL  = 1U<<5,
     CTC_SAI_DB_FLAG_MAX
 }ctc_sai_switch_flag_t;
 

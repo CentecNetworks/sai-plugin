@@ -173,7 +173,7 @@ ctc_sai_vlan_get_info(sai_object_key_t *key, sai_attribute_t* attr, uint32 attr_
     uint32 capability[CTC_GLOBAL_CAPABILITY_MAX] ;
     uint32 port_num = 0;
     sai_object_id_t*vlan_members;
-    sai_status_t status;
+    sai_status_t status = 0;
     ctc_security_learn_limit_t learn_limit;
     uint8 stp_id = 0;
     bool is_enable = 0;
@@ -1432,7 +1432,7 @@ static sai_status_t ctc_sai_vlan_get_vlan_stats( sai_object_id_t        sai_vlan
         {
             sal_memset(&p_stats, 0, sizeof(p_stats));
             CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_dbvlan->stats_id_eg, p_stats), status, out);
-            if (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index])
+            if (SAI_VLAN_STAT_OUT_PACKETS == counter_ids[index])
             {
                 counters[index] = p_stats[0].packet_count;
             }
@@ -1473,6 +1473,8 @@ ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
     ctc_stats_basic_t p_stats[3];
     uint32 index = 0;
     uint32 not_support = 0;
+    uint8 clear_ing = 0;
+    uint8 clear_egs = 0;
 
 
     CTC_SAI_LOG_ENTER(SAI_API_VLAN);
@@ -1497,6 +1499,7 @@ ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
         {
             sal_memset(&p_stats, 0, sizeof(p_stats));
             CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_dbvlan->stats_id_in, p_stats), status, out);
+            clear_ing = 1;
             if (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index])
             {
                 counters[index] = p_stats[0].packet_count;
@@ -1504,10 +1507,6 @@ ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
             else
             {
                 counters[index] = p_stats[0].byte_count;
-            }
-            if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
-            {
-                CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_in), status, out);
             }
             continue;
         }
@@ -1516,6 +1515,7 @@ ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
         {
             sal_memset(&p_stats, 0, sizeof(p_stats));
             CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_get_stats(lchip, p_dbvlan->stats_id_eg, p_stats), status, out);
+            clear_egs = 1;
             if (SAI_VLAN_STAT_IN_PACKETS == counter_ids[index])
             {
                 counters[index] = p_stats[0].packet_count;
@@ -1524,14 +1524,18 @@ ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
             {
                 counters[index] = p_stats[0].byte_count;
             }
-            if (SAI_STATS_MODE_READ_AND_CLEAR == mode)
-            {
-                CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_eg), status, out);
-            }
             continue;
         }
 
         not_support = TRUE;
+    }
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode && clear_ing)
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_in), status, out);
+    }
+    if (SAI_STATS_MODE_READ_AND_CLEAR == mode && clear_egs)
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_stats_clear_stats(lchip, p_dbvlan->stats_id_eg), status, out);
     }
 
     if ( TRUE == not_support)

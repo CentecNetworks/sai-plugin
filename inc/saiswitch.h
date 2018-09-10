@@ -814,6 +814,7 @@ typedef enum _sai_switch_attr_t
      * Since warm restart can be caused by crash
      * (therefore there are no guarantees for this call),
      * this hint is really a performance optimization.
+     * This hint is set as part of the shutdown sequence, before boot.
      * TRUE - Warm Reboot
      * FALSE - Cold Reboot
      *
@@ -822,6 +823,21 @@ typedef enum _sai_switch_attr_t
      * @default false
      */
     SAI_SWITCH_ATTR_RESTART_WARM,
+
+    /**
+     * @brief Warm boot recovery
+     *
+     * Start warm boot recovery when set to true
+     * This hint is set after boot.
+     * In case of host adapter restart, host adapter can pass boot type in
+     * #SAI_KEY_BOOT_TYPE. In case of host adapter recovery, host adapter can
+     * pass a hint about the boot type and recovery, in this flag.
+     *
+     * @type bool
+     * @flags CREATE_AND_SET
+     * @default false
+     */
+    SAI_SWITCH_ATTR_WARM_RECOVER,
 
     /**
      * @brief Type of restart supported
@@ -1644,6 +1660,21 @@ typedef enum _sai_switch_attr_t
      * @flags READ_ONLY
      */
     SAI_SWITCH_ATTR_SUPPORTED_EXTENDED_STATS_MODE,
+
+    /**
+     * @brief Uninitialize data plane upon removal of switch object
+     *
+     * Typical use case for tear down of the host adapter, is to remove the switch ID,
+     * which will stop all data and control plane, as leaving data plane open without
+     * control can be a security risk.
+     * However, on some scenarios, such as fast boot, host adapter would like to set
+     * this value to false, call remove switch, and have the data plane still running.
+     *
+     * @type bool
+     * @flags CREATE_AND_SET
+     * @default true
+     */
+    SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL,
 
     /**
      * @brief End of attributes

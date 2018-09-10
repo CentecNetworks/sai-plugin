@@ -779,6 +779,7 @@ class McastIPMCIPv4SGFDBVlanINF3Test(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_ttl=63,
                                 dl_vlan_enable=True,
                                 vlan_vid=vlan_id)
+        warmboot(self.client)
         try:
             send_packet(self, 0, str(pkt))
             verify_each_packet_on_each_port(self, [exp_pkt1,exp_pkt2,exp_pkt2], [1,2,3])

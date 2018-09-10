@@ -691,6 +691,10 @@ static sai_status_t ctc_sai_port_get_basic_info(  sai_object_key_t   *key, sai_a
         }
         CTC_SAI_ERROR_RETURN(ctc_sai_fill_object_list(sizeof(sai_object_id_t), ports, index, &attr->value.objlist));
         break;
+    case SAI_PORT_ATTR_PKT_TX_ENABLE:
+        CTC_SAI_ATTR_ERROR_RETURN(ctcs_port_get_property(lchip, gport, CTC_PORT_PROP_TRANSMIT_EN, &value), attr_idx);
+        attr->value.booldata = (bool)value;
+        break;
     default:
         CTC_SAI_LOG_ERROR(SAI_API_PORT, "port attribute not implement\n");
         return  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0+attr_idx;
@@ -934,6 +938,9 @@ static sai_status_t ctc_sai_port_set_basic_info(  sai_object_key_t   *key, const
             CTC_BIT_SET(port_isolation.pbm[index_tmp1], index_tmp2);
         }
         CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_isolation(lchip, &port_isolation));
+        break;
+    case SAI_PORT_ATTR_PKT_TX_ENABLE:
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_property(lchip, gport, CTC_PORT_PROP_TRANSMIT_EN, attr->value.booldata?1:0));
         break;
     default:
         CTC_SAI_LOG_ERROR(SAI_API_PORT, "port attribute not implement\n");
@@ -1741,6 +1748,7 @@ static  ctc_sai_attr_fn_entry_t  port_attr_fn_entries[] =
     {SAI_PORT_ATTR_EEE_IDLE_TIME,                                  NULL,  NULL},
     {SAI_PORT_ATTR_EEE_WAKE_TIME,                                  NULL,  NULL},
     {SAI_PORT_ATTR_PORT_POOL_LIST,                                 NULL,  NULL},
+    {SAI_PORT_ATTR_PKT_TX_ENABLE,                                  ctc_sai_port_get_basic_info,  ctc_sai_port_set_basic_info},
     {CTC_SAI_FUNC_ATTR_END_ID,NULL,NULL}
 
 };
@@ -1925,10 +1933,15 @@ ctc_sai_port_create_port( sai_object_id_t     * port_id,
     }
     CTC_SAI_CTC_ERROR_GOTO(_ctc_sai_port_set_max_frame(lchip, gport, mtu_size), status, out);
 
-     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_PORT_ATTR_EEE_ENABLE, &attr_value, &attr_index);
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_PORT_ATTR_EEE_ENABLE, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS)
     {
         CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_property(lchip, gport, CTC_PORT_PROP_EEE_EN, (uint32)attr_value->booldata), status, out);
+    }
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_PORT_ATTR_PKT_TX_ENABLE, &attr_value, &attr_index);
+    if (status == SAI_STATUS_SUCCESS)
+    {
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_property(lchip, gport, CTC_PORT_PROP_TRANSMIT_EN, (uint32)attr_value->booldata), status, out);
     }
 
     //set policer

@@ -1203,5 +1203,89 @@ class L2LagSetGetDropTagAttrTest(sai_base_test.ThriftInterfaceDataPlane):
                                                     value=attr_value)
                 self.client.sai_thrift_set_hash_attribute(hash_id_lag, attr)
            
+class L2PortTransmitPropertyTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
 
+        print
+        print "start test"
+        switch_init(self.client)
+        vlan_id1 = 10
+        vlan_id2 = 20
+        vlan_id3 = 30
+        port1 = port_list[0]
+        port2 = port_list[1]
+        port3 = port_list[2]
+        
+        mac1 = '00:10:10:10:10:10'
+        mac2 = '00:20:20:20:20:20'
+        mac3 = '00:30:30:30:30:30'
+        mac4 = '00:40:40:40:40:40'
+        mac_action = SAI_PACKET_ACTION_FORWARD
+
+        vlan_oid1 = sai_thrift_create_vlan(self.client, vlan_id1)
+        vlan_oid2 = sai_thrift_create_vlan(self.client, vlan_id2)
+        vlan_oid3 = sai_thrift_create_vlan(self.client, vlan_id3)
+        vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port1, SAI_VLAN_TAGGING_MODE_UNTAGGED)
+        vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid2, port2, SAI_VLAN_TAGGING_MODE_UNTAGGED)
+        vlan_member3 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port3, SAI_VLAN_TAGGING_MODE_UNTAGGED)
+        vlan_member4 = sai_thrift_create_vlan_member(self.client, vlan_oid2, port3, SAI_VLAN_TAGGING_MODE_TAGGED)
+
+        attr_value = sai_thrift_attribute_value_t(u16=vlan_id1)
+        attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+        self.client.sai_thrift_set_port_attribute(port1, attr)
+
+        
+        attr_value = sai_thrift_attribute_value_t(u16=vlan_id2)
+        attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+        self.client.sai_thrift_set_port_attribute(port2, attr)
+	
+        attr_value = sai_thrift_attribute_value_t(u16=vlan_id3)
+        attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+        self.client.sai_thrift_set_port_attribute(port3, attr)
+
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac2, port3, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid2, mac4, port3, mac_action)
+                                
+        warmboot(self.client)
+        try:
+            list = self.client.sai_thrift_get_port_attribute(port1)
+            for each in list.attr_list:
+                if each.id == SAI_PORT_ATTR_PKT_TX_ENABLE:
+                    print "SAI_PORT_ATTR_PKT_TX_ENABLE: %s" % ("Ture" if each.value.booldata else "False")
+                    assert (each.value.booldata == True)
+            attr_value = sai_thrift_attribute_value_t(booldata=False)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PKT_TX_ENABLE, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            list = self.client.sai_thrift_get_port_attribute(port1)
+            for each in list.attr_list:
+                if each.id == SAI_PORT_ATTR_PKT_TX_ENABLE:
+                    print "SAI_PORT_ATTR_PKT_TX_ENABLE: %s" % ("Ture" if each.value.booldata else "False")
+                    assert (each.value.booldata == False)
+            attr_value = sai_thrift_attribute_value_t(booldata=True)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PKT_TX_ENABLE, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            list = self.client.sai_thrift_get_port_attribute(port1)
+            for each in list.attr_list:
+                if each.id == SAI_PORT_ATTR_PKT_TX_ENABLE:
+                    print "SAI_PORT_ATTR_PKT_TX_ENABLE: %s" % ("Ture" if each.value.booldata else "False")
+                    assert (each.value.booldata == True)
+        finally:
+            sai_thrift_delete_fdb(self.client, vlan_oid1, mac2, port3)
+            sai_thrift_delete_fdb(self.client, vlan_oid2, mac4, port3)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid1)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid2)
+
+            attr_value = sai_thrift_attribute_value_t(u16=1)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            self.client.sai_thrift_set_port_attribute(port2, attr)
+            self.client.sai_thrift_set_port_attribute(port3, attr)
+
+            self.client.sai_thrift_remove_vlan_member(vlan_member1)
+            self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan_member(vlan_member3)
+            self.client.sai_thrift_remove_vlan_member(vlan_member4)
+            self.client.sai_thrift_remove_vlan(vlan_oid1)
+            self.client.sai_thrift_remove_vlan(vlan_oid2)
+            self.client.sai_thrift_remove_vlan(vlan_oid3)
 

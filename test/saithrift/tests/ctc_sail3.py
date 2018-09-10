@@ -2952,12 +2952,104 @@ class L3StressRouteIPv6Test(sai_base_test.ThriftInterfaceDataPlane):
             self.client.sai_thrift_remove_router_interface(rif_id2)
             self.client.sai_thrift_remove_virtual_router(vr_id)
 
+class L3RouterInterfaceStatsTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
+        """
+        Router Interface Create test.
+        Steps:
+        1. create router interface with new route mac
+        2. set ip packet with the new route mac and check
+        3. clean up.
+        """
+        print ""
+        switch_init(self.client)
+        port1 = port_list[1]
+        port2 = port_list[2]
+        v4_enabled = 1
+        v6_enabled = 1
+        mac_valid = 0
+        mac = "aa:bb:cc:dd:ee:ff"
 
+        vr_id = sai_thrift_create_virtual_router(self.client, v4_enabled, v6_enabled)
 
+        rif_id1 = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port1, 0, v4_enabled, v6_enabled, mac)
+        rif_id2 = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port2, 0, v4_enabled, v6_enabled, mac)
 
+        addr_family = SAI_IP_ADDR_FAMILY_IPV4
+        ip_addr1 = '10.10.10.1'
+        ip_addr1_subnet = '10.10.10.0'
+        ip_mask1 = '255.255.255.0'
+        dmac1 = '00:11:22:33:44:55'
+        sai_thrift_create_neighbor(self.client, addr_family, rif_id1, ip_addr1, dmac1)
+        nhop1 = sai_thrift_create_nhop(self.client, addr_family, ip_addr1, rif_id1)
+        sai_thrift_create_route(self.client, vr_id, addr_family, ip_addr1_subnet, ip_mask1, rif_id1)
 
+        # send the test packet(s)
+        pkt = simple_tcp_packet(eth_dst=mac,
+                                eth_src='00:22:22:22:22:22',
+                                ip_dst='10.10.10.1',
+                                ip_src='192.168.0.1',
+                                ip_id=105,
+                                ip_ttl=64)
+        exp_pkt = simple_tcp_packet(
+                                eth_dst='00:11:22:33:44:55',
+                                eth_src=mac,
+                                ip_dst='10.10.10.1',
+                                ip_src='192.168.0.1',
+                                ip_id=105,
+                                ip_ttl=63)
+        warmboot(self.client)
+        try:
+            counter_ids = [SAI_ROUTER_INTERFACE_STAT_IN_OCTETS, SAI_ROUTER_INTERFACE_STAT_IN_PACKETS, SAI_ROUTER_INTERFACE_STAT_OUT_OCTETS, SAI_ROUTER_INTERFACE_STAT_OUT_PACKETS]
+            list1 = self.client.sai_thrift_router_interface_get_stats(rif_id1, counter_ids, 4)
+            assert (list1[0] == 0)
+            assert (list1[1] == 0)
+            assert (list1[2] == 0)
+            assert (list1[3] == 0)
+            list2 = self.client.sai_thrift_router_interface_get_stats(rif_id2, counter_ids, 4)
+            assert (list2[0] == 0)
+            assert (list2[1] == 0)
+            assert (list2[2] == 0)
+            assert (list2[3] == 0)
+            send_packet(self, 2, str(pkt))
+            verify_packet(self, exp_pkt, 1)
+            send_packet(self, 2, str(pkt))
+            verify_packet(self, exp_pkt, 1)
+            send_packet(self, 2, str(pkt))
+            verify_packet(self, exp_pkt, 1)
+            list1 = self.client.sai_thrift_router_interface_get_stats_ext(rif_id1, counter_ids, 0, 4)
+            assert (list1[0] == 0)
+            assert (list1[1] == 0)
+            assert (list1[2] == 312)
+            assert (list1[3] == 3)
+            list2 = self.client.sai_thrift_router_interface_get_stats_ext(rif_id2, counter_ids, 0, 4)
+            assert (list2[0] == 312)
+            assert (list2[1] == 3)
+            assert (list2[2] == 0)
+            assert (list2[3] == 0)
+            self.client.sai_thrift_router_interface_clear_stats(rif_id1, counter_ids, 4)
+            self.client.sai_thrift_router_interface_clear_stats(rif_id2, counter_ids, 4)
+            send_packet(self, 2, str(pkt))
+            verify_packet(self, exp_pkt, 1)
+            list1 = self.client.sai_thrift_router_interface_get_stats_ext(rif_id1, counter_ids, 0, 4)
+            assert (list1[0] == 0)
+            assert (list1[1] == 0)
+            assert (list1[2] == 104)
+            assert (list1[3] == 1)
+            list2 = self.client.sai_thrift_router_interface_get_stats_ext(rif_id2, counter_ids, 0, 4)
+            assert (list2[0] == 104)
+            assert (list2[1] == 1)
+            assert (list2[2] == 0)
+            assert (list2[3] == 0)
+        finally:
+            sai_thrift_remove_route(self.client, vr_id, addr_family, ip_addr1_subnet, ip_mask1, rif_id1)
+            self.client.sai_thrift_remove_next_hop(nhop1)
+            sai_thrift_remove_neighbor(self.client, addr_family, rif_id1, ip_addr1, dmac1)
 
+            self.client.sai_thrift_remove_router_interface(rif_id1)
+            self.client.sai_thrift_remove_router_interface(rif_id2)
 
+            self.client.sai_thrift_remove_virtual_router(vr_id)
 
 
 

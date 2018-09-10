@@ -3861,6 +3861,10 @@ _ctc_sai_hostif_packet_receive_from_kernel(void *data)
     while (TRUE)
     {
         nfds = epoll_wait(p_switch_master->epoll_sock, events, 2048, 1);
+        if (-1 == nfds)
+        {
+            continue;
+        }
         for (idx = 0; idx < nfds; ++idx)
         {
             if (events[idx].events & EPOLLIN)

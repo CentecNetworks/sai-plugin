@@ -164,6 +164,7 @@ class LocalMirrorSetTest(sai_base_test.ThriftInterfaceDataPlane):
         mirror_type = SAI_MIRROR_SESSION_TYPE_LOCAL
         monitor_port = port3
         truncate_size = 100 
+        sample_rate = 7 
         print "Create mirror session: mirror_type = SAI_MIRROR_TYPE_LOCAL, monitor_port = ptf_intf 3 "
         ingress_localmirror_id = sai_thrift_create_mirror_session(self.client,
             mirror_type,
@@ -173,7 +174,7 @@ class LocalMirrorSetTest(sai_base_test.ThriftInterfaceDataPlane):
             None, None, None,
             None, None, None,
             None)
-        print "ingress_localmirror_id = %d" %ingress_localmirror_id
+        print "ingress_localmirror_id = 0x%lx" %ingress_localmirror_id
         
         warmboot(self.client)
         try:
@@ -188,8 +189,8 @@ class LocalMirrorSetTest(sai_base_test.ThriftInterfaceDataPlane):
                     if mirror_type != a.value.s32:
                         raise NotImplementedError()
                 if a.id == SAI_MIRROR_SESSION_ATTR_MONITOR_PORT: 
-                    print "create monitor_port = %d" %monitor_port
-                    print "get monitor_port = %d" %a.value.oid
+                    print "create monitor_port = 0x%lx" %monitor_port
+                    print "get monitor_port = 0x%lx" %a.value.oid
                     if monitor_port != a.value.oid:
                         raise NotImplementedError()
             print "Set mirror session: monitor_port = 2"
@@ -204,6 +205,12 @@ class LocalMirrorSetTest(sai_base_test.ThriftInterfaceDataPlane):
             status=self.client.sai_thrift_set_mirror_attribute(ingress_localmirror_id, attr)
             print "status = %d" %status
             assert (status == SAI_STATUS_SUCCESS)
+            print "Set mirror session: sample_rate = 1/8"
+            attr_value = sai_thrift_attribute_value_t(u32=sample_rate)
+            attr = sai_thrift_attribute_t(id=SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE, value=attr_value)
+            status=self.client.sai_thrift_set_mirror_attribute(ingress_localmirror_id, attr)
+            print "status = %d" %status
+            assert (status == SAI_STATUS_SUCCESS)
             print "Get mirror session attribute: mirror_type = SAI_MIRROR_TYPE_LOCAL, monitor_port = ptf_intf 2, truncate_size = 100"
             attrs = self.client.sai_thrift_get_mirror_attribute(ingress_localmirror_id)
             print "status = %d" %attrs.status
@@ -215,14 +222,19 @@ class LocalMirrorSetTest(sai_base_test.ThriftInterfaceDataPlane):
                     if mirror_type != a.value.s32:
                         raise NotImplementedError()
                 if a.id == SAI_MIRROR_SESSION_ATTR_MONITOR_PORT: 
-                    print "set monitor_port = %d" %port2
-                    print "get monitor_port = %d" %a.value.oid
+                    print "set monitor_port = 0x%lx" %port2
+                    print "get monitor_port = 0x%lx" %a.value.oid
                     if port2 != a.value.oid:
                         raise NotImplementedError()
                 if a.id == SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE: 
                     print "set truncate_size = %d" %truncate_size
                     print "get truncate_size = %d" %a.value.u16
                     if truncate_size != a.value.u16:
+                        raise NotImplementedError()
+                if a.id == SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE: 
+                    print "set sample_rate = %d" %sample_rate
+                    print "get sample_rate = %d" %a.value.u32
+                    if sample_rate != a.value.u32:
                         raise NotImplementedError()
         finally:
             self.client.sai_thrift_remove_mirror_session(ingress_localmirror_id)
@@ -450,10 +462,6 @@ class ERspanMirrorCreateTest(sai_base_test.ThriftInterfaceDataPlane):
         """
         print ""
         switch_init(self.client)
-        
-        dump_status = self.client.sai_thrift_dump_log("ERspanMirrorCreateTest_before.txt")
-        print "dump_status = %d" %dump_status
-        assert (dump_status == SAI_STATUS_SUCCESS)
     
         port1 = port_list[1]
         port2 = port_list[2]
@@ -486,10 +494,6 @@ class ERspanMirrorCreateTest(sai_base_test.ThriftInterfaceDataPlane):
             src_mac=src_mac,dst_mac=dst_mac,src_ip=src_ip,dst_ip=dst_ip,encap_type=encap_type,iphdr_version=ip_version,ttl=ttl,tos=tos,gre_type=gre_type)
         print "ingress_enhanced_remotemirror_id = %d" %ingress_enhanced_remotemirror_id      
         
-        dump_status = self.client.sai_thrift_dump_log("ERspanMirrorCreateTest_create_later.txt")
-        print "dump_status = %d" %dump_status
-        assert (dump_status == SAI_STATUS_SUCCESS)
-        
         warmboot(self.client)
         try:
             print "Set mirror session: truncate_size = %d" %truncate_size
@@ -502,10 +506,6 @@ class ERspanMirrorCreateTest(sai_base_test.ThriftInterfaceDataPlane):
             attrs = self.client.sai_thrift_get_mirror_attribute(ingress_enhanced_remotemirror_id)
             print "status = %d" %attrs.status
             assert (attrs.status == SAI_STATUS_SUCCESS)
-            
-            dump_status = self.client.sai_thrift_dump_log("ERspanMirrorCreateTest_set_later.txt")
-            print "dump_status = %d" %dump_status
-            assert (dump_status == SAI_STATUS_SUCCESS)
         
             for a in attrs.attr_list:
                 if a.id == SAI_MIRROR_SESSION_ATTR_TYPE:
@@ -568,17 +568,10 @@ class ERspanMirrorCreateTest(sai_base_test.ThriftInterfaceDataPlane):
                     print "get gre_type = %d" %a.value.u16
                     if gre_type != a.value.u16:
                         raise NotImplementedError()
-                        
-                dump_status = self.client.sai_thrift_dump_log("ERspanMirrorCreateTest_get_later.txt")
-                print "dump_status = %d" %dump_status
-                assert (dump_status == SAI_STATUS_SUCCESS)
         
         finally:
             self.client.sai_thrift_remove_mirror_session(ingress_enhanced_remotemirror_id)    
-
-            dump_status = self.client.sai_thrift_dump_log("ERspanMirrorCreateTest_clear_later.txt")
-            print "dump_status = %d" %dump_status
-            assert (dump_status == SAI_STATUS_SUCCESS)            
+          
 
 class ERspanMirrorRemoveTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
@@ -875,14 +868,15 @@ class IngressLocalMirrorSetTestPkt(sai_base_test.ThriftInterfaceDataPlane):
             None, None, None,
             None, None, None,
             None)
-        print "ingress_localmirror_id = %d" %ingress_localmirror_id
+        print "ingress_localmirror_id = 0x%lx" %ingress_localmirror_id
 
         attr_value = sai_thrift_attribute_value_t(objlist=sai_thrift_object_list_t(count=1,object_id_list=[ingress_localmirror_id]))
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_MIRROR_SESSION, value=attr_value)
         self.client.sai_thrift_set_port_attribute(port1, attr)
         self.client.sai_thrift_set_port_attribute(port2, attr)
-
+        
         warmboot(self.client)
+        
         try:
             assert ingress_localmirror_id > 0, 'ingress_localmirror_id is <= 0'
 
@@ -930,7 +924,7 @@ class IngressLocalMirrorSetTestPkt(sai_base_test.ThriftInterfaceDataPlane):
             verify_each_packet_on_each_port(self, [exp_pkt2, pkt2], [1, 3])
             
             ##Get Set Get
-            print "Get mirror session attribute: mirror_type = SAI_MIRROR_TYPE_LOCAL, monitor_port = %d" %monitor_port
+            print "Get mirror session attribute: mirror_type = SAI_MIRROR_TYPE_LOCAL, monitor_port = 0x%lx" %monitor_port
             attrs = self.client.sai_thrift_get_mirror_attribute(ingress_localmirror_id)
             print "status = %d" %attrs.status
             assert (attrs.status == SAI_STATUS_SUCCESS)
@@ -1079,7 +1073,6 @@ class ERspan_novlan_monitor_SetTestPkt(sai_base_test.ThriftInterfaceDataPlane):
 
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_MIRROR_SESSION, value=attrb_value)
         self.client.sai_thrift_set_port_attribute(port2, attr)
-
 
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_EGRESS_MIRROR_SESSION, value=attrb_value)
         self.client.sai_thrift_set_port_attribute(port2, attr)
@@ -1646,6 +1639,7 @@ class FlowMirrorTest(sai_base_test.ThriftInterfaceDataPlane):
             sai_thrift_delete_fdb(self.client, vlan_oid, mac_dst, port2)
             
             self.client.sai_thrift_remove_vlan(vlan_oid)
+
 @group('mirror')           
 class IngressLocalMirror1to2Test(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
@@ -1878,8 +1872,9 @@ class IngressLocalMirror1to2SetTest(sai_base_test.ThriftInterfaceDataPlane):
         attr_value = sai_thrift_attribute_value_t(objlist=sai_thrift_object_list_t(count=3,object_id_list=[ingress_localmirror_id1,ingress_localmirror_id2,ingress_localmirror_id3]))
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_MIRROR_SESSION, value=attr_value)
         self.client.sai_thrift_set_port_attribute(port1, attr)
-
+        
         warmboot(self.client)
+        
         try:
             assert ingress_localmirror_id1 > 0, 'ingress_localmirror_id1 is <= 0'
             assert ingress_localmirror_id2 > 0, 'ingress_localmirror_id2 is <= 0'
@@ -1980,4 +1975,193 @@ class IngressLocalMirror1to2SetTest(sai_base_test.ThriftInterfaceDataPlane):
             
             self.client.sai_thrift_remove_vlan_member(vlan_member1)
             self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan(vlan_oid)
+
+            
+@group('mirror')
+class FlowMirrorSampleRateTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
+        print
+        print '----------------------------------------------------------------------------------------------'
+        print "Sending packet ptf_intf 2 -> ptf_intf 1 (192.168.0.1 ---> 10.10.10.1 [id = 105])"
+
+        switch_init(self.client)
+        port1 = port_list[0]
+        port2 = port_list[1]
+        port3 = port_list[2]
+        
+        mac_src = '00:11:11:11:11:11'
+        mac_dst = '00:22:22:22:22:22'
+        mac_action = SAI_PACKET_ACTION_FORWARD
+
+        # the relationship between vlan id and vlan_oid
+        vlan_id = 20
+        vlan_oid = sai_thrift_create_vlan(self.client, vlan_id)
+
+        sai_thrift_create_fdb(self.client, vlan_oid, mac_dst, port2, mac_action)
+        
+        # setup local mirror session
+        mirror_type = SAI_MIRROR_SESSION_TYPE_LOCAL
+        monitor_port = port3
+        print "Create mirror session: mirror_type = SAI_MIRROR_TYPE_LOCAL, monitor_port = ptf_intf 3 "
+        ingress_localmirror_id = sai_thrift_create_mirror_session(self.client,
+            mirror_type,
+            monitor_port,
+            None, None, None,
+            None, None, None,
+            None, None, None,
+            None, None, None,
+            None)
+        print "ingress_localmirror_id = 0x%lx" %ingress_localmirror_id
+        
+        # send the test packet(s)
+        pkt = simple_qinq_tcp_packet(pktlen=100,
+            eth_dst=mac_dst,
+            eth_src=mac_src,
+            dl_vlan_outer=20,
+            dl_vlan_pcp_outer=4,
+            dl_vlan_cfi_outer=1,
+            vlan_vid=10,
+            vlan_pcp=2,
+            dl_vlan_cfi=1,
+            ip_dst='10.10.10.1',
+            ip_src='192.168.0.1',
+            ip_tos=5,
+            ip_ecn=1,
+            ip_dscp=1,
+            ip_ttl=64,
+            tcp_sport=1234,
+            tcp_dport=80)
+            
+        print "Sending packet ptf_intf 2 -[acl]-> ptf_intf 1 (192.168.0.1 -[acl]-> 10.10.10.1 [id = 105])"
+        # setup ACL to block based on Source IP
+        table_stage = SAI_ACL_STAGE_INGRESS
+        table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_VLAN]
+        entry_priority = SAI_SWITCH_ATTR_ACL_ENTRY_MINIMUM_PRIORITY
+        action = SAI_PACKET_ACTION_FORWARD
+        in_ports = [port1, port2]
+        mac_src_mask = "ff:ff:ff:ff:ff:ff"
+        mac_dst_mask = "ff:ff:ff:ff:ff:ff"
+        svlan_id=None
+        svlan_pri=4
+        svlan_cfi=1
+        cvlan_id=10
+        cvlan_pri=2
+        cvlan_cfi=None
+        ip_src = "192.168.0.1"
+        ip_src_mask = "255.255.255.255"
+        ip_dst = '10.10.10.1'
+        ip_dst_mask = "255.255.255.255"
+        is_ipv6 = False
+        ip_tos=5
+        ip_ecn=1
+        ip_dscp=1
+        ip_ttl=None
+        ip_proto = None
+        in_port = None
+        out_port = None
+        out_ports = None
+        src_l4_port = 1234
+        dst_l4_port = 80
+        ingress_mirror_id_list=[ingress_localmirror_id]
+        egress_mirror_id = None
+        admin_state = True
+        #add vlan edit action
+        new_svlan = None
+        new_scos = None
+        new_cvlan = None
+        new_ccos = None
+        #deny learning
+        deny_learn = None
+        addr_family = None
+
+        acl_table_id = sai_thrift_create_acl_table(self.client,
+            table_stage,
+            table_bind_point_list,
+            addr_family,
+            mac_src,
+            mac_dst,
+            ip_src,
+            ip_dst,
+            ip_proto,
+            in_ports,
+            out_ports,
+            in_port,
+            out_port,
+            src_l4_port,
+            dst_l4_port)
+        acl_entry_id = sai_thrift_create_acl_entry(self.client,
+            acl_table_id,
+            entry_priority,
+            admin_state,
+            action, addr_family,
+            mac_src, mac_src_mask,
+            mac_dst, mac_dst_mask,
+            svlan_id, svlan_pri,
+            svlan_cfi, cvlan_id,
+            cvlan_pri, cvlan_cfi,
+            ip_src, ip_src_mask,
+            ip_dst, ip_dst_mask,
+            is_ipv6,
+            ip_tos, ip_ecn,
+            ip_dscp, ip_ttl,
+            ip_proto,
+            in_ports, out_ports,
+            in_port, out_port,
+            src_l4_port, dst_l4_port,
+            ingress_mirror_id_list,
+            egress_mirror_id,
+            new_svlan, new_scos,
+            new_cvlan, new_ccos,
+            deny_learn)
+
+        # bind this ACL table to port2s object id
+        attr_value = sai_thrift_attribute_value_t(oid=acl_table_id)
+        attr = sai_thrift_attribute_t(id=SAI_VLAN_ATTR_INGRESS_ACL, value=attr_value)
+        self.client.sai_thrift_set_vlan_attribute(vlan_oid, attr)
+        self.client.sai_thrift_clear_cpu_packet_info()
+        warmboot(self.client)
+
+        try:
+            count = [0, 0]
+            assert acl_table_id > 0, 'acl_entry_id is <= 0'
+            assert acl_entry_id > 0, 'acl_entry_id is <= 0'
+            print '#### ACL \'DROP, src 192.168.0.1/255.255.255.0, in_ports[ptf_intf_1,2]\' Applied ####'
+            print '#### Sending      ', router_mac, '| 00:22:22:22:22:22 | 10.10.10.1 | 192.168.0.1 | @ ptf_intf 2'
+            
+            #send_packet(self, 0, str(pkt))
+            #time.sleep(1)
+            #verify_packets(self, pkt, [1])
+
+            print "Set mirror session: sample_rate = 1/8"
+            sample_rate = 1
+            attr_value = sai_thrift_attribute_value_t(u32=sample_rate)
+            attr = sai_thrift_attribute_t(id=SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE, value=attr_value)
+            status=self.client.sai_thrift_set_mirror_attribute(ingress_localmirror_id, attr)
+            print "status = %d" %status
+            assert (status == SAI_STATUS_SUCCESS)
+            
+            #send_packet(self, 0, str(pkt), 1) 
+            send_packet(self, 0, str(pkt))
+            time.sleep(1)
+            rev_pkt_cnt = count_matched_packets(self, pkt, 2)
+            print"*********************** rev_pkt_cnt:%d" %rev_pkt_cnt
+            print"count:####################################"
+            print"mirror rate 1/8(160 pkt):####################################"
+            
+        finally:
+            print "sucess, just for cleanup config"
+            # unbind this ACL table from vlan object id
+            attr_value = sai_thrift_attribute_value_t(oid=SAI_NULL_OBJECT_ID)
+            attr = sai_thrift_attribute_t(id=SAI_VLAN_ATTR_INGRESS_ACL, value=attr_value)
+            self.client.sai_thrift_set_vlan_attribute(vlan_oid, attr)
+            
+            # cleanup ACL
+            self.client.sai_thrift_remove_acl_entry(acl_entry_id)
+            self.client.sai_thrift_remove_acl_table(acl_table_id)
+            # remove ingress_localmirror_id
+            self.client.sai_thrift_remove_mirror_session(ingress_localmirror_id)
+            # cleanup FDB
+            sai_thrift_delete_fdb(self.client, vlan_oid, mac_dst, port2)
+            
             self.client.sai_thrift_remove_vlan(vlan_oid)

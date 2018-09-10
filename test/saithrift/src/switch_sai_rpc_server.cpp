@@ -356,6 +356,7 @@ public:
           switch (attribute.id) {
               case SAI_PORT_ATTR_ADMIN_STATE:
               case SAI_PORT_ATTR_UPDATE_DSCP:
+			  case SAI_PORT_ATTR_PKT_TX_ENABLE:
                   attr_list[i].value.booldata = attribute.value.booldata;
                   break;
               case SAI_PORT_ATTR_PORT_VLAN_ID:
@@ -1889,6 +1890,112 @@ void sai_thrift_get_vlan_attribute(sai_thrift_attribute_list_t& thrift_attr_list
 
   }
 
+  void sai_thrift_router_interface_get_stats(std::vector<int64_t> &thrift_counters,
+  	const sai_thrift_object_id_t rif_id,
+  	const std::vector<sai_thrift_router_interface_stat_counter_t> &thrift_counter_ids,
+  	int32_t number_of_counters)
+  	{
+		printf("sai_thrift_get_router_interface_stats\n");
+        sai_status_t status = SAI_STATUS_SUCCESS;
+        sai_router_interface_api_t *rif_api;
+        status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **) &rif_api);
+
+        if (status != SAI_STATUS_SUCCESS) { return; }
+
+        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
+        uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
+		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+		memset(counters, 0, sizeof(uint64_t) * thrift_counter_ids.size());
+
+        for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++)
+        {
+        	counter_ids[i] = (sai_router_interface_stat_t) *it;
+		}
+
+        status = rif_api->get_router_interface_stats(rif_id,
+                                          number_of_counters,
+                                          counter_ids,
+                                          counters);
+
+        for (uint32_t i = 0; i < thrift_counter_ids.size(); i++) { thrift_counters.push_back(counters[i]); }
+
+        free(counter_ids);
+        free(counters);
+
+        return;
+  	}
+
+  void sai_thrift_router_interface_get_stats_ext(std::vector<int64_t> &thrift_counters,
+  	const sai_thrift_object_id_t rif_id,
+  	const std::vector<sai_thrift_router_interface_stat_counter_t> &thrift_counter_ids,
+  	int8_t mode,
+  	int32_t number_of_counters)
+  	{
+		printf("sai_thrift_router_interface_get_stats_ext\n");
+        sai_status_t status = SAI_STATUS_SUCCESS;
+        sai_router_interface_api_t *rif_api;
+        status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **) &rif_api);
+
+        if (status != SAI_STATUS_SUCCESS) { return; }
+
+        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
+        uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
+		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+		memset(counters, 0, sizeof(uint64_t) * thrift_counter_ids.size());
+
+        for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++)
+        {
+        	counter_ids[i] = (sai_router_interface_stat_t) *it;
+		}
+
+        status = rif_api->get_router_interface_stats_ext(rif_id,
+                                          number_of_counters,
+                                          counter_ids,
+                                          (sai_stats_mode_t)mode,
+                                          counters);
+
+        for (uint32_t i = 0; i < thrift_counter_ids.size(); i++) { thrift_counters.push_back(counters[i]); }
+
+        free(counter_ids);
+        free(counters);
+
+        return;
+  	}
+
+  sai_thrift_status_t sai_thrift_router_interface_clear_stats(const sai_thrift_object_id_t rif_id,
+  	const std::vector<sai_thrift_router_interface_stat_counter_t> &thrift_counter_ids,
+  	int32_t number_of_counters)
+  	{
+  		printf("sai_thrift_router_interface_clear_stats\n");
+        sai_status_t status = SAI_STATUS_SUCCESS;
+        sai_router_interface_api_t *rif_api;
+        status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **) &rif_api);
+
+        if (status != SAI_STATUS_SUCCESS) { return status; }
+
+        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
+        uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
+		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+		memset(counters, 0, sizeof(uint64_t) * thrift_counter_ids.size());
+
+        for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++)
+        {
+        	counter_ids[i] = (sai_router_interface_stat_t) *it;
+		}
+
+        status = rif_api->clear_router_interface_stats(rif_id,
+                                          number_of_counters,
+                                          counter_ids);
+
+        free(counter_ids);
+        free(counters);
+
+        return status;
+  	}
+
   sai_thrift_object_id_t sai_thrift_create_next_hop(const std::vector<sai_thrift_attribute_t> & thrift_attr_list) {
       printf("sai_thrift_create_next_hop\n");
       sai_status_t status = SAI_STATUS_SUCCESS;
@@ -2703,6 +2810,7 @@ void sai_thrift_get_neighbor_entry_attribute(sai_thrift_attribute_list_t& thrift
                       case SAI_SWITCH_ATTR_SWITCH_SHELL_ENABLE:
                       case SAI_SWITCH_ATTR_INIT_SWITCH:
                       case SAI_SWITCH_ATTR_FAST_API_ENABLE:
+					  case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
                           thrift_attr.id        = attribute.id;
                           thrift_attr.value.booldata = attribute.value.booldata;
                           thrift_attr_list.attr_list.push_back(thrift_attr);
@@ -2822,8 +2930,11 @@ void sai_thrift_get_neighbor_entry_attribute(sai_thrift_attribute_list_t& thrift
         sai_status_t status = SAI_STATUS_SUCCESS;
         sai_switch_api_t *switch_api;
         sai_attribute_t max_port_attribute;
+		sai_attribute_t sai_attribute;
         uint32_t max_ports = 0;
 
+		memset(&max_port_attribute, 0, sizeof(sai_attribute_t));
+		memset(&sai_attribute, 0, sizeof(sai_attribute_t));
         status = sai_api_query(SAI_API_SWITCH, (void **) &switch_api);
         if (status != SAI_STATUS_SUCCESS)
         {
@@ -2884,6 +2995,11 @@ void sai_thrift_get_neighbor_entry_attribute(sai_thrift_attribute_list_t& thrift
               break;
           case SAI_SWITCH_ATTR_SRC_MAC_ADDRESS:/* sai_mac_t */
               break;
+		  case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
+              sai_attribute.id = SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL;
+              switch_api->get_switch_attribute(gSwitchId, 1, &sai_attribute);
+              attr_list[i].value.booldata = sai_attribute.value.booldata;
+              break;
           default:
               break;
           }
@@ -2941,6 +3057,7 @@ void sai_thrift_get_neighbor_entry_attribute(sai_thrift_attribute_list_t& thrift
       sai_status_t status = SAI_STATUS_SUCCESS;
       sai_switch_api_t *switch_api;
       sai_attribute_t attr;
+	  memset(&attr, 0, sizeof(sai_attribute_t));
       status = sai_api_query(SAI_API_SWITCH, (void **) &switch_api);
       if (status != SAI_STATUS_SUCCESS) {
           printf("sai_api_query failed!!!\n");
@@ -2987,6 +3104,7 @@ void sai_thrift_get_neighbor_entry_attribute(sai_thrift_attribute_list_t& thrift
               attr->value.oid = thrift_attr.value.oid;
               break;
           case SAI_SWITCH_ATTR_RESTART_WARM:
+		  case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
               attr->value.booldata = thrift_attr.value.booldata;
               break;
       }
@@ -5564,6 +5682,9 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
               case SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE:
                   attr_list[i].value.u16 = attribute.value.u16;
                   break;
+              case SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE:
+                  attr_list[i].value.u32 = attribute.value.u32;
+                  break;
               case SAI_MIRROR_SESSION_ATTR_TC:
                   attr_list[i].value.u8 = attribute.value.u8;
                   break;
@@ -5696,7 +5817,7 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       {
           return;
       }
-      /* SAI_MIRROR_SESSION_ATTR_TC NOT SUPPORT */
+      /* SAI_MIRROR_SESSION_ATTR_TC NOT SUPPORT, trunk:sai1.3 SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE new add */
       for (attribute_i = SAI_MIRROR_SESSION_ATTR_START; attribute_i < SAI_MIRROR_SESSION_ATTR_END; attribute_i++)
       {
           if (SAI_MIRROR_SESSION_ATTR_TC == attribute_i)
@@ -5727,15 +5848,16 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[3].id;
-      thrift_attr.value.u16 = sai_attrs[3].value.u16;
-      thrift_attr_list.attr_list.push_back(thrift_attr);
+      thrift_attr.value.u32 = sai_attrs[3].value.u32;
+      thrift_attr_list.attr_list.push_back(thrift_attr);  /* trunk:sai1.3 SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE new add */
+
 
       thrift_attr.id        = sai_attrs[4].id;
       thrift_attr.value.u16 = sai_attrs[4].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[5].id;
-      thrift_attr.value.u8 = sai_attrs[5].value.u8;
+      thrift_attr.value.u16 = sai_attrs[5].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[6].id;
@@ -5743,15 +5865,15 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[7].id;
-      thrift_attr.value.booldata = sai_attrs[7].value.booldata;
+      thrift_attr.value.u8 = sai_attrs[7].value.u8;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[8].id;
-      thrift_attr.value.s32 = sai_attrs[8].value.s32;
+      thrift_attr.value.booldata = sai_attrs[8].value.booldata;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[9].id;
-      thrift_attr.value.u8 = sai_attrs[9].value.u8;
+      thrift_attr.value.s32 = sai_attrs[9].value.s32;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[10].id;
@@ -5763,15 +5885,7 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[12].id;
-      thrift_attr.value.ipaddr.addr_family = sai_attrs[12].value.ipaddr.addr_family;
-      if (SAI_IP_ADDR_FAMILY_IPV4 == thrift_attr.value.ipaddr.addr_family)
-      {
-          thrift_attr.value.ipaddr.addr.ip4 = sai_thrift_v4_ip_to_string(sai_attrs[12].value.ipaddr.addr.ip4);
-      }
-      else
-      {
-
-      }
+      thrift_attr.value.u8 = sai_attrs[12].value.u8;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[13].id;
@@ -5787,7 +5901,15 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[14].id;
-      thrift_attr.value.mac = sai_thrift_mac_to_string(sai_attrs[14].value.mac);
+      thrift_attr.value.ipaddr.addr_family = sai_attrs[14].value.ipaddr.addr_family;
+      if (SAI_IP_ADDR_FAMILY_IPV4 == thrift_attr.value.ipaddr.addr_family)
+      {
+          thrift_attr.value.ipaddr.addr.ip4 = sai_thrift_v4_ip_to_string(sai_attrs[14].value.ipaddr.addr.ip4);
+      }
+      else
+      {
+
+      }
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[15].id;
@@ -5795,7 +5917,11 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[16].id;
-      thrift_attr.value.u16 = sai_attrs[16].value.u16;
+      thrift_attr.value.mac = sai_thrift_mac_to_string(sai_attrs[16].value.mac);
+      thrift_attr_list.attr_list.push_back(thrift_attr);
+
+      thrift_attr.id        = sai_attrs[17].id;
+      thrift_attr.value.u16 = sai_attrs[17].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
   }
 
@@ -6707,6 +6833,15 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       thrift_mtu_status.id = SAI_PORT_ATTR_MTU;
       thrift_mtu_status.value.u32 =  port_mtu_attribute.value.u32;
       attr_list.push_back(thrift_mtu_status);
+
+	  sai_attribute_t port_tx_enable;
+      sai_thrift_attribute_t thrift_port_tx_enable;
+      port_tx_enable.id = SAI_PORT_ATTR_PKT_TX_ENABLE;
+      port_api->get_port_attribute(port_id, 1, &port_tx_enable);
+
+      thrift_port_tx_enable.id = SAI_PORT_ATTR_PKT_TX_ENABLE;
+      thrift_port_tx_enable.value.booldata =  port_tx_enable.value.booldata;
+      attr_list.push_back(thrift_port_tx_enable);
   }
 
   void sai_thrift_get_queue_stats(std::vector<int64_t> & thrift_counters,

@@ -23,7 +23,7 @@ from ptf.mask import Mask
 class TunnelCreateTunnelMapEntryTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
         """
-        Bridge Create and Remove test. Verify 1D Bridge.
+        Bridge Create and Remove test. Verify 1D Bridge. 
         Steps:
         1. create 1D Bridge
         2. Test Bridge
@@ -40,7 +40,7 @@ class TunnelCreateTunnelMapEntryTest(sai_base_test.ThriftInterfaceDataPlane):
         tunnel_map_encap_type = SAI_TUNNEL_MAP_TYPE_VLAN_ID_TO_VNI
         vlan_id = 20
         vni_id = 1000
-
+        
         vlan_oid = sai_thrift_create_vlan(self.client, vlan_id)
         vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid, port1, SAI_VLAN_TAGGING_MODE_UNTAGGED)
         vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid, port2, SAI_VLAN_TAGGING_MODE_UNTAGGED)
@@ -48,7 +48,7 @@ class TunnelCreateTunnelMapEntryTest(sai_base_test.ThriftInterfaceDataPlane):
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_entry_decap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_decap_type, tunnel_map_decap_id, vni_id, vlan_id)
-
+         
         warmboot(self.client)
         try:
             attrs = self.client.sai_thrift_get_tunnel_map_entry_attribute(tunnel_map_entry_decap_id)
@@ -89,7 +89,7 @@ class TunnelCreateTunnelMapTest(sai_base_test.ThriftInterfaceDataPlane):
         tunnel_map_encap_type = SAI_TUNNEL_MAP_TYPE_VLAN_ID_TO_VNI
         vlan_id = 20
         vni_id = 1000
-
+        
         vlan_oid = sai_thrift_create_vlan(self.client, vlan_id)
         vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid, port1, SAI_VLAN_TAGGING_MODE_UNTAGGED)
         vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid, port2, SAI_VLAN_TAGGING_MODE_UNTAGGED)
@@ -97,7 +97,7 @@ class TunnelCreateTunnelMapTest(sai_base_test.ThriftInterfaceDataPlane):
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_entry_decap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_decap_type, tunnel_map_decap_id, vni_id, vlan_id)
-
+         
         warmboot(self.client)
         try:
             attrs = self.client.sai_thrift_get_tunnel_map_attribute(tunnel_map_decap_id)
@@ -118,11 +118,11 @@ class TunnelCreateTunnelMapTest(sai_base_test.ThriftInterfaceDataPlane):
             self.client.sai_thrift_remove_vlan_member(vlan_member1)
             self.client.sai_thrift_remove_vlan_member(vlan_member2)
             self.client.sai_thrift_remove_vlan(vlan_oid)
-
+            
 class TunnelCreateTunnelTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
         """
-        Bridge Create and Remove test. Verify 1D Bridge.
+        Bridge Create and Remove test. Verify 1D Bridge. 
         Steps:
         1. create 1D Bridge
         2. Test Bridge
@@ -143,7 +143,7 @@ class TunnelCreateTunnelTest(sai_base_test.ThriftInterfaceDataPlane):
         rif_id2 = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
         tunnel_id = sai_thrift_create_tunnel(self.client, underlay_if=rif_id1, overlay_if=rif_id2, ip_addr=ip_addr)
         print "tunnel_id = %lx" %tunnel_id
-
+        
         warmboot(self.client)
         try:
             attr_ids = [SAI_TUNNEL_ATTR_TYPE, SAI_TUNNEL_ATTR_DECAP_TTL_MODE, SAI_TUNNEL_ATTR_DECAP_DSCP_MODE, SAI_TUNNEL_ATTR_ENCAP_SRC_IP]
@@ -187,16 +187,16 @@ class TunnelRemoveTunnelTest(sai_base_test.ThriftInterfaceDataPlane):
         rif_id2 = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
         tunnel_id = sai_thrift_create_tunnel(self.client, underlay_if=rif_id1, overlay_if=rif_id2, ip_addr=ip_addr)
         print "tunnel_id = %lx" %tunnel_id
-
+        
         warmboot(self.client)
         try:
             self.client.sai_thrift_remove_tunnel(tunnel_id)
             self.client.sai_thrift_remove_tunnel(tunnel_id)
             tunnel_id = sai_thrift_create_tunnel(self.client, underlay_if=rif_id1, overlay_if=rif_id2, ip_addr=ip_addr)
-
+            
         finally:
             self.client.sai_thrift_remove_tunnel(tunnel_id)
-
+            
 class TunnelCreateTunnelTermTableEntryTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
         print ""
@@ -207,7 +207,7 @@ class TunnelCreateTunnelTermTableEntryTest(sai_base_test.ThriftInterfaceDataPlan
         v4_enabled = 1
         v6_enabled = 1
         mac = ''
-
+        
         ip_addr="40.40.40.40"
         vr_id = sai_thrift_create_virtual_router(self.client, v4_enabled, v6_enabled)
         rif_id1 = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
@@ -221,7 +221,7 @@ class TunnelCreateTunnelTermTableEntryTest(sai_base_test.ThriftInterfaceDataPlan
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_addr_sa, ip_addr_da, tunnel_id)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         warmboot(self.client)
         try:
             attr_ids = [SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_VR_ID, SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TYPE, SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP, SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP, SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID]
@@ -263,7 +263,7 @@ class TunnelCreateIpInIpTest(sai_base_test.ThriftInterfaceDataPlane):
         v4_enabled = 1
         v6_enabled = 1
         mac = ''
-
+        
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
         ip_outer_addr_sa = '30.30.30.30'
@@ -279,20 +279,20 @@ class TunnelCreateIpInIpTest(sai_base_test.ThriftInterfaceDataPlane):
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         ip_encap_addr_da = '20.20.20.20'
-        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)
+        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)  
 
         ip_decap_addr_da = '192.168.0.1'
         decap_mac_da = '00:0f:00:0f:00:0f'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_decap_addr_da, decap_mac_da)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -303,14 +303,14 @@ class TunnelCreateIpInIpTest(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         pkt_only_ip1 = simple_ip_only_packet(pktlen=86,
                                 ip_dst=ip_encap_addr_da,
                                 ip_src=ip_decap_addr_da,
                                 ip_id=105,
                                 ip_ttl=63,
                                 ip_ihl=5)
-
+        
         exp_pkt1 = simple_ipv4ip_packet(pktlen=106,
                          eth_dst=encap_mac_da,
                          eth_src=router_mac,
@@ -329,7 +329,7 @@ class TunnelCreateIpInIpTest(sai_base_test.ThriftInterfaceDataPlane):
                          ip_ihl=5,
                          ip_options=False,
                          inner_frame=pkt_only_ip1)
-
+        
         pkt_only_ip2 = simple_ip_only_packet(pktlen=86,
                                 ip_src=ip_encap_addr_da,
                                 ip_dst=ip_decap_addr_da,
@@ -410,20 +410,20 @@ class TunnelCreateIpInIpTtlTest(sai_base_test.ThriftInterfaceDataPlane):
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         ip_encap_addr_da = '20.20.20.20'
-        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)
+        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)  
 
         ip_decap_addr_da = '192.168.0.1'
         decap_mac_da = '00:0f:00:0f:00:0f'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_decap_addr_da, decap_mac_da)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -434,14 +434,14 @@ class TunnelCreateIpInIpTtlTest(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         pkt_only_ip1 = simple_ip_only_packet(pktlen=86,
                                 ip_dst=ip_encap_addr_da,
                                 ip_src=ip_decap_addr_da,
                                 ip_id=105,
                                 ip_ttl=63,
                                 ip_ihl=5)
-
+        
         exp_pkt1 = simple_ipv4ip_packet(pktlen=106,
                          eth_dst=encap_mac_da,
                          eth_src=router_mac,
@@ -506,20 +506,20 @@ class TunnelCreateIpInIpDscpTest(sai_base_test.ThriftInterfaceDataPlane):
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         ip_encap_addr_da = '20.20.20.20'
-        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)
+        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)  
 
         ip_decap_addr_da = '192.168.0.1'
         decap_mac_da = '00:0f:00:0f:00:0f'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_decap_addr_da, decap_mac_da)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -530,14 +530,14 @@ class TunnelCreateIpInIpDscpTest(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         pkt_only_ip1 = simple_ip_only_packet(pktlen=86,
                                 ip_dst=ip_encap_addr_da,
                                 ip_src=ip_decap_addr_da,
                                 ip_id=105,
                                 ip_ttl=63,
                                 ip_ihl=5)
-
+        
         exp_pkt1 = simple_ipv4ip_packet(pktlen=106,
                          eth_dst=encap_mac_da,
                          eth_src=router_mac,
@@ -574,7 +574,7 @@ class TunnelCreateIpInIpDscpTest(sai_base_test.ThriftInterfaceDataPlane):
             self.client.sai_thrift_remove_router_interface(rif_lp_outer_id)
             self.client.sai_thrift_remove_router_interface(rif_encap_id)
             self.client.sai_thrift_remove_router_interface(rif_decap_id)
-
+            
 class TunnelCreateIpInIpGreTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
         print ""
@@ -586,7 +586,7 @@ class TunnelCreateIpInIpGreTest(sai_base_test.ThriftInterfaceDataPlane):
         v4_enabled = 1
         v6_enabled = 1
         mac = ''
-
+        
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
         ip_outer_addr_sa = '30.30.30.30'
@@ -603,20 +603,20 @@ class TunnelCreateIpInIpGreTest(sai_base_test.ThriftInterfaceDataPlane):
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_IPINIP_GRE)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         ip_encap_addr_da = '20.20.20.20'
-        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)
+        sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)  
 
         ip_decap_addr_da = '192.168.0.1'
         decap_mac_da = '00:0f:00:0f:00:0f'
         sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_decap_addr_da, decap_mac_da)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -627,7 +627,7 @@ class TunnelCreateIpInIpGreTest(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         pkt_only_ip1 = simple_ip_only_packet(pktlen=86,
                                 ip_dst=ip_encap_addr_da,
                                 ip_src=ip_decap_addr_da,
@@ -749,19 +749,19 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
         ip_encap_addr_da = '192.168.1.2'
         ip_decap_addr_da = '192.168.1.1'
         mac_action = SAI_PACKET_ACTION_FORWARD
-
+        
         vr_id = sai_thrift_get_default_router_id(self.client)
         vlan_oid = sai_thrift_create_vlan(self.client, vlan_id)
         vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid, port1, SAI_VLAN_TAGGING_MODE_UNTAGGED)
         vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid, port2, SAI_VLAN_TAGGING_MODE_UNTAGGED)
-
+        
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_encap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_encap_type)
         print "tunnel_map_encap_id = %lx" %tunnel_map_encap_id
         tunnel_map_entry_decap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_decap_type, tunnel_map_decap_id, vni_id, vlan_id)
         tunnel_map_entry_encap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_encap_type, tunnel_map_encap_id, vlan_id, vni_id)
-
+     
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
         tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
@@ -769,20 +769,20 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         bridge_id = sai_thrift_create_bridge(self.client, SAI_BRIDGE_TYPE_1D)
         btunnel_id = sai_thrift_create_bridge_tunnel_port(self.client, tunnel_id, bridge_id)
         sai_thrift_create_fdb_tunnel(self.client, vlan_oid, inner_mac_da, btunnel_id, mac_action, ip_outer_addr_da)
-
+        
         rif_encap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port2, 0, v4_enabled, v6_enabled, mac)
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         sai_thrift_create_fdb(self.client, vlan_oid, inner_mac_sa, port1, mac_action)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -797,7 +797,7 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         exp_pkt1 = simple_vxlan_packet(pktlen=300,
                         eth_dst=encap_mac_da,
                         eth_src=router_mac,
@@ -868,27 +868,26 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
         try:
             send_packet(self, 1, str(pkt1))
             verify_packet(self, m_exp_pkt1, 2)
-            #send_packet(self, 2, str(pkt2))
-            #verify_packet(self, inner_pkt2, 1)
+            send_packet(self, 2, str(pkt2))
+            verify_packet(self, inner_pkt2, 1)
         finally:
-            print "end"
-            #sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid)
-            #sai_thrift_delete_fdb(self.client, vlan_oid, inner_mac_sa, port1)
-            #sai_thrift_remove_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
-            #self.client.sai_thrift_remove_router_interface(rif_encap_id)
-            #sai_thrift_delete_fdb(self.client, vlan_oid, inner_mac_da, tunnel_id)
-            #self.client.sai_thrift_remove_bridge_port(btunnel_id)
-            #self.client.sai_thrift_remove_bridge(bridge_id)
-            #self.client.sai_thrift_remove_next_hop(tunnel_nexthop_id)
-            #self.client.sai_thrift_remove_tunnel_term_table_entry(tunnel_term_table_entry_id)
-            #self.client.sai_thrift_remove_tunnel(tunnel_id)
-            #self.client.sai_thrift_remove_tunnel_map_entry(tunnel_map_entry_decap_id);
-            #self.client.sai_thrift_remove_tunnel_map_entry(tunnel_map_entry_encap_id);
-            #self.client.sai_thrift_remove_tunnel_map(tunnel_map_encap_id);
-            #self.client.sai_thrift_remove_tunnel_map(tunnel_map_decap_id);
-            #self.client.sai_thrift_remove_vlan_member(vlan_member1)
-            #self.client.sai_thrift_remove_vlan_member(vlan_member2)
-            #self.client.sai_thrift_remove_vlan(vlan_oid)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid)
+            sai_thrift_delete_fdb(self.client, vlan_oid, inner_mac_sa, port1)
+            sai_thrift_remove_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
+            self.client.sai_thrift_remove_router_interface(rif_encap_id)
+            sai_thrift_delete_fdb(self.client, vlan_oid, inner_mac_da, tunnel_id)
+            self.client.sai_thrift_remove_bridge_port(btunnel_id)
+            self.client.sai_thrift_remove_bridge(bridge_id)
+            self.client.sai_thrift_remove_next_hop(tunnel_nexthop_id)
+            self.client.sai_thrift_remove_tunnel_term_table_entry(tunnel_term_table_entry_id)
+            self.client.sai_thrift_remove_tunnel(tunnel_id)
+            self.client.sai_thrift_remove_tunnel_map_entry(tunnel_map_entry_decap_id);
+            self.client.sai_thrift_remove_tunnel_map_entry(tunnel_map_entry_encap_id);
+            self.client.sai_thrift_remove_tunnel_map(tunnel_map_encap_id);
+            self.client.sai_thrift_remove_tunnel_map(tunnel_map_decap_id);
+            self.client.sai_thrift_remove_vlan_member(vlan_member1)
+            self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan(vlan_oid)
 
 class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane):
     def runTest(self):
@@ -914,18 +913,18 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
         ip_encap_addr_da = '192.168.1.2'
         ip_decap_addr_da = '192.168.1.1'
         mac_action = SAI_PACKET_ACTION_FORWARD
-
+        
         vr_id = sai_thrift_get_default_router_id(self.client)
         bridge_id = sai_thrift_create_bridge(self.client, SAI_BRIDGE_TYPE_1D)
         bport1_id = sai_thrift_create_bridge_sub_port(self.client, port1, bridge_id, vlan_id)
-
+        
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_encap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_encap_type)
         print "tunnel_map_encap_id = %lx" %tunnel_map_encap_id
         tunnel_map_entry_decap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_decap_type, tunnel_map_decap_id, vni_id, bridge_id)
         tunnel_map_entry_encap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_encap_type, tunnel_map_encap_id, bridge_id, vni_id)
-
+     
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
         tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
@@ -933,20 +932,20 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
 
         btunnel_id = sai_thrift_create_bridge_tunnel_port(self.client, tunnel_id, bridge_id)
         sai_thrift_create_fdb_tunnel(self.client, bridge_id, inner_mac_da, btunnel_id, mac_action, ip_outer_addr_da)
-
+        
         rif_encap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port2, 0, v4_enabled, v6_enabled, mac)
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
-
+        
         sai_thrift_create_fdb_bport(self.client, bridge_id, inner_mac_sa, bport1_id, mac_action)
-
+        
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -961,7 +960,7 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         exp_pkt1 = simple_vxlan_packet(pktlen=300,
                         eth_dst=encap_mac_da,
                         eth_src=router_mac,
@@ -1075,7 +1074,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
         ip_encap_addr_da = '192.168.2.2'
         ip_decap_addr_da = '192.168.1.1'
         mac_action = SAI_PACKET_ACTION_FORWARD
-
+        
         vr_id = sai_thrift_get_default_router_id(self.client)
         rif_encap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port2, 0, v4_enabled, v6_enabled, mac)
         rif_decap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port1, 0, v4_enabled, v6_enabled, mac)
@@ -1086,7 +1085,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
         print "tunnel_map_encap_id = %lx" %tunnel_map_encap_id
         tunnel_map_entry_decap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_decap_type, tunnel_map_decap_id, vni_id, vr_id)
         tunnel_map_entry_encap_id = sai_thrift_create_tunnel_map_entry(self.client, tunnel_map_encap_type, tunnel_map_encap_id, vr_id, vni_id)
-
+     
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
         tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
@@ -1094,18 +1093,18 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)
         print "tunnel_term_table_entry_id = %lx" %tunnel_term_table_entry_id
-
+        
         tunnel_nexthop_id = sai_thrift_create_tunnel_nhop(self.client, SAI_IP_ADDR_FAMILY_IPV4, ip_outer_addr_da, tunnel_id);
         print "tunnel_nexthop_id = %lx" %tunnel_nexthop_id
-
+        
         encap_mac_da = '00:0e:00:0e:00:0e'
         sai_thrift_create_neighbor(self.client, addr_family, rif_encap_id, ip_outer_addr_da, encap_mac_da)
 
         encap_inner_mac_da = '00:0f:00:0f:00:0f'
-        sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_decap_addr_da, encap_inner_mac_da)
-
+        sai_thrift_create_neighbor(self.client, addr_family, rif_decap_id, ip_decap_addr_da, encap_inner_mac_da)        
+    
         sai_thrift_create_route(self.client, vr_id, addr_family, ip_encap_addr_da, ip_mask, tunnel_nexthop_id)
-
+    
         warmboot(self.client)
         # send the test packet(s)
         pkt1 = simple_tcp_packet(pktlen=100,
@@ -1120,7 +1119,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
                                 ip_id=105,
                                 ip_ttl=64,
                                 ip_ihl=5)
-
+                                
         exp_pkt1 = simple_vxlan_packet(pktlen=300,
                         eth_dst=encap_mac_da,
                         eth_src=router_mac,

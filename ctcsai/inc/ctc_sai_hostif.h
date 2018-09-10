@@ -97,6 +97,7 @@
 \t  |  SAI_HOSTIF_PACKET_ATTR_HOSTIF_TX_TYPE                |    CTC8096,CTC7148     |
 \t  |  SAI_HOSTIF_PACKET_ATTR_EGRESS_PORT_OR_LAG            |    CTC8096,CTC7148     |
 \t  |  SAI_HOSTIF_PACKET_ATTR_BRIDGE_ID                     |    CTC8096,CTC7148     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_TIMESTAMP                     |           -            |
 \b
  The Hostif trap type supported by centec devices:
 \p
@@ -139,6 +140,8 @@
 \t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_EGRESS_BUFFER  |           -            |
 \t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_WRED           |           -            |
 \t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_ROUTER         |           -            |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PTP                             |           -            |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PTP_TX_EVENT                    |           -            |
 \b
  The Hostif user defined trap type supported by centec devices:
 \p

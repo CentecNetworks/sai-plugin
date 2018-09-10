@@ -74,7 +74,7 @@ class IPAclTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_PORT]
         entry_priority = SAI_SWITCH_ATTR_ACL_ENTRY_MINIMUM_PRIORITY
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2]
+        in_ports = None
         mac_src = None
         mac_dst = None
         mac_src_mask = None
@@ -156,6 +156,8 @@ class IPAclTest(sai_base_test.ThriftInterfaceDataPlane):
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_ACL, value=attr_value)
         self.client.sai_thrift_set_port_attribute(port2, attr)
 
+        warmboot(self.client)
+        
         try:
             assert acl_table_id > 0, 'acl_entry_id is <= 0'
             assert acl_entry_id > 0, 'acl_entry_id is <= 0'
@@ -239,7 +241,7 @@ class MACSrcAclTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_PORT]
         entry_priority = 1
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2]
+        in_ports = None
         mac_src = '00:22:22:22:22:22'
         mac_dst = None
         mac_src_mask = 'ff:ff:ff:ff:ff:ff'
@@ -321,6 +323,8 @@ class MACSrcAclTest(sai_base_test.ThriftInterfaceDataPlane):
         attr_value = sai_thrift_attribute_value_t(oid=acl_table_id)
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_ACL, value=attr_value)
         self.client.sai_thrift_set_port_attribute(port2, attr)
+        
+        warmboot(self.client)
 
         try:
             assert acl_table_id > 0, 'acl_entry_id is <= 0'
@@ -408,7 +412,7 @@ class L3AclTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_ROUTER_INTF]
         entry_priority = 1
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2]
+        in_ports = None
         mac_src = None
         mac_dst = None
         mac_src_mask = None
@@ -490,6 +494,8 @@ class L3AclTest(sai_base_test.ThriftInterfaceDataPlane):
         attr_value = sai_thrift_attribute_value_t(oid=acl_table_id)
         attr = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL, value=attr_value)
         self.client.sai_thrift_set_router_interface_attribute(rif_id2, attr)
+        
+        warmboot(self.client)
 
         try:
             assert acl_table_id > 0, 'acl_entry_id is <= 0'
@@ -586,7 +592,7 @@ class SeqAclTableGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_PORT]
         entry_priority = 1
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2]
+        in_ports = None
         mac_src = '00:22:22:22:22:22'
         mac_dst = None
         mac_src_mask = 'ff:ff:ff:ff:ff:ff'
@@ -727,6 +733,8 @@ class SeqAclTableGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_INGRESS_ACL, value=attr_value)
         self.client.sai_thrift_set_port_attribute(port2, attr)
 
+        warmboot(self.client)
+        
         try:
             assert acl_table_group_id > 0, 'acl_table_group_id is <= 0'
             assert acl_table_id1 > 0, 'acl_entry_id1 is <= 0'
@@ -844,7 +852,7 @@ class MultBindAclTableGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_PORT]
         entry_priority = 1
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2, port3, port4]
+        in_ports = None
         mac_src = '00:22:22:22:22:22'
         mac_dst = None
         mac_src_mask = 'ff:ff:ff:ff:ff:ff'
@@ -987,6 +995,8 @@ class MultBindAclTableGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         self.client.sai_thrift_set_port_attribute(port2, attr)
         self.client.sai_thrift_set_port_attribute(port3, attr)
 
+        warmboot(self.client)
+        
         try:
             assert acl_table_group_id > 0, 'acl_table_group_id is <= 0'
             assert acl_table_id1 > 0, 'acl_entry_id1 is <= 0'
@@ -1121,7 +1131,7 @@ class BindAclTableInGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         table_bind_point_list = [SAI_ACL_BIND_POINT_TYPE_PORT]
         entry_priority = 1
         action = SAI_PACKET_ACTION_DROP
-        in_ports = [port1, port2, port3, port4, port5]
+        in_ports = None
         mac_src = '00:22:22:22:22:22'
         mac_dst = None
         mac_src_mask = 'ff:ff:ff:ff:ff:ff'
@@ -1267,6 +1277,8 @@ class BindAclTableInGroupTest(sai_base_test.ThriftInterfaceDataPlane):
         self.client.sai_thrift_set_port_attribute(port3, attr)
         self.client.sai_thrift_set_port_attribute(port4, attr1)
 
+        warmboot(self.client)
+        
         try:
             assert acl_table_group_id > 0, 'acl_table_group_id is <= 0'
             assert acl_table_id1 > 0, 'acl_entry_id1 is <= 0'

@@ -690,6 +690,9 @@ ctc_sai_switch_get_global_property(sai_object_key_t* key, sai_attribute_t* attr,
         case SAI_SWITCH_ATTR_TPID_INNER_VLAN:
             CTC_SAI_ATTR_ERROR_RETURN(ctcs_parser_get_tpid(lchip, CTC_PARSER_L2_TPID_CVLAN_TPID, &attr->value.u16), attr_idx);
             break;
+        case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
+            attr->value.booldata = CTC_FLAG_ISSET(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL)?1:0;
+            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "switch attribute %d not implemented\n", attr->id);
             status =  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0+attr_idx;
@@ -817,6 +820,16 @@ ctc_sai_switch_set_global_property(sai_object_key_t* key, const sai_attribute_t*
             else
             {
                 CTC_UNSET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_WARMBOOT_EN);
+            }
+            break;
+        case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
+            if (attr->value.booldata)
+            {
+                CTC_SET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL);
+            }
+            else
+            {
+                CTC_UNSET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL);
             }
             break;
         default:
@@ -1963,10 +1976,13 @@ ctc_sai_switch_deinit_switch(sai_object_id_t switch_id)
     ctc_sai_switch_master_t* p_switch_info = NULL;
     uint8 lchip = 0;
     char* boot_type_str[] = {"ColdBoot", "WarmBoot"};
-    uint8 wb_flag = 0;
+    uint8 wb_flag = 0, stop_dataplane = 0;
     sal_time_t tv;
     char* p_time_str = NULL;
+    ctc_global_panel_ports_t local_panel_ports;
+    uint16 count = 0;
 
+    sal_memset(&local_panel_ports, 0 ,sizeof(local_panel_ports));
     CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(switch_id, &lchip));
     p_switch_info = ctc_sai_get_switch_property(lchip);
     if (NULL == p_switch_info)
@@ -1974,6 +1990,17 @@ ctc_sai_switch_deinit_switch(sai_object_id_t switch_id)
         return SAI_STATUS_ITEM_NOT_FOUND;
     }
     wb_flag = CTC_FLAG_ISSET(p_switch_info->flag, CTC_SAI_SWITCH_FLAG_WARMBOOT_EN) ? 1 : 0;
+    stop_dataplane = CTC_FLAG_ISSET(p_switch_info->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL)?1:0;
+    if(stop_dataplane)
+    {
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_global_ctl_get(lchip, CTC_GLOBAL_PANEL_PORTS, (void*)&local_panel_ports));
+        for(count = 0; count < local_panel_ports.count; count++)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_mac_en(lchip, local_panel_ports.lport[count], 1));
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_port_en(lchip, local_panel_ports.lport[count], 1));
+        }
+
+    }
     sal_time(&tv);
     p_time_str = sal_ctime(&tv);
     CTC_SAI_LOG_CRITICAL(SAI_API_SWITCH, "Remove Swtich, %s, Start time %s", boot_type_str[wb_flag], p_time_str);
@@ -2147,6 +2174,16 @@ ctc_sai_switch_create_switch(sai_object_id_t* switch_id,
         loop_i++;
     }
 
+    sai_status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL, &attr_val, &attr_idx);
+    if(!CTC_SAI_ERROR(sai_status))
+    {
+        CTC_SET_FLAG(p_switch_master->flag, attr_val->booldata ? CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL : 0);
+    }
+    else
+    {
+        CTC_SET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL);
+    }
+
     return status;
 }
 
@@ -2293,6 +2330,7 @@ static ctc_sai_attr_fn_entry_t  switch_attr_fn_entries[] = {
     {SAI_SWITCH_ATTR_SUPPORTED_PROTECTED_OBJECT_TYPE, ctc_sai_switch_get_global_property, NULL},
     {SAI_SWITCH_ATTR_TPID_OUTER_VLAN, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {SAI_SWITCH_ATTR_TPID_INNER_VLAN, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
+    {SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {CTC_SAI_FUNC_ATTR_END_ID, NULL, NULL}
 };
 
@@ -2399,18 +2437,19 @@ void ctc_sai_switch_dump(uint8 lchip, sal_file_t p_file, ctc_sai_dump_grep_param
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "----------------------------------------------------STP----------------------------------------------------------------");
         CTC_SAI_LOG_DUMP(p_file, "Default bridge ID: %d\n", ctc_switch_master_cur.default_bridge_id);
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "---------------------------------------------------FLAGS---------------------------------------------------------------");
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10s %-10s %-30d\n", "CPU ETH enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CPU_ETH_EN)?"Y":"N", "CPU ETH port: ", ctc_switch_master_cur.cpu_eth_port);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10s\n", "Cut through enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CUT_THROUGH_EN)?"Y":"N");
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10s\n", "CRC check enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CRC_CHECK_EN)?"Y":"N");
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10s\n", "HW learning enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_HW_LEARNING_EN)?"Y":"N");
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10s\n", "Warmboot enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_WARMBOOT_EN)?"Y":"N");
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s %-10s %-30d\n", "CPU ETH enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CPU_ETH_EN)?"Y":"N", "CPU ETH port: ", ctc_switch_master_cur.cpu_eth_port);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s\n", "Cut through enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CUT_THROUGH_EN)?"Y":"N");
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s\n", "CRC check enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_CRC_CHECK_EN)?"Y":"N");
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s\n", "HW learning enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_HW_LEARNING_EN)?"Y":"N");
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s\n", "Warmboot enable: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_WARMBOOT_EN)?"Y":"N");
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10s\n", "Uninit data plane on removal: ", CTC_FLAG_ISSET(ctc_switch_master_cur.flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL)?"Y":"N");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "----------------------------------------------------QOS----------------------------------------------------------------");
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "Ucast port queues: ", ctc_switch_master_cur.port_queues);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "Default tc: ", ctc_switch_master_cur.default_tc);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "Default WTD thrd(G): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_GREEN]);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "Default WTD thrd(Y): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_YELLOW]);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "Default WTD thrd(R): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_RED]);
-        CTC_SAI_LOG_DUMP(p_file, "%-25s %-10d\n", "TC to queue map id: ", ctc_switch_master_cur.tc_to_queue_map_id);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "Ucast port queues: ", ctc_switch_master_cur.port_queues);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "Default tc: ", ctc_switch_master_cur.default_tc);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "Default WTD thrd(G): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_GREEN]);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "Default WTD thrd(Y): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_YELLOW]);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "Default WTD thrd(R): ", ctc_switch_master_cur.default_wtd_thrd[SAI_PACKET_COLOR_RED]);
+        CTC_SAI_LOG_DUMP(p_file, "%-30s %-10d\n", "TC to queue map id: ", ctc_switch_master_cur.tc_to_queue_map_id);
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "----------------------------------------------QOS_DOMAIN_DOT1P---------------------------------------------------------");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "Index  Dot1p_to_tc  cnt  Dot1p_to_color  cnt  Tc/color_to_dot1p  cnt");
         CTC_SAI_LOG_DUMP(p_file, "%s\n", "-----------------------------------------------------------------------------------------------------------------------");
