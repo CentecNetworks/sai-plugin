@@ -1539,7 +1539,7 @@ ctc_sai_switch_get_acl_property(sai_object_key_t* key, sai_attribute_t* attr, ui
             break;
         case SAI_SWITCH_ATTR_INGRESS_ACL:
             p_bounded_oid = ctc_sai_db_entry_property_get(lchip, CTC_SAI_DB_ENTRY_TYPE_ACL_BIND, (void*)(&key->key.object_id));
-            attr->value.oid = *p_bounded_oid;
+            attr->value.oid = (p_bounded_oid ? *p_bounded_oid : SAI_NULL_OBJECT_ID);
             break;
         case SAI_SWITCH_ATTR_EGRESS_ACL:
             return SAI_STATUS_NOT_SUPPORTED;
