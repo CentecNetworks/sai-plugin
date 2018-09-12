@@ -21,6 +21,9 @@
 *.a
 *.la
 *.lo
+lib/*.tar.gz
+lib/duet2/*
+lib/goldengate/*
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -50,3 +53,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Build Files
+ctcsdk/*
+build/*
+
+# Diff Files
+*.diff
