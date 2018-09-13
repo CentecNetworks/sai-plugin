@@ -226,12 +226,8 @@ _ctc_app_get_dma_cfg(ctc_dma_global_cfg_t* p_dma_cfg)
     CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_HW_LEARNING);
     CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_IPFIX);
 
-    /*UML do not enable monitor and stats */
-    if (0 == SDK_WORK_PLATFORM)
-    {
-        CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_MONITOR);
-        CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_STATS);
-    }
+    CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_MONITOR);
+    CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_STATS);
 #endif
 
 #if defined (DUET2)
