@@ -471,23 +471,16 @@ ctc_sai_switch_get_global_property(sai_object_key_t* key, sai_attribute_t* attr,
             }
             break;
         case SAI_SWITCH_ATTR_NUMBER_OF_UNICAST_QUEUES:
-            if (p_switch_master->port_queues == CTC_QOS_PORT_QUEUE_NUM_8)
-            {
-                attr->value.u32 = p_switch_master->port_queues;
-            }
-            else
-            {
-                attr->value.u32 = CTC_QOS_PORT_QUEUE_NUM_16;
-            }
+            attr->value.u32 = 8;
             break;
         case SAI_SWITCH_ATTR_NUMBER_OF_MULTICAST_QUEUES:
             if (p_switch_master->port_queues == CTC_QOS_PORT_QUEUE_NUM_8)
             {
-                attr->value.u32 = p_switch_master->port_queues;
+                attr->value.u32 = 8;
             }
             else
             {
-                attr->value.u32 = CTC_QOS_16Q_MCAST_Q_NUM;
+                attr->value.u32 = 4;
             }
             break;
         case SAI_SWITCH_ATTR_NUMBER_OF_QUEUES:
