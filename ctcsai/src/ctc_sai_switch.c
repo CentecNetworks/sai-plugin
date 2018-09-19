@@ -269,7 +269,7 @@ ctc_sai_switch_fdb_learning_process(uint8 gchip, void* p_data)
 
 void _ctc_sai_sdk_shell_thread(void* param)
 {
-    ctc_cli_read(0);
+    ctc_cli_read(1);
 }
 
 int32
