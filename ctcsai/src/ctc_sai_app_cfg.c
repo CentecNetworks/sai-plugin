@@ -16,6 +16,7 @@
  *
  ***************************************************************/
 #include "sal.h"
+#include "dal.h"
 #include "ctc_error.h"
 #include "ctc_sai_app_cfg_chip_profile.h"
 #include "ctc_sai_app_cfg_datapath_profile.h"

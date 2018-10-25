@@ -842,7 +842,7 @@ _ctc_sai_tunnel_get_tunnel_property(sai_object_key_t* key, sai_attribute_t* attr
             attr->value.s32 = p_tunnel->tunnel_type;
             break;
         case SAI_TUNNEL_ATTR_UNDERLAY_INTERFACE:
-            if ((SAI_TUNNEL_TYPE_IPINIP == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_IPINIP_GRE == p_tunnel->tunnel_type))
+            if ((SAI_TUNNEL_TYPE_IPINIP == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_IPINIP_GRE == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_VXLAN == p_tunnel->tunnel_type))
             {
                 attr->value.oid = p_tunnel->underlay_if;
             }
@@ -1353,7 +1353,7 @@ ctc_sai_tunnel_create_tunnel(
     CTC_SAI_ERROR_RETURN(_ctc_sai_tunnel_alloc_tunnel(&p_tunnel));
     p_tunnel->tunnel_type = attr_val->s32;
 
-    if ((SAI_TUNNEL_TYPE_IPINIP == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_IPINIP_GRE == p_tunnel->tunnel_type))
+    if ((SAI_TUNNEL_TYPE_IPINIP == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_IPINIP_GRE == p_tunnel->tunnel_type) || (SAI_TUNNEL_TYPE_VXLAN == p_tunnel->tunnel_type))
     {
         status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_TUNNEL_ATTR_UNDERLAY_INTERFACE, &attr_val, &attr_idx);
         if (CTC_SAI_ERROR(status))
