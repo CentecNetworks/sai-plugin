@@ -169,7 +169,8 @@
 \t  |  SAI_SWITCH_ATTR_MAX_SAMPLED_MIRROR_SESSION                             |           -            |
 \t  |  SAI_SWITCH_ATTR_SUPPORTED_EXTENDED_STATS_MODE                          |           -            |
 \t  |  SAI_SWITCH_ATTR_WARM_RECOVER                                           |           -            |
-\t  |  SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL                           |     CTC8096,CTC7148    |
+\t  |  SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL                           |    CTC8096,CTC7148     |
+\t  |  SAI_SWITCH_ATTR_PRE_SHUTDOWN                                           |    CTC8096,CTC7148     |
 \b
 */
 

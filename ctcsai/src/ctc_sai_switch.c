@@ -269,7 +269,7 @@ ctc_sai_switch_fdb_learning_process(uint8 gchip, void* p_data)
 
 void _ctc_sai_sdk_shell_thread(void* param)
 {
-    ctc_cli_read(1);
+    ctc_cli_read(0);
 }
 
 int32
@@ -686,6 +686,8 @@ ctc_sai_switch_get_global_property(sai_object_key_t* key, sai_attribute_t* attr,
         case SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL:
             attr->value.booldata = CTC_FLAG_ISSET(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL)?1:0;
             break;
+        case SAI_SWITCH_ATTR_PRE_SHUTDOWN:
+            attr->value.booldata = CTC_FLAG_ISSET(p_switch_master->flag, SAI_SWITCH_ATTR_PRE_SHUTDOWN)?1:0;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "switch attribute %d not implemented\n", attr->id);
             status =  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0+attr_idx;
@@ -825,6 +827,15 @@ ctc_sai_switch_set_global_property(sai_object_key_t* key, const sai_attribute_t*
                 CTC_UNSET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL);
             }
             break;
+        case SAI_SWITCH_ATTR_PRE_SHUTDOWN:
+            if (attr->value.booldata)
+            {
+                CTC_SET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_PRE_SHUTDOWN);
+            }
+            else
+            {
+                CTC_UNSET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_PRE_SHUTDOWN);
+            }
         default:
             CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "switch attribute %d not implemented\n", attr->id);
             return SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -2175,6 +2186,11 @@ ctc_sai_switch_create_switch(sai_object_id_t* switch_id,
     else
     {
         CTC_SET_FLAG(p_switch_master->flag, CTC_SAI_SWITCH_FLAG_UNINIT_DATA_PLANE_ON_REMOVAL);
+    }
+    sai_status = ctc_sai_find_attrib_in_list(attr_count,attr_list, SAI_SWITCH_ATTR_PRE_SHUTDOWN, &attr_val, &attr_idx);
+    if(!CTC_SAI_ERROR(sai_status))
+    {
+        CTC_SET_FLAG(p_switch_master->flag, attr_val->booldata ? CTC_SAI_SWITCH_FLAG_PRE_SHUTDOWN : 0);
     }
 
     return status;

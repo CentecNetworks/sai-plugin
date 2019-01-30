@@ -117,6 +117,7 @@ ctc_sai_warmboot_sync(uint8 lchip)
         CTC_OFFSET_OF(ctc_sai_entry_property_t, calc_key_len),
         CTC_OFFSET_OF(ctc_sai_vector_property_t, calc_key_len)};
     uint8 type_index = 0;
+    ctc_sai_switch_master_t* p_switch_master = NULL;
 
     if (lchip >= CTC_SAI_MAX_CHIP_NUM)
     {
@@ -129,13 +130,24 @@ ctc_sai_warmboot_sync(uint8 lchip)
 
     sal_memset(&wb_data, 0, sizeof(wb_data));
     sal_memset(&wb_param, 0, sizeof(wb_param));
+
+    p_switch_master = ctc_sai_get_switch_property(lchip);
+    if (NULL == p_switch_master)
+    {
+        CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "Failed to get switch global info, invalid lchip %d!\n", lchip);
+        return SAI_STATUS_ITEM_NOT_FOUND;
+    }
+
     wb_data.buffer = mem_malloc(MEM_SYSTEM_MODULE, CTC_WB_DATA_BUFFER_LENGTH);
     if (NULL == wb_data.buffer)
     {
         return SAI_STATUS_NO_MEMORY;
     }
     g_wb_status[lchip] = CTC_WB_STATUS_SYNC;
-    ctc_wb_set_cpu_rx_en(lchip, 0);
+    if(!CTC_FLAG_ISSET(p_switch_master->flag, SAI_SWITCH_ATTR_PRE_SHUTDOWN))
+    {
+        ctc_wb_set_cpu_rx_en(lchip, 0);
+    }
     ctc_wb_sync(lchip);
 
     for (wb_type = CTC_SAI_WB_TYPE_OID; wb_type <= CTC_SAI_WB_TYPE_VECTOR; wb_type++)

@@ -73,7 +73,7 @@ then
 fi
 
 portmap_profile="port_map_file='default_interface_to_front_map.ini';chipname='$chipname'"
-interface_list="--interface "'0@eth0'" --interface "'1@eth1'" --interface "'2@eth2'" --interface "'3@eth3'" --interface "'4@eth4'" --interface "'5@eth5'" --interface "'6@eth6'" --interface "'7@eth7'"  --interface "'8@eth8'" --interface "'9@eth9'" --interface "'10@eth10'" --interface "'11@eth11'" --interface "'12@eth12'" --interface "'13@eth13'" --interface "'14@eth14'" --interface "'15@eth15'""
+interface_list="--interface "'0@eth0'" --interface "'1@eth1'" --interface "'2@eth2'" --interface "'3@eth3'" --interface "'4@eth4'" --interface "'5@eth5'" --interface "'6@eth6'" --interface "'7@eth7'"  --interface "'8@eth8'" --interface "'9@eth9'" --interface "'10@eth10'" --interface "'11@eth11'" --interface "'12@eth12'" --interface "'13@eth13'" --interface "'14@eth14'" --interface "'15@eth15'" --interface "'16@eth16'""
 
 if [ $run_one = 1 ]
 	then

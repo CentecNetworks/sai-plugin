@@ -262,7 +262,7 @@ class TunnelCreateIpInIpTest(sai_base_test.ThriftInterfaceDataPlane):
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac = ''
+        mac = router_mac
         
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
@@ -393,7 +393,7 @@ class TunnelCreateIpInIpTtlTest(sai_base_test.ThriftInterfaceDataPlane):
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac = ''
+        mac = router_mac
         outer_ttl=20
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
@@ -489,7 +489,7 @@ class TunnelCreateIpInIpDscpTest(sai_base_test.ThriftInterfaceDataPlane):
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac = ''
+        mac = router_mac
         outer_dscp = 5
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
@@ -585,7 +585,7 @@ class TunnelCreateIpInIpGreTest(sai_base_test.ThriftInterfaceDataPlane):
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac = ''
+        mac = router_mac
         
         addr_family = SAI_IP_ADDR_FAMILY_IPV4
         ip_mask = '255.255.255.0'
@@ -735,7 +735,7 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac=''
+        mac=router_mac
         inner_mac_da = '00:00:AA:AA:00:00'
         inner_mac_sa = '00:00:AA:AA:11:11'
         tunnel_map_decap_type = SAI_TUNNEL_MAP_TYPE_VNI_TO_VLAN_ID

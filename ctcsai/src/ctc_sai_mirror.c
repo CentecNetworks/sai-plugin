@@ -642,6 +642,12 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
         }
 
     }
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_VLAN_TPID, &attr_value, &attr_index);
+    if(status == SAI_STATUS_SUCCESS)
+    {
+        return SAI_STATUS_NOT_SUPPORTED;
+    }
+
 
     *mirr_session_type = mirr_type;
 
@@ -880,6 +886,8 @@ _ctc_sai_mirr_set_attr(sai_object_key_t* key, const sai_attribute_t* attr)
     case SAI_MIRROR_SESSION_ATTR_GRE_PROTOCOL_TYPE:
         p_mirr_session->gre_pro_type = attr->value.u16;
         break;
+    case SAI_MIRROR_SESSION_ATTR_VLAN_HEADER_VALID:
+        p_mirr_session->vlan_hdr_valid = attr->value.booldata;
     default:
         return SAI_STATUS_NOT_SUPPORTED;
     }
@@ -1306,7 +1314,7 @@ _ctc_sai_mirror_binding_mirr_param_chk(uint8 lchip, uint8 binding_module, const 
                     session_id: 0x%"PRIx64"!\n", print_str, objlist.list[loop_i]);
                 status = SAI_STATUS_INVALID_PARAMETER;
             }
-            if((CTC_SAI_MIRROR_BINDING_PORT == binding_module) && (0 != p_mir_session->sample_rate))
+            if((CTC_SAI_MIRROR_BINDING_PORT == binding_module) && (1 != p_mir_session->sample_rate))
             {
                 CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to binding mirror session to %s, port mirror is not support sample rate;", \
                     print_str);
