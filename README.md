@@ -30,7 +30,7 @@ nd CTC7148.
 | Scheduler      |     Y       | Dtel           |     Planed  |
 
 # Testing
-The Centec SAI use PTF framework to do testing. The PTF Tests have more than 300 cases, include more than 250 cases from CentecNetwors, and 56 cases from official SAI project,More detail information r
+The Centec SAI use PTF framework to do testing. The PTF Tests have more than 300 cases, include more than 250 cases from CentecNetworks, and 56 cases from official SAI project,More detail information r
 efer to [PTF Tests](https://github.com/CentecNetworks/sai-plugin/wiki/PTF-Tests)
 
 # Contact us
