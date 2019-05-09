@@ -45,7 +45,7 @@ This module defines SAI Routing Interface.
 \t  |  SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE                 |    CTC8096,CTC7148,CTC7132     |
 \t  |  SAI_ROUTER_INTERFACE_ATTR_LOOPBACK_PACKET_ACTION          |              -                 |
 \t  |  SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID                       |    CTC8096,CTC7148,CTC7132     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL                      |         CTC7148,CTC7132        |
 \b
 
 */

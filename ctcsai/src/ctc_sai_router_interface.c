@@ -1164,11 +1164,16 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     rif_obj_id = ctc_sai_create_object_id(SAI_OBJECT_TYPE_ROUTER_INTERFACE, lchip, attr_value->s32, 0, l3if_id);
     CTC_SAI_LOG_INFO(SAI_API_ROUTER_INTERFACE, "create router_interface_id = 0x%"PRIx64"\n", rif_obj_id);
     CTC_SAI_ERROR_GOTO(_ctc_sai_router_interface_build_db(lchip, rif_obj_id, &p_rif_info), status, error1);
-    CTC_SAI_ERROR_GOTO(ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID, &attr_value, &index), status, out);
+    CTC_SAI_ERROR_GOTO(ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID, &attr_value, &index), status, error1);
     dot1d_bridge_id = attr_value->oid;
     status = (ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL, &attr_value, &index));
     if (!CTC_SAI_ERROR(status))
     {
+        if (CTC_CHIP_GOLDENGATE == ctcs_get_chip_type(lchip))
+        {
+            status = SAI_STATUS_NOT_SUPPORTED;
+            goto error2;
+        }
         p_rif_info->is_virtual = attr_value->booldata;
     }
     else
@@ -1190,8 +1195,8 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     }
     if(p_rif_info->is_virtual)
     {
-        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_l3if_id(lchip, &l3if, &actual_l3if_id), status, out);
-        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_interface_router_mac(lchip, actual_l3if_id, &router_mac), status, out);
+        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_l3if_id(lchip, &l3if, &actual_l3if_id), status, error2);
+        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_interface_router_mac(lchip, actual_l3if_id, &router_mac), status, error2);
         if (((CTC_CHIP_GOLDENGATE == ctcs_get_chip_type(lchip)) || (CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip))) && router_mac.num >= 4)
         {
             return SAI_STATUS_NO_MEMORY;
@@ -1379,16 +1384,16 @@ error4:
     }
 error3:
     CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "rollback to error3\n");
-    ctcs_l3if_destory(lchip, l3if_id, &l3if);
+    if (!is_1d_bridge && (MAX_L3IF_TYPE_NUM != l3if.l3if_type) && !p_rif_info->is_virtual)
+    {
+        ctcs_l3if_destory(lchip, l3if_id, &l3if);
+    }
 error2:
     CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "rollback to error2\n");
     _ctc_sai_router_interface_remove_db(lchip, rif_obj_id);
 error1:
     CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "rollback to error1\n");
-    if(p_rif_info && !p_rif_info->is_virtual)
-    {
-        ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
-    }
+    ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
 out:
     CTC_SAI_DB_UNLOCK(lchip);
     return status;
@@ -1502,28 +1507,14 @@ ctc_sai_router_interface_remove_rif(sai_object_id_t router_interface_id)
    }
    else
    {
-       int i=0;
        sal_memset(&router_mac, 0, sizeof(router_mac));
-       if ((CTC_CHIP_GOLDENGATE == ctcs_get_chip_type(lchip)))
-       {
-           CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_get_interface_router_mac(lchip, p_rif_info->actual_l3if_id, &router_mac), status, out);
-           for (i=0; i<router_mac.num; i++)
-           {
-               if (!sal_memcmp(router_mac.mac[i], p_rif_info->src_mac, sizeof(sai_mac_t)))
-               {
-                   sal_memset(router_mac.mac[i], 0, sizeof(sai_mac_t));
-                   router_mac.num--;
-                   break;
-               }
-           }
-       }
-       else
+       if ((CTC_CHIP_GOLDENGATE != ctcs_get_chip_type(lchip)))
        {
            sal_memcpy(router_mac.mac[0], p_rif_info->src_mac, sizeof(sai_mac_t));
            router_mac.dir = CTC_INGRESS;
            router_mac.mode = CTC_L3IF_DELETE_ROUTE_MAC;
+           CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_set_interface_router_mac(lchip, p_rif_info->actual_l3if_id, router_mac), status, out);
        }
-       CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_set_interface_router_mac(lchip, p_rif_info->actual_l3if_id, router_mac), status, out);
    }
    _ctc_sai_router_interface_remove_db(lchip, router_interface_id);
 
