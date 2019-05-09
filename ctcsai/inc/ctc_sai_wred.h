@@ -14,43 +14,43 @@ This module defines SAI Wred.
  The Wred Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                                 |   SUPPORT CHIPS LIST   |
-\t  |  create_wred                                          |    CTC8096,CTC7148     |
-\t  |  remove_wred                                          |    CTC8096,CTC7148     |
-\t  |  set_wred_attribute                                   |    CTC8096,CTC7148     |
-\t  |  get_wred_attribute                                   |    CTC8096,CTC7148     |
+\t  |   API                                                 |       SUPPORT CHIPS LIST       |
+\t  |  create_wred                                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_wred                                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_wred_attribute                                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_wred_attribute                                   |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Wred attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_WRED_ATTR_GREEN_ENABLE                           |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_GREEN_MIN_THRESHOLD                    |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_GREEN_MAX_THRESHOLD                    |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_GREEN_DROP_PROBABILITY                 |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_YELLOW_ENABLE                          |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_YELLOW_MIN_THRESHOLD                   |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_YELLOW_MAX_THRESHOLD                   |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_YELLOW_DROP_PROBABILITY                |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_RED_ENABLE                             |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_RED_MIN_THRESHOLD                      |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_RED_MAX_THRESHOLD                      |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_RED_DROP_PROBABILITY                   |    CTC8096,CTC7148     |
-\t  |  SAI_WRED_ATTR_WEIGHT                                 |           -            |
-\t  |  SAI_WRED_ATTR_ECN_MARK_MODE                          |           -            |
-\t  |  SAI_WRED_ATTR_ECN_GREEN_MIN_THRESHOLD                |           -            |
-\t  |  SAI_WRED_ATTR_ECN_GREEN_MAX_THRESHOLD                |           -            |
-\t  |  SAI_WRED_ATTR_ECN_GREEN_MARK_PROBABILITY             |           -            |
-\t  |  SAI_WRED_ATTR_ECN_YELLOW_MIN_THRESHOLD               |           -            |
-\t  |  SAI_WRED_ATTR_ECN_YELLOW_MAX_THRESHOLD               |           -            |
-\t  |  SAI_WRED_ATTR_ECN_YELLOW_MARK_PROBABILITY            |           -            |
-\t  |  SAI_WRED_ATTR_ECN_RED_MIN_THRESHOLD                  |           -            |
-\t  |  SAI_WRED_ATTR_ECN_RED_MAX_THRESHOLD                  |           -            |
-\t  |  SAI_WRED_ATTR_ECN_RED_MARK_PROBABILITY               |           -            |
-\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MIN_THRESHOLD        |           -            |
-\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MAX_THRESHOLD        |           -            |
-\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MARK_PROBABILITY     |           -            |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_WRED_ATTR_GREEN_ENABLE                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_GREEN_MIN_THRESHOLD                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_GREEN_MAX_THRESHOLD                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_GREEN_DROP_PROBABILITY                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_YELLOW_ENABLE                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_YELLOW_MIN_THRESHOLD                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_YELLOW_MAX_THRESHOLD                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_YELLOW_DROP_PROBABILITY                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_RED_ENABLE                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_RED_MIN_THRESHOLD                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_RED_MAX_THRESHOLD                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_RED_DROP_PROBABILITY                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_WRED_ATTR_WEIGHT                                 |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_MARK_MODE                          |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MIN_THRESHOLD                |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MAX_THRESHOLD                |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_GREEN_MARK_PROBABILITY             |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MIN_THRESHOLD               |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MAX_THRESHOLD               |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_YELLOW_MARK_PROBABILITY            |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_RED_MIN_THRESHOLD                  |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_RED_MAX_THRESHOLD                  |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_RED_MARK_PROBABILITY               |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MIN_THRESHOLD        |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MAX_THRESHOLD        |              -                 |
+\t  |  SAI_WRED_ATTR_ECN_COLOR_UNAWARE_MARK_PROBABILITY     |              -                 |
 \b
 */
 

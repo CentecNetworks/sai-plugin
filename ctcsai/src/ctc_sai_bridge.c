@@ -5,6 +5,7 @@
 #include "ctc_sai_vlan.h"
 #include "ctc_sai_router_interface.h"
 #include "ctc_sai_bridge.h"
+#include "ctc_sai_isolation_group.h"
 
 typedef struct  ctc_sai_bridge_traverse_param_s
 {
@@ -281,6 +282,31 @@ ctc_sai_bridge_port_get_port_property(sai_object_key_t* key, sai_attribute_t* at
             }
             CTC_SAI_ATTR_ERROR_RETURN(ctcs_port_get_vlan_filter_en(lchip, p_bridge_port->gport, CTC_EGRESS, &attr->value.booldata), attr_idx);
             break;
+        case SAI_BRIDGE_PORT_ATTR_ISOLATION_GROUP:
+            if (SAI_BRIDGE_PORT_TYPE_PORT == p_bridge_port->port_type)
+            {
+                ctc_port_restriction_t port_restriction;
+
+                sal_memset(&port_restriction, 0, sizeof(ctc_port_restriction_t));
+
+                port_restriction.mode = CTC_PORT_RESTRICTION_PORT_ISOLATION;
+                port_restriction.type = CTC_PORT_ISOLATION_ALL;
+                port_restriction.dir = CTC_INGRESS;
+                CTC_SAI_CTC_ERROR_RETURN(ctcs_port_get_restriction(lchip, p_bridge_port->gport, &port_restriction));
+                if (0 != port_restriction.isolated_id)
+                {
+                    attr->value.oid = ctc_sai_create_object_id(SAI_OBJECT_TYPE_ISOLATION_GROUP, lchip, 0, 0, port_restriction.isolated_id);
+                }
+                else
+                {
+                    attr->value.oid = SAI_NULL_OBJECT_ID;
+                }
+            }
+            else
+            {
+                return SAI_STATUS_ATTR_NOT_SUPPORTED_0;
+            }
+            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "bridge port attribute %d not implemented\n", attr->id);
             status = SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -428,6 +454,32 @@ ctc_sai_bridge_port_set_port_property(sai_object_key_t* key, const sai_attribute
             value = attr->value.booldata ? TRUE : FALSE;
             CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_vlan_filter_en(lchip, p_bridge_port->gport, CTC_EGRESS, value));
             break;
+        case SAI_BRIDGE_PORT_ATTR_ISOLATION_GROUP:
+            if (SAI_BRIDGE_PORT_TYPE_PORT == p_bridge_port->port_type)
+            {
+                ctc_port_restriction_t port_restriction;
+                ctc_sai_isolation_group_t* p_ist_grp = NULL;
+                ctc_object_id_t ctc_object_id;
+                sal_memset(&ctc_object_id, 0, sizeof(ctc_object_id_t));
+                sal_memset(&port_restriction, 0, sizeof(ctc_port_restriction_t));
+
+                p_ist_grp = ctc_sai_db_get_object_property(lchip, attr->value.oid);
+                if (NULL == p_ist_grp)
+                {
+                    return SAI_STATUS_INVALID_OBJECT_ID;
+                }
+                ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_PORT, attr->value.oid, &ctc_object_id);
+                port_restriction.mode = CTC_PORT_RESTRICTION_PORT_ISOLATION;
+                port_restriction.type = CTC_PORT_ISOLATION_ALL;
+                port_restriction.dir = CTC_INGRESS;
+                port_restriction.isolated_id = ctc_object_id.value;
+                CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_restriction(lchip, p_bridge_port->gport, &port_restriction));
+            }
+            else
+            {
+                return SAI_STATUS_ATTR_NOT_SUPPORTED_0;
+            }
+            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_BRIDGE, "bridge port attribute %d not implemented\n", attr->id);
             status = SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -450,7 +502,7 @@ ctc_sai_bridge_port_set_port_property(sai_object_key_t* key, const sai_attribute
 static sai_status_t
 ctc_sai_bridge_get_bridge_port_stats( sai_object_id_t               bridge_port_id,
                                                 uint32_t                      number_of_counters,
-                                                const sai_bridge_port_stat_t *counter_ids,
+                                                const sai_stat_id_t *counter_ids,
                                                 uint64_t                    *counters)
 {
     sai_status_t status = SAI_STATUS_SUCCESS;
@@ -514,7 +566,7 @@ ctc_sai_bridge_get_bridge_port_stats( sai_object_id_t               bridge_port_
 static sai_status_t
 ctc_sai_bridge_get_bridge_port_stats_ext( sai_object_id_t               bridge_port_id,
                                                 uint32_t                      number_of_counters,
-                                                const sai_bridge_port_stat_t *counter_ids,
+                                                const sai_stat_id_t *counter_ids,
                                                 sai_stats_mode_t mode,
                                                 uint64_t                    *counters)
 {
@@ -606,7 +658,7 @@ ctc_sai_bridge_get_bridge_port_stats_ext( sai_object_id_t               bridge_p
 static sai_status_t
 ctc_sai_bridge_clear_bridge_port_stats(sai_object_id_t bridge_port_id,
                                                   uint32_t number_of_counters,
-                                                  const sai_bridge_port_stat_t* counter_ids)
+                                                  const sai_stat_id_t* counter_ids)
 {
     sai_status_t status = SAI_STATUS_SUCCESS;
     uint8 lchip = 0;
@@ -1058,9 +1110,18 @@ ctc_sai_bridge_create_bridge_port(sai_object_id_t* bridge_port_id,
 
     CTC_SAI_ERROR_GOTO(ctc_sai_db_add_object_property(lchip, *bridge_port_id, p_bridge_port), status, roll_back_2);
 
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_BRIDGE_PORT_ATTR_ISOLATION_GROUP, &attr_val, &attr_idx);
+    if (status == SAI_STATUS_SUCCESS)
+    {
+        sai_object_key_t key = { .key.object_id = *bridge_port_id };
+        CTC_SAI_ERROR_GOTO(ctc_sai_bridge_port_set_port_property(&key, &attr_list[attr_idx]), status, roll_back_3);
+    }
+
     CTC_SAI_DB_UNLOCK(lchip);
 
     return SAI_STATUS_SUCCESS;
+roll_back_3:
+    ctc_sai_db_remove_object_property(lchip, *bridge_port_id);
 
 roll_back_2:
     if (admin_state)
@@ -1144,6 +1205,7 @@ static  ctc_sai_attr_fn_entry_t brg_port_attr_fn_entries[] = {
     {SAI_BRIDGE_PORT_ATTR_TAGGING_MODE, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {SAI_BRIDGE_PORT_ATTR_INGRESS_FILTERING, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {SAI_BRIDGE_PORT_ATTR_EGRESS_FILTERING, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
+    {SAI_BRIDGE_PORT_ATTR_ISOLATION_GROUP, ctc_sai_bridge_port_get_port_property, ctc_sai_bridge_port_set_port_property},
     {CTC_SAI_FUNC_ATTR_END_ID,NULL,NULL}
  };
 
@@ -1691,7 +1753,7 @@ roll_back_0:
 static sai_status_t
 ctc_sai_bridge_get_bridge_stats( sai_object_id_t          bridge_id,
                                            uint32_t                 number_of_counters,
-                                           const sai_bridge_stat_t *counter_ids,
+                                           const sai_stat_id_t *counter_ids,
                                            uint64_t               *counters)
 {
     CTC_SAI_LOG_ENTER(SAI_API_BRIDGE);
@@ -1702,7 +1764,7 @@ ctc_sai_bridge_get_bridge_stats( sai_object_id_t          bridge_id,
 static sai_status_t
 ctc_sai_bridge_get_bridge_stats_ext( sai_object_id_t          bridge_id,
                                            uint32_t                 number_of_counters,
-                                           const sai_bridge_stat_t *counter_ids,
+                                           const sai_stat_id_t *counter_ids,
                                            sai_stats_mode_t mode,
                                            uint64_t               *counters)
 {
@@ -1723,7 +1785,7 @@ ctc_sai_bridge_get_bridge_stats_ext( sai_object_id_t          bridge_id,
 static sai_status_t
 ctc_sai_bridge_clear_bridge_stats( sai_object_id_t          bridge_id,
                                              uint32_t                 number_of_counters,
-                                              const sai_bridge_stat_t *counter_ids)
+                                              const sai_stat_id_t *counter_ids)
 {
     CTC_SAI_LOG_ENTER(SAI_API_BRIDGE);
 

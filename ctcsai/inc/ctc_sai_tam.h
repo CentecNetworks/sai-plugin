@@ -8,7 +8,7 @@
  @version v2.0
 
 \p
- This module defines SAI TAM and Uburst.
+ This module defines SAI TAM.
 \b
 \p
  The TAM Module APIs supported by centec devices:
@@ -19,116 +19,143 @@
 \t  |  remove_tam                                           |           -            |
 \t  |  set_tam_attribute                                    |           -            |
 \t  |  get_tam_attribute                                    |           -            |
-\t  |  create_tam_stat                                      |           -            |
-\t  |  remove_tam_stat                                      |           -            |
-\t  |  set_tam_stat_attribute                               |           -            |
-\t  |  get_tam_stat_attribute                               |           -            |
-\t  |  create_tam_threshold                                 |           -            |
-\t  |  remove_tam_threshold                                 |           -            |
-\t  |  set_tam_threshold_attribute                          |           -            |
-\t  |  get_tam_threshold_attribute                          |           -            |
-\t  |  create_tam_snapshot                                  |           -            |
-\t  |  remove_tam_snapshot                                  |           -            |
-\t  |  set_tam_snapshot_attribute                           |           -            |
-\t  |  get_tam_snapshot_attribute                           |           -            |
-\t  |  get_tam_snapshot_stats                               |           -            |
-\t  |  create_tam_transporter                               |           -            |
-\t  |  remove_tam_transporter                               |           -            |
-\t  |  set_tam_transporter_attribute                        |           -            |
-\t  |  get_tam_transporter_attribute                        |           -            |
-\b
-\p
- The TAM Stat attributes supported by centec devices:
-\p
-\b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_STAT_ATTR_PARENT_ID                          |           -            |
-\t  |  SAI_TAM_STAT_ATTR_COUNTER_ID                         |           -            |
+\t  |  create_tam_math_func                                 |           -            |
+\t  |  remove_tam_math_func                                 |           -            |
+\t  |  set_tam_math_func_attribute                          |           -            |
+\t  |  get_tam_math_func_attribute                          |           -            |
+\t  |  create_tam_report                                    |           -            |
+\t  |  remove_tam_report                                    |           -            |
+\t  |  set_tam_report_attribute                             |           -            |
+\t  |  get_tam_report_attribute                             |           -            |
+\t  |  create_tam_event_threshold                           |           -            |
+\t  |  remove_tam_event_threshold                           |           -            |
+\t  |  set_tam_event_threshold_attribute                    |           -            |
+\t  |  get_tam_event_threshold_attribute                    |           -            |
+\t  |  create_tam_tel_type                                  |           -            |
+\t  |  remove_tam_tel_type                                  |           -            |
+\t  |  set_tam_tel_type_attribute                           |           -            |
+\t  |  get_tam_tel_type_attribute                           |           -            |
+\t  |  create_tam_transport                                 |           -            |
+\t  |  remove_tam_transport                                 |           -            |
+\t  |  set_tam_transport_attribute                          |           -            |
+\t  |  get_tam_transport_attribute                          |           -            |
+\t  |  create_tam_telemetry                                 |           -            |
+\t  |  remove_tam_telemetry                                 |           -            |
+\t  |  set_tam_telemetry_attribute                          |           -            |
+\t  |  get_tam_telemetry_attribute                          |           -            |
+\t  |  create_tam_collector                                 |           -            |
+\t  |  remove_tam_collector                                 |           -            |
+\t  |  set_tam_collector_attribute                          |           -            |
+\t  |  get_tam_collector_attribute                          |           -            |
+\t  |  create_tam_event_action                              |           -            |
+\t  |  remove_tam_event_action                              |           -            |
+\t  |  set_tam_event_action_attribute                       |           -            |
+\t  |  get_tam_event_action_attribute                       |           -            |
+\t  |  create_tam_event                                     |           -            |
+\t  |  remove_tam_event                                     |           -            |
+\t  |  set_tam_event_attribute                              |           -            |
+\t  |  get_tam_event_attribute                              |           -            |
 \b
 \p
  The TAM attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_ATTR_BUFFER_TRACKING_ADMIN_STATE             |           -            |
-\t  |  SAI_TAM_ATTR_BUFFER_REPORTING_MODE                   |           -            |
-\t  |  SAI_TAM_ATTR_BUFFER_TRACKING_MODE                    |           -            |
-\t  |  SAI_TAM_ATTR_TRACKING_OPTIONS                        |           -            |
-\t  |  SAI_TAM_ATTR_TRANSPORTER                             |           -            |
-\t  |  SAI_TAM_ATTR_CLEAR_ALL_THRESHOLDS                    |           -            |
-\t  |  SAI_TAM_ATTR_TOTAL_NUM_STATISTICS                    |           -            |
-\t  |  SAI_TAM_ATTR_LATEST_SNAPSHOT_ID                      |           -            |
-\t  |  SAI_TAM_ATTR_MAX_NUM_SNAPSHOTS                       |           -            |
-\t  |  SAI_TAM_ATTR_THRESHOLD_LIST                          |           -            |
+\t  |  SAI_TAM_ATTR_TELEMETRY_OBJECTS_LIST                  |           -            |
+\t  |  SAI_TAM_ATTR_EVENT_OBJECTS_LIST                      |           -            |
+\t  |  SAI_TAM_ATTR_TAM_BIND_POINT_TYPE_LIST                |           -            |
 \b
 \p
- The TAM Threshold attributes supported by centec devices:
+ The TAM Math Func attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_THRESHOLD_ATTR_TAM_ID                        |           -            |
-\t  |  SAI_TAM_THRESHOLD_ATTR_STATISTIC                     |           -            |
-\t  |  SAI_TAM_THRESHOLD_ATTR_LEVEL                         |           -            |
-\t  |  SAI_TAM_THRESHOLD_ATTR_TRANSPORTER                   |           -            |
-\t  |  SAI_TAM_THRESHOLD_ATTR_SNAPSHOT_ON_BREACH            |           -            |
-\t  |  SAI_TAM_THRESHOLD_ATTR_SNAPSHOT_STATS                |           -            |
+\t  |  SAI_TAM_MATH_FUNC_ATTR_TAM_TEL_MATH_FUNC_TYPE        |           -            |
 \b
 \p
- The TAM Snapshot attributes supported by centec devices:
+ The TAM Report attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_SNAPSHOT_ATTR_TAM_ID                         |           -            |
-\t  |  SAI_TAM_SNAPSHOT_ATTR_STAT_TYPE                      |           -            |
-\t  |  SAI_TAM_SNAPSHOT_ATTR_TRANSPORTER                    |           -            |
+\t  |  SAI_TAM_REPORT_ATTR_TYPE                             |           -            |
+\t  |  SAI_TAM_REPORT_ATTR_HISTOGRAM_NUMBER_OF_BINS         |           -            |
+\t  |  SAI_TAM_REPORT_ATTR_HISTOGRAM_BIN_BOUNDARY           |           -            |
 \b
 \p
- The TAM Transporter attributes supported by centec devices:
+ The TAM Event Threshold attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_TRANSPORTER_ATTR_TYPE                        |           -            |
-\t  |  SAI_TAM_TRANSPORTER_ATTR_MAX_SNAPSHOT_SIZE           |           -            |
-\t  |  SAI_TAM_TRANSPORTER_ATTR_MONITOR_ID                  |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_HIGH_WATERMARK          |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_LOW_WATERMARK           |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_LATENCY                 |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_RATE                    |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_ABS_VALUE               |           -            |
+\t  |  SAI_TAM_EVENT_THRESHOLD_ATTR_UNIT                    |           -            |
 \b
 \p
- The UBURST Module APIs supported by centec devices:
+ The TAM Tel Type attributes supported by centec devices:
 \p
 \b
-\t  |   API                                                 |   SUPPORT CHIPS LIST   |
-\t  |  sai_create_tam_microburst_fn                         |           -            |
-\t  |  sai_remove_tam_microburst_fn                         |           -            |
-\t  |  sai_set_tam_microburst_attribute_fn                  |           -            |
-\t  |  sai_get_tam_microburst_attribute_fn                  |           -            |
-\t  |  sai_create_tam_histogram_fn                          |           -            |
-\t  |  sai_remove_tam_histogram_fn                          |           -            |
-\t  |  sai_set_tam_histogram_attribute_fn                   |           -            |
-\t  |  sai_get_tam_histogram_attribute_fn                   |           -            |
-\t  |  sai_get_tam_histogram_stats_fn                       |           -            |
+\t  |   ATTRIBUTE                                                       |   SUPPORT CHIPS LIST   |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_TAM_TELEMETRY_TYPE                         |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_PORT_STATS                   |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_PORT_STATS_INGRESS           |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_PORT_STATS_EGRESS            |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_VIRTUAL_QUEUE_STATS          |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_OUTPUT_QUEUE_STATS           |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_MMU_STATS                    |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_FABRIC_STATS                 |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_FILTER_STATS                 |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_SWITCH_ENABLE_RESOURCE_UTILIZATION_STATS   |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_FABRIC_Q                                   |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_NE_ENABLE                                  |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_DSCP_VALUE                                 |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_MATH_FUNC                                  |           -            |
+\t  |  SAI_TAM_TEL_TYPE_ATTR_REPORT_ID                                  |           -            |
+\b
+\p
+ The TAM Telemetry attributes supported by centec devices:
+\p
+\b
+\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
+\t  |  SAI_TAM_TELEMETRY_ATTR_TAM_TYPE_LIST                 |           -            |
+\t  |  SAI_TAM_TELEMETRY_ATTR_COLLECTOR_LIST                |           -            |
+\t  |  SAI_TAM_TELEMETRY_ATTR_TAM_REPORTING_UNIT            |           -            |
+\t  |  SAI_TAM_TELEMETRY_ATTR_REPORTING_INTERVAL            |           -            |
+\t  |  SAI_TAM_TRANSPORT_ATTR_MTU                           |           -            |
+\b
+\p
+ The TAM Collector attributes supported by centec devices:
+\p
+\b
+\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
+\t  |  SAI_TAM_COLLECTOR_ATTR_SRC_IP                        |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_DST_IP                        |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_LOCALHOST                     |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_VIRTUAL_ROUTER_ID             |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_TRUNCATE_SIZE                 |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_TRANSPORT                     |           -            |
+\t  |  SAI_TAM_COLLECTOR_ATTR_DSCP_VALUE                    |           -            |
 \b
 \p
  The TAM Microburst attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_MICROBURST_ATTR_TAM_ID                       |           -            |
-\t  |  SAI_TAM_MICROBURST_ATTR_STATISTIC                    |           -            |
-\t  |  SAI_TAM_MICROBURST_ATTR_LEVEL_A                      |           -            |
-\t  |  SAI_TAM_MICROBURST_ATTR_LEVEL_B                      |           -            |
-\t  |  SAI_TAM_MICROBURST_ATTR_TRANSPORTER                  |           -            |
-\t  |  SAI_TAM_MICROBURST_ATTR_STATS                        |           -            |
+\t  |  SAI_TAM_EVENT_ACTION_ATTR_REPORT_TYPE                |           -            |
+\t  |  SAI_TAM_EVENT_ACTION_ATTR_QOS_ACTION_TYPE            |           -            |
 \b
 \p
  The TAM Histogram attributes supported by centec devices:
 \p
 \b
 \t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_TAM_ID                        |           -            |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_STAT_TYPE                     |           -            |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_BIN_BOUNDARY                  |           -            |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_RESOLUTION                    |           -            |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_CLEAR_MODE                    |           -            |
-\t  |  SAI_TAM_HISTOGRAM_ATTR_TRANSPORTER                   |           -            |
+\t  |  SAI_TAM_EVENT_ATTR_TYPE                              |           -            |
+\t  |  SAI_TAM_EVENT_ATTR_ACTION_LIST                       |           -            |
+\t  |  SAI_TAM_EVENT_ATTR_COLLECTOR_LIST                    |           -            |
+\t  |  SAI_TAM_EVENT_ATTR_THRESHOLD                         |           -            |
+\t  |  SAI_TAM_EVENT_ATTR_DSCP_VALUE                        |           -            |
 \b
 */
 

@@ -14,36 +14,38 @@ This module defines SAI Routing Interface.
  The Routing Interface Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                               |   SUPPORT CHIPS LIST   |
-\t  |  create_router_interface                            |    CTC8096,CTC7148     |
-\t  |  remove_router_interface                            |    CTC8096,CTC7148     |
-\t  |  set_router_interface_attribute                     |    CTC8096,CTC7148     |
-\t  |  get_router_interface_attribute                     |    CTC8096,CTC7148     |
-\t  |  get_router_interface_stats                         |    CTC8096,CTC7148     |
-\t  |  get_router_interface_stats_ext                     |    CTC8096,CTC7148     |
-\t  |  clear_router_interface_stats                       |    CTC8096,CTC7148     |
+\t  |   API                                               |       SUPPORT CHIPS LIST       |
+\t  |  create_router_interface                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_router_interface                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_router_interface_attribute                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_router_interface_attribute                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_router_interface_stats                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_router_interface_stats_ext                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  clear_router_interface_stats                       |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Routing Interface attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                                |   SUPPORT CHIPS LIST   |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_VIRTUAL_ROUTER_ID               |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_TYPE                            |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_PORT_ID                         |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_VLAN_ID                         |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_OUTER_VLAN_ID                   |           -            |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_INNER_VLAN_ID                   |           -            |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_SRC_MAC_ADDRESS                 |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE                  |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE                  |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_MTU                             |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL                     |           -            |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_EGRESS_ACL                      |           -            |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_NEIGHBOR_MISS_PACKET_ACTION     |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE                 |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE                 |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTER_INTERFACE_ATTR_LOOPBACK_PACKET_ACTION          |           -            |
+\t  |   ATTRIBUTE                                                |       SUPPORT CHIPS LIST       |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_VIRTUAL_ROUTER_ID               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_TYPE                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_PORT_ID                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_VLAN_ID                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_OUTER_VLAN_ID                   |              -                 |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_INNER_VLAN_ID                   |              -                 |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_SRC_MAC_ADDRESS                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_MTU                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL                     |              -                 |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_EGRESS_ACL                      |              -                 |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_NEIGHBOR_MISS_PACKET_ACTION     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_LOOPBACK_PACKET_ACTION          |              -                 |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL                      |    CTC8096,CTC7148,CTC7132     |
 \b
 
 */
@@ -87,9 +89,12 @@ typedef struct  ctc_sai_router_interface_s
    uint32 v6_state:1;
    uint32 v4_mc_state:1;
    uint32 v6_mc_state:1;
-   uint32 rsv:28;
+   uint32 is_virtual:1;
+   uint32 rsv:27;
    uint32 ing_statsid;
    uint32 egs_statsid;
+   sai_object_id_t dot1d_bridge_id;
+   uint32 actual_l3if_id;
 
 }ctc_sai_router_interface_t;
 

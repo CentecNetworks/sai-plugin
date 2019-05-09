@@ -14,35 +14,35 @@
  The FDB Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                |   SUPPORT CHIPS LIST   |
-\t  |  create_fdb_entry                    |    CTC8096,CTC7148     |
-\t  |  remove_fdb_entry                    |    CTC8096,CTC7148     |
-\t  |  set_fdb_entry_attribute             |    CTC8096,CTC7148     |
-\t  |  get_fdb_entry_attribute             |    CTC8096,CTC7148     |
-\t  |  flush_fdb_entries                   |    CTC8096,CTC7148     |
+\t  |   API                                |       SUPPORT CHIPS LIST       |
+\t  |  create_fdb_entry                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_fdb_entry                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_fdb_entry_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_fdb_entry_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  flush_fdb_entries                   |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The FDB attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                          |   SUPPORT CHIPS LIST   |
-\t  |  SAI_FDB_ENTRY_ATTR_TYPE             |    CTC8096,CTC7148     |
-\t  |  SAI_FDB_ENTRY_ATTR_PACKET_ACTION    |    CTC8096,CTC7148     |
-\t  |  SAI_FDB_ENTRY_ATTR_USER_TRAP_ID     |           -            |
-\t  |  SAI_FDB_ENTRY_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148     |
-\t  |  SAI_FDB_ENTRY_ATTR_META_DATA        |        CTC7148         |
-\t  |  SAI_FDB_ENTRY_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                          |       SUPPORT CHIPS LIST       |
+\t  |  SAI_FDB_ENTRY_ATTR_TYPE             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_FDB_ENTRY_ATTR_PACKET_ACTION    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_FDB_ENTRY_ATTR_USER_TRAP_ID     |              -                 |
+\t  |  SAI_FDB_ENTRY_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_FDB_ENTRY_ATTR_META_DATA        |        CTC7148,CTC7132         |
+\t  |  SAI_FDB_ENTRY_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The FDB FLUSH attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                          |   SUPPORT CHIPS LIST   |
-\t  |  SAI_FDB_FLUSH_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148     |
-\t  |  SAI_FDB_FLUSH_ATTR_BV_ID            |    CTC8096,CTC7148     |
-\t  |  SAI_FDB_FLUSH_ATTR_ENTRY_TYPE       |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                          |       SUPPORT CHIPS LIST       |
+\t  |  SAI_FDB_FLUSH_ATTR_BRIDGE_PORT_ID   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_FDB_FLUSH_ATTR_BV_ID            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_FDB_FLUSH_ATTR_ENTRY_TYPE       |    CTC8096,CTC7148,CTC7132     |
 \b
 
 */

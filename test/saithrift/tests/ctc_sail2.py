@@ -18,6 +18,7 @@ Thrift SAI interface L2 tests
 import socket
 from switch import *
 import sai_base_test
+import time
 
 @group('l2')
 class L2AccessTohybridVlanTest(sai_base_test.ThriftInterfaceDataPlane):
@@ -1288,4 +1289,331 @@ class L2PortTransmitPropertyTest(sai_base_test.ThriftInterfaceDataPlane):
             self.client.sai_thrift_remove_vlan(vlan_oid1)
             self.client.sai_thrift_remove_vlan(vlan_oid2)
             self.client.sai_thrift_remove_vlan(vlan_oid3)
+            
+@group('l2')
+class L2IsolationGroupTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
+        """
+        Isolation group basic test
+        steps:
+        step1:set fdb and send packets. Packets will be received.
+        step2:set isolation group and send packets. Packets will not be received.
+        """
+        print
+        print "start test"
+        switch_init(self.client)
+        vlan_id1 = 10
+        port1 = port_list[0]
+        port2 = port_list[1]
+        port3 = port_list[2]
+        
+        mac1 = '00:10:10:10:10:10'
+        mac2 = '00:20:20:20:20:20'
+        mac3 = '00:30:30:30:30:30'
+        mac4 = '00:40:40:40:40:40'
+        mac_action = SAI_PACKET_ACTION_FORWARD
 
+        vlan_oid1 = sai_thrift_create_vlan(self.client, vlan_id1)
+
+        vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port1, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port2, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member3 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port3, SAI_VLAN_TAGGING_MODE_TAGGED)
+
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac1, port1, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac2, port2, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac3, port3, mac_action)
+
+        pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='10.0.0.1',
+                                ip_id=101,
+                                ip_ttl=68)
+        pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='20.0.0.1',
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+        exp_pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                ip_dst='10.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=101,
+                                ip_ttl=64,
+                                pktlen=68)
+        exp_pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                ip_dst='20.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+                                
+        warmboot(self.client)
+        try:
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), packet from port2 with vlan 10"
+            send_packet(self, 0, str(pkt))
+            verify_packets(self, pkt, [1])
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) packet from port3 with vlan 10"
+            send_packet(self, 0, str(pkt1))
+            verify_packets(self, exp_pkt1, [2])
+        finally:
+            pass
+        # set isolation group
+        isolation_group_oid = sai_thrift_create_isolation_group(self.client, type = SAI_ISOLATION_GROUP_TYPE_PORT)
+        isolation_group_member_oid1 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port2)
+        isolation_group_member_oid2 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port3)
+        try:
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), no packet received"
+            send_packet(self, 0, str(pkt))
+            verify_no_packet(self, exp_pkt1, 1)
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) no packet received"
+            send_packet(self, 0, str(pkt1))
+            verify_no_packet(self, exp_pkt1, 2)
+        finally:
+            sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid1)
+            sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid2)
+            sai_thrift_remove_isolation_group(self.client, isolation_group_oid)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid1)
+        
+            attr_value = sai_thrift_attribute_value_t(u16=1)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            self.client.sai_thrift_set_port_attribute(port2, attr)
+            self.client.sai_thrift_set_port_attribute(port3, attr)
+        
+            self.client.sai_thrift_remove_vlan_member(vlan_member1)
+            self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan_member(vlan_member3)
+            self.client.sai_thrift_remove_vlan(vlan_oid1)
+
+@group('l2')
+class L2IsolationGroupGetGroupAttributesTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
+        """
+        Isolation group basic test
+        steps:
+        step1:set fdb and send packets. Packets will be received.
+        setp2:get isolation group attributes
+        step3:set isolation group and send packets. Packets will not be received.
+        """
+        print
+        print "start test"
+        switch_init(self.client)
+        vlan_id1 = 10
+        port1 = port_list[0]
+        port2 = port_list[1]
+        port3 = port_list[2]
+        
+        mac1 = '00:10:10:10:10:10'
+        mac2 = '00:20:20:20:20:20'
+        mac3 = '00:30:30:30:30:30'
+        mac4 = '00:40:40:40:40:40'
+        mac_action = SAI_PACKET_ACTION_FORWARD
+
+        vlan_oid1 = sai_thrift_create_vlan(self.client, vlan_id1)
+
+        vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port1, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port2, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member3 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port3, SAI_VLAN_TAGGING_MODE_TAGGED)
+
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac1, port1, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac2, port2, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac3, port3, mac_action)
+
+        pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='10.0.0.1',
+                                ip_id=101,
+                                ip_ttl=68)
+        pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='20.0.0.1',
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+        exp_pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                ip_dst='10.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=101,
+                                ip_ttl=64,
+                                pktlen=68)
+        exp_pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                ip_dst='20.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+                                
+        warmboot(self.client)
+        try:
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), packet from port2 with vlan 10"
+            send_packet(self, 0, str(pkt))
+            verify_packets(self, pkt, [1])
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) packet from port3 with vlan 10"
+            send_packet(self, 0, str(pkt1))
+            verify_packets(self, exp_pkt1, [2])
+        finally:
+            pass
+        # set isolation group
+        isolation_group_oid = sai_thrift_create_isolation_group(self.client, type = SAI_ISOLATION_GROUP_TYPE_PORT)
+        isolation_group_member_oid1 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port2)
+        isolation_group_member_oid2 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port3)
+        attr_list = sai_thrift_get_isolation_group_attributes(self.client, isolation_group_oid)
+        try:
+            for i in attr_list.attr_list:
+                if i.id == SAI_ISOLATION_GROUP_ATTR_TYPE:
+                    assert(i.value.u32 == SAI_ISOLATION_GROUP_TYPE_PORT)
+                if i.id == SAI_ISOLATION_GROUP_ATTR_ISOLATION_MEMBER_LIST:
+                    assert(isolation_group_member_oid1 in i.value.objlist.object_id_list)
+                    assert(isolation_group_member_oid2 in i.value.objlist.object_id_list)
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), no packet received"
+            send_packet(self, 0, str(pkt))
+            verify_no_packet(self, exp_pkt1, 1)
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) no packet received"
+            send_packet(self, 0, str(pkt1))
+            verify_no_packet(self, exp_pkt1, 2)
+        finally:
+            sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid1)
+            sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid2)
+            sai_thrift_remove_isolation_group(self.client, isolation_group_oid)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid1)
+        
+            attr_value = sai_thrift_attribute_value_t(u16=1)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            self.client.sai_thrift_set_port_attribute(port2, attr)
+            self.client.sai_thrift_set_port_attribute(port3, attr)
+        
+            self.client.sai_thrift_remove_vlan_member(vlan_member1)
+            self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan_member(vlan_member3)
+            self.client.sai_thrift_remove_vlan(vlan_oid1)
+            
+@group('l2')
+class L2IsolationGroupGetMemberAttributesTest(sai_base_test.ThriftInterfaceDataPlane):
+    def runTest(self):
+        """
+        Isolation group basic test
+        steps:
+        step1:set fdb and send packets. Packets will be received.
+        step2:get isolation group member attributes
+        step:remove isolation group member, and send packets. Packets will be received.
+        """
+        print
+        print "start test"
+        switch_init(self.client)
+        vlan_id1 = 10
+        port1 = port_list[0]
+        port2 = port_list[1]
+        port3 = port_list[2]
+        
+        mac1 = '00:10:10:10:10:10'
+        mac2 = '00:20:20:20:20:20'
+        mac3 = '00:30:30:30:30:30'
+        mac4 = '00:40:40:40:40:40'
+        mac_action = SAI_PACKET_ACTION_FORWARD
+
+        vlan_oid1 = sai_thrift_create_vlan(self.client, vlan_id1)
+
+        vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port1, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port2, SAI_VLAN_TAGGING_MODE_TAGGED)
+        vlan_member3 = sai_thrift_create_vlan_member(self.client, vlan_oid1, port3, SAI_VLAN_TAGGING_MODE_TAGGED)
+
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac1, port1, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac2, port2, mac_action)
+        sai_thrift_create_fdb(self.client, vlan_oid1, mac3, port3, mac_action)
+
+        pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='10.0.0.1',
+                                ip_id=101,
+                                ip_ttl=68)
+        pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_dst='20.0.0.1',
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+        exp_pkt = simple_tcp_packet(eth_dst=mac2,
+                                eth_src=mac1,
+                                ip_dst='10.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=101,
+                                ip_ttl=64,
+                                pktlen=68)
+        exp_pkt1 = simple_tcp_packet(eth_dst=mac3,
+                                eth_src=mac1,
+                                ip_dst='20.0.0.1',
+                                dl_vlan_enable=True,
+                                vlan_vid=10,
+                                ip_id=102,
+                                ip_ttl=64,
+                                pktlen=100)
+                                
+        warmboot(self.client)
+        try:
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), packet from port2 with vlan 10"
+            send_packet(self, 0, str(pkt))
+            verify_packets(self, pkt, [1])
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) packet from port3 with vlan 10"
+            send_packet(self, 0, str(pkt1))
+            verify_packets(self, exp_pkt1, [2])
+        finally:
+            pass
+        # set isolation group
+        isolation_group_oid = sai_thrift_create_isolation_group(self.client, type = SAI_ISOLATION_GROUP_TYPE_PORT)
+        isolation_group_member_oid1 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port2)
+        isolation_group_member_oid2 = sai_thrift_create_isolation_group_member(self.client, isolation_group_oid, port3)
+        attr_list = sai_thrift_get_isolation_group_member_attributes(self.client, isolation_group_member_oid1)
+        try:
+            for i in attr_list.attr_list:
+                if i.id == SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_GROUP_ID:
+                    assert(i.value.oid == isolation_group_oid)
+                if i.id == SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_OBJECT:
+                    assert(port2 == i.value.oid)
+        finally:
+            pass
+        # remove isolation member
+        sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid1)
+        sai_thrift_remove_isolation_group_member(self.client, isolation_group_member_oid2)
+        try:
+            print "Sending L2 packet port 1 -> port 2 [access vlan=10]), packet from port2 with vlan 10"
+            send_packet(self, 0, str(pkt))
+            verify_packets(self, pkt, [1])
+            print "Sending L2 packet port 1 -> port 3 [access vlan=10]) packet from port3 with vlan 10"
+            send_packet(self, 0, str(pkt1))
+            verify_packets(self, exp_pkt1, [2])
+        finally:
+            sai_thrift_remove_isolation_group(self.client, isolation_group_oid)
+            sai_thrift_flush_fdb_by_vlan(self.client, vlan_oid1)
+        
+            attr_value = sai_thrift_attribute_value_t(u16=1)
+            attr = sai_thrift_attribute_t(id=SAI_PORT_ATTR_PORT_VLAN_ID, value=attr_value)
+            self.client.sai_thrift_set_port_attribute(port1, attr)
+            self.client.sai_thrift_set_port_attribute(port2, attr)
+            self.client.sai_thrift_set_port_attribute(port3, attr)
+        
+            self.client.sai_thrift_remove_vlan_member(vlan_member1)
+            self.client.sai_thrift_remove_vlan_member(vlan_member2)
+            self.client.sai_thrift_remove_vlan_member(vlan_member3)
+            self.client.sai_thrift_remove_vlan(vlan_oid1)

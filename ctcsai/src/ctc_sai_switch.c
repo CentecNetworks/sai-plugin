@@ -35,12 +35,16 @@
 #include "ctc_sai_tunnel.h"
 #include "ctc_sai_mpls.h"
 #include "ctc_sai_acl.h"
+#include "ctc_sai_isolation_group.h"
 
 static sai_switch_profile_id_t   g_profile_id;
 
 extern sai_service_method_table_t g_ctc_services;
 extern int32 ctc_master_cli(int32 ctc_shell_mode);
 extern int32 ctc_cli_read(int32 ctc_shell_mode);
+#ifndef SAI_SHELL_COMPAT
+extern int32 ctc_cli_start(int32 ctc_shell_mode);
+#endif
 extern void  ctc_vty_close();
 extern int32 ctc_app_cli_init(void);
 extern sai_status_t ctc_sai_neighbor_update_arp(uint8 lchip, const sai_fdb_entry_t* fdb_entry, uint8 is_remove, uint8 is_flush);
@@ -269,7 +273,9 @@ ctc_sai_switch_fdb_learning_process(uint8 gchip, void* p_data)
 
 void _ctc_sai_sdk_shell_thread(void* param)
 {
-    ctc_cli_read(0);
+    #ifndef SAI_SHELL_COMPAT
+    ctc_cli_start(0);
+    #endif
 }
 
 int32
@@ -688,6 +694,14 @@ ctc_sai_switch_get_global_property(sai_object_key_t* key, sai_attribute_t* attr,
             break;
         case SAI_SWITCH_ATTR_PRE_SHUTDOWN:
             attr->value.booldata = CTC_FLAG_ISSET(p_switch_master->flag, SAI_SWITCH_ATTR_PRE_SHUTDOWN)?1:0;
+        case SAI_SWITCH_ATTR_MAX_NUMBER_OF_TEMP_SENSORS:
+            attr->value.u8 = 1;
+        case SAI_SWITCH_ATTR_TEMP_LIST:
+            CTC_SAI_ATTR_ERROR_RETURN(ctcs_get_chip_sensor(lchip, CTC_CHIP_SENSOR_TEMP, &value), attr_idx);
+            CTC_SAI_ATTR_ERROR_RETURN(ctc_sai_fill_object_list(sizeof(uint32), &value, 1, &attr->value.u32list), attr_idx);
+        case SAI_SWITCH_ATTR_AVERAGE_TEMP:
+            CTC_SAI_ATTR_ERROR_RETURN(ctcs_get_chip_sensor(lchip, CTC_CHIP_SENSOR_TEMP, &value), attr_idx);
+            attr->value.s32 = value;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "switch attribute %d not implemented\n", attr->id);
             status =  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0+attr_idx;
@@ -782,6 +796,7 @@ ctc_sai_switch_set_global_property(sai_object_key_t* key, const sai_attribute_t*
             {
                 if (NULL == g_ctc_sai_master.p_shell_thread)
                 {
+                    ctc_cli_read(0);
                     CTC_SAI_CTC_ERROR_RETURN(sal_task_create(&(g_ctc_sai_master.p_shell_thread), "sdk_shell",
                           SAL_DEF_TASK_STACK_SIZE, SAL_TASK_PRIO_DEF, _ctc_sai_sdk_shell_thread, (void*)NULL));
                }
@@ -1408,9 +1423,6 @@ ctc_sai_switch_set_callback_event(sai_object_key_t* key, const sai_attribute_t* 
         case SAI_SWITCH_ATTR_PACKET_EVENT_NOTIFY:
             p_switch_master->packet_event_cb = (sai_packet_event_notification_fn)attr->value.ptr;
             break;
-        case SAI_SWITCH_ATTR_TAM_EVENT_NOTIFY:
-            p_switch_master->tam_event_cb = (sai_tam_event_notification_fn)attr->value.ptr;
-            break;
         default:
             CTC_SAI_LOG_ERROR(SAI_API_SWITCH, "switch attribute %d not implemented\n", attr->id);
             status = SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
@@ -1652,12 +1664,14 @@ static sai_status_t ctc_sai_switch_create_db(uint8 lchip)
     CTC_SAI_ERROR_RETURN(ctc_sai_mpls_db_init(lchip));
     CTC_SAI_ERROR_RETURN(ctc_sai_tunnel_db_init(lchip));
     CTC_SAI_ERROR_RETURN(ctc_sai_acl_db_init(lchip));
+    CTC_SAI_ERROR_RETURN((ctc_sai_isolation_group_db_init(lchip)));
 
     return SAI_STATUS_SUCCESS;
 }
 
 static sai_status_t ctc_sai_switch_destroy_db(uint8 lchip)
 {
+    ctc_sai_isolation_group_db_deinit(lchip);
     ctc_sai_tunnel_db_deinit(lchip);
     ctc_sai_samplepacket_db_deinit(lchip);
     ctc_sai_hostif_db_deinit(lchip);
@@ -1702,6 +1716,7 @@ ctc_sai_switch_init_switch(uint8 lchip, dal_pci_dev_t* p_pci_dev, sai_object_id_
     ctc_pkt_global_cfg_t pkt_cfg;
     ctc_linkagg_global_cfg_t lag_cfg;
     ctc_nh_global_cfg_t    nh_global_cfg;
+    ctc_port_global_cfg_t port_cfg;
     ctc_oam_global_t  oam_global;
     ctc_l2_fdb_global_cfg_t l2_fdb_global_cfg;
     ctc_mpls_init_t* mpls_cfg = NULL;
@@ -1758,6 +1773,7 @@ ctc_sai_switch_init_switch(uint8 lchip, dal_pci_dev_t* p_pci_dev, sai_object_id_
     sal_memset(&ipuc_cfg,0,sizeof(ctc_ipuc_global_cfg_t));
     sal_memset(&stats_cfg,0,sizeof(ctc_stats_global_cfg_t));
     sal_memset(stacking_cfg,0,sizeof(ctc_stacking_glb_cfg_t));
+    sal_memset(&port_cfg,0,sizeof(ctc_port_global_cfg_t));
 
     /* Config module init parameter, if set init_config.p_MODULE_cfg = NULL, using SDK default configration */
     init_config->dal_cfg = &dal_cfg;
@@ -1778,6 +1794,7 @@ ctc_sai_switch_init_switch(uint8 lchip, dal_pci_dev_t* p_pci_dev, sai_object_id_
     init_config->p_stats_cfg = &stats_cfg;
     init_config->p_stacking_cfg = stacking_cfg;
     init_config->p_linkagg_cfg = &lag_cfg;
+    init_config->p_port_cfg = &port_cfg;
 
     sal_memcpy(&dal_cfg, &g_dal_op, sizeof(dal_op_t));
     dal_cfg.lchip = lchip;
@@ -1796,6 +1813,7 @@ ctc_sai_switch_init_switch(uint8 lchip, dal_pci_dev_t* p_pci_dev, sai_object_id_
     }
     init_config->p_pkt_cfg->rx_cb = _ctc_sai_hostif_packet_receive_from_sdk;
     init_config->p_stats_cfg->stats_mode = CTC_STATS_MODE_DEFINE;
+    init_config->p_port_cfg->use_isolation_id = 1;
     profile_char = p_api_services->profile_get_value(g_profile_id, SAI_KEY_FDB_TABLE_SIZE);
     if (NULL != profile_char)
     {
@@ -2322,7 +2340,6 @@ static ctc_sai_attr_fn_entry_t  switch_attr_fn_entries[] = {
     {SAI_SWITCH_ATTR_FDB_EVENT_NOTIFY, ctc_sai_switch_get_callback_event, ctc_sai_switch_set_callback_event},
     {SAI_SWITCH_ATTR_PORT_STATE_CHANGE_NOTIFY, ctc_sai_switch_get_callback_event, ctc_sai_switch_set_callback_event},
     {SAI_SWITCH_ATTR_PACKET_EVENT_NOTIFY, ctc_sai_switch_get_callback_event, ctc_sai_switch_set_callback_event},
-    {SAI_SWITCH_ATTR_TAM_EVENT_NOTIFY, ctc_sai_switch_get_callback_event, ctc_sai_switch_set_callback_event},
     {SAI_SWITCH_ATTR_FAST_API_ENABLE, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {SAI_SWITCH_ATTR_MIRROR_TC, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {SAI_SWITCH_ATTR_ACL_STAGE_INGRESS, ctc_sai_switch_get_acl_property, NULL},
@@ -2340,6 +2357,9 @@ static ctc_sai_attr_fn_entry_t  switch_attr_fn_entries[] = {
     {SAI_SWITCH_ATTR_TPID_OUTER_VLAN, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {SAI_SWITCH_ATTR_TPID_INNER_VLAN, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
     {SAI_SWITCH_ATTR_UNINIT_DATA_PLANE_ON_REMOVAL, ctc_sai_switch_get_global_property, ctc_sai_switch_set_global_property},
+    {SAI_SWITCH_ATTR_MAX_NUMBER_OF_TEMP_SENSORS, ctc_sai_switch_get_global_property, NULL},
+    {SAI_SWITCH_ATTR_TEMP_LIST, ctc_sai_switch_get_global_property, NULL},
+    {SAI_SWITCH_ATTR_AVERAGE_TEMP, ctc_sai_switch_get_global_property, NULL},
     {CTC_SAI_FUNC_ATTR_END_ID, NULL, NULL}
 };
 

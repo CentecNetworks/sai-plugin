@@ -388,6 +388,9 @@ _ctc_sai_db_init_id(uint8 lchip)
     opf.pool_type = CTC_SAI_DB_ID_TYPE_MAX_FRAME_SIZE;
     ctc_opf_init_offset(&opf, 0, CTC_FRAME_SIZE_MAX);
 
+    opf.pool_type = CTC_SAI_DB_ID_TYPE_ISOLATION_GROUP;
+    ctc_opf_init_offset(&opf, 1, 32-1);
+
     return SAI_STATUS_SUCCESS;
 }
 

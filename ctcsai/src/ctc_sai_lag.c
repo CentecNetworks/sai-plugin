@@ -241,7 +241,7 @@ ctc_sai_lag_get_info(sai_object_key_t *key, sai_attribute_t* attr, uint32 attr_i
     uint32 port_num = 0;
     sai_object_id_t*lag_members;
     uint32 bit_cnt = 0;
-    sai_status_t status;
+    sai_status_t status = 0;
     ctc_sai_lag_info_t *p_db_lag;
     sai_object_id_t *p_bounded_oid = NULL;
 

@@ -14,22 +14,22 @@ This module defines SAI MPLS.
  The MPLS Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                                 |   SUPPORT CHIPS LIST   |
-\t  |  create_inseg_entry                                   |    CTC8096,CTC7148     |
-\t  |  remove_inseg_entry                                   |    CTC8096,CTC7148     |
-\t  |  set_inseg_entry_attribute                            |    CTC8096,CTC7148     |
-\t  |  get_inseg_entry_attribute                            |    CTC8096,CTC7148     |
+\t  |   API                                                 |       SUPPORT CHIPS LIST       |
+\t  |  create_inseg_entry                                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_inseg_entry                                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_inseg_entry_attribute                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_inseg_entry_attribute                            |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The MPLS attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_INSEG_ENTRY_ATTR_NUM_OF_POP                      |    CTC8096,CTC7148     |
-\t  |  SAI_INSEG_ENTRY_ATTR_PACKET_ACTION                   |    CTC8096,CTC7148     |
-\t  |  SAI_INSEG_ENTRY_ATTR_TRAP_PRIORITY                   |           -            |
-\t  |  SAI_INSEG_ENTRY_ATTR_NEXT_HOP_ID                     |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_INSEG_ENTRY_ATTR_NUM_OF_POP                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_INSEG_ENTRY_ATTR_PACKET_ACTION                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_INSEG_ENTRY_ATTR_TRAP_PRIORITY                   |              -                 |
+\t  |  SAI_INSEG_ENTRY_ATTR_NEXT_HOP_ID                     |    CTC8096,CTC7148,CTC7132     |
 \b
 
 */

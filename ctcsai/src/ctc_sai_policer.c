@@ -918,7 +918,7 @@ sai_status_t
 ctc_sai_policer_get_stats(
         _In_ sai_object_id_t policer_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_policer_stat_t *counter_ids,
+        _In_ const sai_stat_id_t *counter_ids,
         _Out_ uint64_t *counters)
 {
     uint32         attr_idx    = 0;
@@ -1007,7 +1007,7 @@ sai_status_t
 ctc_sai_policer_get_stats_ext(
         _In_ sai_object_id_t policer_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_policer_stat_t *counter_ids,
+        _In_ const sai_stat_id_t *counter_ids,
         _In_ sai_stats_mode_t mode,
         _Out_ uint64_t *counters)
 {
@@ -1103,7 +1103,7 @@ sai_status_t
 ctc_sai_policer_clear_stats(
         _In_ sai_object_id_t policer_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_policer_stat_t *counter_ids)
+        _In_ const sai_stat_id_t *counter_ids)
 {
     ctc_qos_policer_stats_t policer_stats;
     ctc_sai_policer_db_t         *p_policer_db = NULL;

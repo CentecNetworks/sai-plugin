@@ -15,10 +15,10 @@
 
 
 /* centec duet2 udf byte length is 4 bytes,goldengate udf byte length is 1 bytes */
-#define CTC_SAI_UDF_GROUP_LENGTH(lchip) ((CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip))?4:1)
+#define CTC_SAI_UDF_GROUP_LENGTH(lchip) (((CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip)) || (CTC_CHIP_TSINGMA == ctcs_get_chip_type(lchip)))?4:1)
 
 /* centec duet2 have 16 udf entry,goldengate have 4udf entry */
-#define CTC_SAI_UDF_GROUP_MAX_NUM(lchip) ((CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip))?16:4)
+#define CTC_SAI_UDF_GROUP_MAX_NUM(lchip) (((CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip)) || (CTC_CHIP_TSINGMA == ctcs_get_chip_type(lchip)))?16:4)
 
 #define CTC_SAI_UDF_MAX_UDF_CNT_IN_GROUP  4
 #define CTC_SAI_UDF_HASH_MASK_BYTE_CNT    4   /* The count in the list must be equal to the UDF byte length. */

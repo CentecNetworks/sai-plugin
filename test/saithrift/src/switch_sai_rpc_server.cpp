@@ -537,6 +537,7 @@ public:
               case SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE:
               case SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE:
               case SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE:
+			  case SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL:
                   attr_list[i].value.booldata = attribute.value.booldata;
                   break;
               case SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL:
@@ -1295,6 +1296,57 @@ void sai_thrift_parse_vlan_attributes(const std_sai_thrift_attr_vctr_t &thrift_a
           }
       }
   }
+
+void sai_thrift_parse_isolation_group_attributes(const std_sai_thrift_attr_vctr_t &thrift_attr_list, sai_attribute_t *attr_list)
+{
+    SAI_THRIFT_LOG_DBG("Called.");
+
+    std_sai_thrift_attr_vctr_t::const_iterator cit = thrift_attr_list.begin();
+
+    for (sai_uint32_t i = 0; i < thrift_attr_list.size(); i++, cit++)
+    {
+        sai_thrift_attribute_t attribute = *cit;
+        attr_list[i].id = attribute.id;
+
+        switch (attribute.id)
+        {
+            case SAI_ISOLATION_GROUP_ATTR_TYPE:
+                attr_list[i].value.u32 = attribute.value.u32;
+                break;
+
+            default:
+                  SAI_THRIFT_LOG_ERR("Failed to parse isolation group attributes");
+                  break;
+          }
+      }
+  }
+void sai_thrift_parse_isolation_group_member_attributes(const std_sai_thrift_attr_vctr_t &thrift_attr_list, sai_attribute_t *attr_list)
+{
+    SAI_THRIFT_LOG_DBG("Called.");
+
+    std_sai_thrift_attr_vctr_t::const_iterator cit = thrift_attr_list.begin();
+
+    for (sai_uint32_t i = 0; i < thrift_attr_list.size(); i++, cit++)
+    {
+        sai_thrift_attribute_t attribute = *cit;
+        attr_list[i].id = attribute.id;
+
+        switch (attribute.id)
+        {
+            case SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_GROUP_ID:
+                attr_list[i].value.oid= attribute.value.oid;
+                break;
+			case SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_OBJECT:
+				attr_list[i].value.oid= attribute.value.oid;
+                break;
+
+            default:
+                  SAI_THRIFT_LOG_ERR("Failed to parse isolation group attributes");
+                  break;
+          }
+      }
+  }
+
   sai_thrift_object_id_t sai_thrift_create_vlan(const std_sai_thrift_attr_vctr_t &thrift_attr_list) {
       SAI_THRIFT_LOG_DBG("Called.");
 
@@ -1344,7 +1396,7 @@ void sai_thrift_parse_vlan_attributes(const std_sai_thrift_attr_vctr_t &thrift_a
 
         if (status != SAI_STATUS_SUCCESS) { return; }
 
-        sai_vlan_stat_t *counter_ids = (sai_vlan_stat_t *) malloc(sizeof(sai_vlan_stat_t) * thrift_counter_ids.size());
+        sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_vlan_stat_t) * thrift_counter_ids.size());
         std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
         uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
 
@@ -1902,7 +1954,7 @@ void sai_thrift_get_vlan_attribute(sai_thrift_attribute_list_t& thrift_attr_list
 
         if (status != SAI_STATUS_SUCCESS) { return; }
 
-        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
         std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
         uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
 		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
@@ -1939,7 +1991,7 @@ void sai_thrift_get_vlan_attribute(sai_thrift_attribute_list_t& thrift_attr_list
 
         if (status != SAI_STATUS_SUCCESS) { return; }
 
-        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
         std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
         uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
 		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
@@ -1975,7 +2027,7 @@ void sai_thrift_get_vlan_attribute(sai_thrift_attribute_list_t& thrift_attr_list
 
         if (status != SAI_STATUS_SUCCESS) { return status; }
 
-        sai_router_interface_stat_t *counter_ids = (sai_router_interface_stat_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
+        sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
         std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
         uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
 		memset(counter_ids, 0, sizeof(sai_router_interface_stat_t) * thrift_counter_ids.size());
@@ -5820,7 +5872,7 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       /* SAI_MIRROR_SESSION_ATTR_TC NOT SUPPORT, trunk:sai1.3 SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE new add */
       for (attribute_i = SAI_MIRROR_SESSION_ATTR_START; attribute_i < SAI_MIRROR_SESSION_ATTR_END; attribute_i++)
       {
-          if (SAI_MIRROR_SESSION_ATTR_TC == attribute_i)
+          if ((SAI_MIRROR_SESSION_ATTR_TC == attribute_i) || (SAI_MIRROR_SESSION_ATTR_POLICER == attribute_i))
           {
               continue;
           }
@@ -5853,15 +5905,15 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
 
 
       thrift_attr.id        = sai_attrs[4].id;
-      thrift_attr.value.u16 = sai_attrs[4].value.u16;
-      thrift_attr_list.attr_list.push_back(thrift_attr);
+      thrift_attr.value.s32 = sai_attrs[4].value.s32;
+      thrift_attr_list.attr_list.push_back(thrift_attr); /* trunk:sai1.3 SAI_MIRROR_SESSION_ATTR_CONGESTION_MODE new add */
 
       thrift_attr.id        = sai_attrs[5].id;
       thrift_attr.value.u16 = sai_attrs[5].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[6].id;
-      thrift_attr.value.u8 = sai_attrs[6].value.u8;
+      thrift_attr.value.u16 = sai_attrs[6].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[7].id;
@@ -5869,15 +5921,15 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[8].id;
-      thrift_attr.value.booldata = sai_attrs[8].value.booldata;
+      thrift_attr.value.u8 = sai_attrs[8].value.u8;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[9].id;
-      thrift_attr.value.s32 = sai_attrs[9].value.s32;
+      thrift_attr.value.booldata = sai_attrs[9].value.booldata;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[10].id;
-      thrift_attr.value.u8 = sai_attrs[10].value.u8;
+      thrift_attr.value.s32 = sai_attrs[10].value.s32;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[11].id;
@@ -5889,15 +5941,7 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[13].id;
-      thrift_attr.value.ipaddr.addr_family = sai_attrs[13].value.ipaddr.addr_family;
-      if (SAI_IP_ADDR_FAMILY_IPV4 == thrift_attr.value.ipaddr.addr_family)
-      {
-          thrift_attr.value.ipaddr.addr.ip4 = sai_thrift_v4_ip_to_string(sai_attrs[13].value.ipaddr.addr.ip4);
-      }
-      else
-      {
-
-      }
+      thrift_attr.value.u8 = sai_attrs[13].value.u8;
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[14].id;
@@ -5913,7 +5957,15 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[15].id;
-      thrift_attr.value.mac = sai_thrift_mac_to_string(sai_attrs[15].value.mac);
+      thrift_attr.value.ipaddr.addr_family = sai_attrs[15].value.ipaddr.addr_family;
+      if (SAI_IP_ADDR_FAMILY_IPV4 == thrift_attr.value.ipaddr.addr_family)
+      {
+          thrift_attr.value.ipaddr.addr.ip4 = sai_thrift_v4_ip_to_string(sai_attrs[15].value.ipaddr.addr.ip4);
+      }
+      else
+      {
+
+      }
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[16].id;
@@ -5921,7 +5973,11 @@ void sai_thrift_get_udf_group_attribute(sai_thrift_attribute_list_t& thrift_attr
       thrift_attr_list.attr_list.push_back(thrift_attr);
 
       thrift_attr.id        = sai_attrs[17].id;
-      thrift_attr.value.u16 = sai_attrs[17].value.u16;
+      thrift_attr.value.mac = sai_thrift_mac_to_string(sai_attrs[17].value.mac);
+      thrift_attr_list.attr_list.push_back(thrift_attr);
+
+      thrift_attr.id        = sai_attrs[18].id;
+      thrift_attr.value.u16 = sai_attrs[18].value.u16;
       thrift_attr_list.attr_list.push_back(thrift_attr);
   }
 
@@ -6276,7 +6332,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
           return;
       }
 
-      auto counter_ids = reinterpret_cast<const sai_policer_stat_t*>(thrift_counter_ids.data());
+      auto counter_ids = reinterpret_cast<const sai_stat_id_t*>(thrift_counter_ids.data());
       sai_size_t number_of_counters = thrift_counter_ids.size();
       sai_uint64_t *counters = nullptr;
 
@@ -6307,7 +6363,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       if (status != SAI_STATUS_SUCCESS)
       { SAI_THRIFT_LOG_ERR("Failed to get API."); return status; }
 
-      auto counter_ids = reinterpret_cast<const sai_policer_stat_t*>(thrift_counter_ids.data());
+      auto counter_ids = reinterpret_cast<const sai_stat_id_t*>(thrift_counter_ids.data());
       sai_size_t number_of_counters = thrift_counter_ids.size();
 
       status = policer_api->clear_policer_stats(thrift_policer_id, number_of_counters, counter_ids);
@@ -6623,7 +6679,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       if (status != SAI_STATUS_SUCCESS) {
           return;
       }
-      sai_port_stat_t *counter_ids = (sai_port_stat_t *) malloc(sizeof(sai_port_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_port_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
@@ -6855,7 +6911,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       if (status != SAI_STATUS_SUCCESS) {
           return;
       }
-      sai_queue_stat_t *counter_ids = (sai_queue_stat_t *) malloc(sizeof(sai_queue_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_queue_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
@@ -7037,7 +7093,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       if (status != SAI_STATUS_SUCCESS) {
           return status;
       }
-      sai_queue_stat_t *counter_ids = (sai_queue_stat_t *) malloc(sizeof(sai_queue_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_queue_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
           counter_ids[i] = (sai_queue_stat_t) *it;
@@ -7381,7 +7437,7 @@ void sai_thrift_get_inseg_entry_attribute(sai_thrift_attribute_list_t& thrift_at
       if (status != SAI_STATUS_SUCCESS) {
           return;
       }
-      sai_ingress_priority_group_stat_t *counter_ids = (sai_ingress_priority_group_stat_t *) malloc(sizeof(sai_ingress_priority_group_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_ingress_priority_group_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
@@ -9620,7 +9676,7 @@ sai_thrift_object_id_t sai_thrift_create_rpf_group_member(const std::vector<sai_
       if (status != SAI_STATUS_SUCCESS) {
           return;
       }
-      sai_tunnel_stat_t *counter_ids = (sai_tunnel_stat_t *) malloc(sizeof(sai_tunnel_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_tunnel_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       uint64_t *counters = (uint64_t *) malloc(sizeof(uint64_t) * thrift_counter_ids.size());
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
@@ -9651,7 +9707,7 @@ sai_thrift_object_id_t sai_thrift_create_rpf_group_member(const std::vector<sai_
       if (status != SAI_STATUS_SUCCESS) {
           return status;
       }
-      sai_tunnel_stat_t *counter_ids = (sai_tunnel_stat_t *) malloc(sizeof(sai_tunnel_stat_t) * thrift_counter_ids.size());
+      sai_stat_id_t *counter_ids = (sai_stat_id_t *) malloc(sizeof(sai_tunnel_stat_t) * thrift_counter_ids.size());
       std::vector<int32_t>::const_iterator it = thrift_counter_ids.begin();
       for(uint32_t i = 0; i < thrift_counter_ids.size(); i++, it++) {
           counter_ids[i] = (sai_tunnel_stat_t) *it;
@@ -9855,6 +9911,176 @@ sai_thrift_object_id_t sai_thrift_create_rpf_group_member(const std::vector<sai_
 
       SAI_THRIFT_FUNC_LOG();
 	  return sai_log_set((sai_api_t)sai_api_id, (sai_log_level_t)log_level);
+  }
+
+
+
+  sai_thrift_object_id_t sai_thrift_create_isolation_group(const std_sai_thrift_attr_vctr_t &thrift_attr_list)
+  {
+      SAI_THRIFT_LOG_DBG("Called.");
+
+      sai_isolation_group_api_t *isolation_group_api = nullptr;
+      auto status = sai_api_query(SAI_API_ISOLATION_GROUP, reinterpret_cast < void** > (&isolation_group_api));
+
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          SAI_THRIFT_LOG_ERR("Failed to get isolation group API.");
+          return SAI_NULL_OBJECT_ID;
+      }
+
+      sai_attribute_t *attr_list = nullptr;
+      sai_uint32_t attr_size = thrift_attr_list.size();
+      sai_thrift_alloc_attr(attr_list, attr_size);
+      sai_thrift_parse_isolation_group_attributes(thrift_attr_list, attr_list);
+
+      sai_object_id_t isolation_group_oid = 0;
+      status = isolation_group_api->create_isolation_group(&isolation_group_oid, gSwitchId, attr_size, attr_list);
+      sai_thrift_free_attr(attr_list);
+
+      if (status == SAI_STATUS_SUCCESS)
+      {
+          return isolation_group_oid;
+      }
+
+      SAI_THRIFT_LOG_ERR("Failed to create isolation group.");
+
+      return SAI_NULL_OBJECT_ID;
+  }
+
+  sai_thrift_status_t sai_thrift_remove_isolation_group(const sai_thrift_object_id_t iso_group_oid)
+  {
+      SAI_THRIFT_LOG_DBG("Called.");
+      sai_status_t status = SAI_STATUS_SUCCESS;
+      sai_isolation_group_api_t *isolation_group_api = nullptr;
+      status = sai_api_query(SAI_API_ISOLATION_GROUP, reinterpret_cast < void** > (&isolation_group_api));
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          return status;
+      }
+      status = isolation_group_api->remove_isolation_group(iso_group_oid);
+      return status;
+  }
+
+  sai_thrift_object_id_t sai_thrift_create_isolation_group_member(const std_sai_thrift_attr_vctr_t &thrift_attr_list)
+  {
+      SAI_THRIFT_LOG_DBG("Called.");
+      sai_status_t status = SAI_STATUS_SUCCESS;
+      sai_isolation_group_api_t *isolation_group_api = nullptr;
+      status = sai_api_query(SAI_API_ISOLATION_GROUP, reinterpret_cast < void** > (&isolation_group_api));
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          return status;
+      }
+      sai_attribute_t *attr_list = nullptr;
+      sai_uint32_t attr_size = thrift_attr_list.size();
+      sai_thrift_alloc_attr(attr_list, attr_size);
+      sai_thrift_parse_isolation_group_member_attributes(thrift_attr_list, attr_list);
+      sai_object_id_t isolation_group_member_oid = 0;
+      status = isolation_group_api->create_isolation_group_member(&isolation_group_member_oid, gSwitchId, attr_size, attr_list);
+      sai_thrift_free_attr(attr_list);
+
+      if (status == SAI_STATUS_SUCCESS)
+      {
+          return isolation_group_member_oid;
+      }
+      SAI_THRIFT_LOG_ERR("Failed to create isolation group.");
+
+      return SAI_NULL_OBJECT_ID;
+  }
+
+  sai_thrift_status_t sai_thrift_remove_isolation_group_member(const sai_thrift_object_id_t member_oid)
+  {
+      SAI_THRIFT_LOG_DBG("Called.");
+      sai_status_t status = SAI_STATUS_SUCCESS;
+      sai_isolation_group_api_t *isolation_group_api = nullptr;
+      status = sai_api_query(SAI_API_ISOLATION_GROUP, reinterpret_cast < void** > (&isolation_group_api));
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          return status;
+      }
+      status = isolation_group_api->remove_isolation_group_member(member_oid);
+      return status;
+  }
+
+  void sai_thrift_get_isolation_group_attributes(sai_thrift_attribute_list_t& thrift_attr_list, const sai_thrift_object_id_t iso_group_oid)
+  {
+      sai_status_t status = SAI_STATUS_SUCCESS;
+      sai_isolation_group_api_t *iso_group_api;
+      sai_attribute_t attr[2];
+	  sai_thrift_attribute_t thrift_attr;
+
+      SAI_THRIFT_FUNC_LOG();
+
+      thrift_attr_list.attr_count = 0;
+
+      status = sai_api_query(SAI_API_ISOLATION_GROUP, (void **) &iso_group_api);
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          SAI_THRIFT_LOG_ERR("failed to obtain ISOLATION_GROUP api, status:%d", status);
+          return;
+      }
+
+      attr[0].id = SAI_ISOLATION_GROUP_ATTR_TYPE;
+      attr[1].id = SAI_ISOLATION_GROUP_ATTR_ISOLATION_MEMBER_LIST;
+	  attr[1].value.objlist.list = (sai_object_id_t *) malloc(sizeof(sai_object_id_t) * 128);
+
+      status = iso_group_api->get_isolation_group_attribute(iso_group_oid, 2, attr);
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          SAI_THRIFT_LOG_ERR("failed to obtain vlan member attributes, status:%d", status);
+          return;
+      }
+	  thrift_attr.id = SAI_ISOLATION_GROUP_ATTR_TYPE;
+	  thrift_attr.value.u32 = attr[0].value.u32;
+	  thrift_attr_list.attr_list.push_back(thrift_attr);
+
+	  thrift_attr.id = SAI_ISOLATION_GROUP_ATTR_ISOLATION_MEMBER_LIST;
+	  thrift_attr.value.objlist.count = attr[1].value.objlist.count;
+	  std::vector < sai_thrift_object_id_t > & iso_grp_member_list = thrift_attr.value.objlist.object_id_list;
+	  for (int index = 0; index < attr[1].value.objlist.count; index++) {
+          iso_grp_member_list.push_back((sai_thrift_object_id_t) attr[1].value.objlist.list[index]);
+      }
+	  thrift_attr_list.attr_list.push_back(thrift_attr);
+
+	free(attr[1].value.objlist.list);
+  }
+
+  void sai_thrift_get_isolation_group_member_attributes(sai_thrift_attribute_list_t& thrift_attr_list, const sai_thrift_object_id_t member_oid)
+  {
+      sai_status_t status = SAI_STATUS_SUCCESS;
+      sai_isolation_group_api_t *iso_group_api;
+      sai_attribute_t attr[2];
+      sai_thrift_attribute_t thrift_attr;
+
+      SAI_THRIFT_FUNC_LOG();
+
+      thrift_attr_list.attr_count = 0;
+
+      status = sai_api_query(SAI_API_ISOLATION_GROUP, (void **) &iso_group_api);
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          SAI_THRIFT_LOG_ERR("failed to obtain ISOLATION_GROUP api, status:%d", status);
+          return;
+      }
+
+      attr[0].id = SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_GROUP_ID;
+      attr[1].id = SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_OBJECT;
+
+      status = iso_group_api->get_isolation_group_member_attribute(member_oid, 2, attr);
+      if (status != SAI_STATUS_SUCCESS)
+      {
+          SAI_THRIFT_LOG_ERR("failed to obtain vlan member attributes, status:%d", status);
+          return;
+      }
+      thrift_attr.id = SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_GROUP_ID;
+      thrift_attr.value.oid = attr[0].value.oid;
+      thrift_attr_list.attr_list.push_back(thrift_attr);
+
+      thrift_attr.id = SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_OBJECT;
+	  thrift_attr.value.oid = attr[1].value.oid;
+
+      thrift_attr_list.attr_list.push_back(thrift_attr);
+
   }
 
 };

@@ -16,25 +16,25 @@ This module defines SAI Next Hop.
  The Next Hop Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                       |   SUPPORT CHIPS LIST   |
-\t  |  create_next_hop                            |    CTC8096,CTC7148     |
-\t  |  remove_next_hop                            |    CTC8096,CTC7148     |
-\t  |  set_next_hop_attribute                     |    CTC8096,CTC7148     |
-\t  |  get_next_hop_attribute                     |    CTC8096,CTC7148     |
+\t  |   API                                       |       SUPPORT CHIPS LIST       |
+\t  |  create_next_hop                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_next_hop                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_next_hop_attribute                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_next_hop_attribute                     |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Next Hop attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                        |   SUPPORT CHIPS LIST   |
-\t  |  SAI_NEXT_HOP_ATTR_TYPE                            |    CTC8096,CTC7148     |
-\t  |  SAI_NEXT_HOP_ATTR_IP                              |    CTC8096,CTC7148     |
-\t  |  SAI_NEXT_HOP_ATTR_ROUTER_INTERFACE_ID             |    CTC8096,CTC7148     |
-\t  |  SAI_NEXT_HOP_ATTR_TUNNEL_ID                       |    CTC8096,CTC7148     |
-\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_SIDLIST_ID         |           -            |
-\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_ENDPOINT_TYPE      |           -            |
-\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_ENDPOINT_POP_TYPE  |           -            |
-\t  |  SAI_NEXT_HOP_ATTR_LABELSTACK                      |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                        |       SUPPORT CHIPS LIST       |
+\t  |  SAI_NEXT_HOP_ATTR_TYPE                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_NEXT_HOP_ATTR_IP                              |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_NEXT_HOP_ATTR_ROUTER_INTERFACE_ID             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_NEXT_HOP_ATTR_TUNNEL_ID                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_SIDLIST_ID         |              -                 |
+\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_ENDPOINT_TYPE      |              -                 |
+\t  |  SAI_NEXT_HOP_ATTR_SEGMENTROUTE_ENDPOINT_POP_TYPE  |              -                 |
+\t  |  SAI_NEXT_HOP_ATTR_LABELSTACK                      |    CTC8096,CTC7148,CTC7132     |
 \b
 
 */

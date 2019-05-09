@@ -1696,6 +1696,34 @@ _ctc_sai_acl_mapping_entry_key_gg(uint8 lchip, sai_attribute_t *attr_list, ctc_a
                     scl_ipv4_key->icmp_code_mask= attr_list[i].value.aclfield.mask.u8;
                 }
                 break;
+            case SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_TYPE:
+                if (ipv6_key)
+                {
+                    CTC_SET_FLAG(ipv6_key->sub_flag, CTC_ACL_IPV6_KEY_SUB_FLAG_ICMP_TYPE);
+                    ipv6_key->icmp_type = attr_list[i].value.aclfield.data.u8;
+                    ipv6_key->icmp_type_mask = attr_list[i].value.aclfield.mask.u8;
+                }
+                if (scl_ipv6_key)
+                {
+                    CTC_SET_FLAG(scl_ipv6_key->sub_flag, CTC_SCL_TCAM_IPV6_KEY_SUB_FLAG_ICMP_TYPE);
+                    scl_ipv6_key->icmp_type = attr_list[i].value.aclfield.data.u8;
+                    scl_ipv6_key->icmp_type_mask= attr_list[i].value.aclfield.mask.u8;
+                }
+                break;
+            case SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_CODE:
+                if (ipv6_key)
+                {
+                    CTC_SET_FLAG(ipv6_key->sub_flag, CTC_ACL_IPV6_KEY_SUB_FLAG_ICMP_CODE);
+                    ipv6_key->icmp_code = attr_list[i].value.aclfield.data.u8;
+                    ipv6_key->icmp_code_mask = attr_list[i].value.aclfield.mask.u8;
+                }
+                if (scl_ipv6_key)
+                {
+                    CTC_SET_FLAG(scl_ipv6_key->sub_flag, CTC_SCL_TCAM_IPV6_KEY_SUB_FLAG_ICMP_CODE);
+                    scl_ipv6_key->icmp_code = attr_list[i].value.aclfield.data.u8;
+                    scl_ipv6_key->icmp_code_mask= attr_list[i].value.aclfield.mask.u8;
+                }
+                break;
             case SAI_ACL_ENTRY_ATTR_FIELD_PACKET_VLAN : /* only acl support */
                 if (ipv6_key)
                 {
@@ -1757,6 +1785,8 @@ _ctc_sai_acl_mapping_entry_key_gg(uint8 lchip, sai_attribute_t *attr_list, ctc_a
             case SAI_ACL_ENTRY_ATTR_FIELD_FDB_NPU_META_DST_HIT:
             case SAI_ACL_ENTRY_ATTR_FIELD_NEIGHBOR_NPU_META_DST_HIT:
             case SAI_ACL_ENTRY_ATTR_FIELD_ROUTE_NPU_META_DST_HIT:
+            case SAI_ACL_ENTRY_ATTR_FIELD_BTH_OPCODE:
+            case SAI_ACL_ENTRY_ATTR_FIELD_AETH_SYNDROME:
                 break;
             case SAI_ACL_ENTRY_ATTR_FIELD_ACL_RANGE_TYPE:
                 for (loop = 0; loop < attr_list[i].value.aclfield.data.objlist.count; loop++)
@@ -2212,12 +2242,14 @@ _ctc_sai_acl_mapping_entry_key_fields(uint8 lchip, sai_attribute_t *attr_list, c
                 (*p_key_count)++;
                 break;
             case SAI_ACL_ENTRY_ATTR_FIELD_ICMP_TYPE:
+            case SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_TYPE:
                 field_key[*p_key_count].type = CTC_FIELD_KEY_ICMP_TYPE;
                 field_key[*p_key_count].data = attr_list[i].value.aclfield.data.u8;
                 field_key[*p_key_count].mask = attr_list[i].value.aclfield.mask.u8;
                 (*p_key_count)++;
                 break;
             case SAI_ACL_ENTRY_ATTR_FIELD_ICMP_CODE:
+            case SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_CODE:
                 field_key[*p_key_count].type = CTC_FIELD_KEY_ICMP_CODE;
                 field_key[*p_key_count].data = attr_list[i].value.aclfield.data.u8;
                 field_key[*p_key_count].mask = attr_list[i].value.aclfield.mask.u8;
@@ -2271,6 +2303,8 @@ _ctc_sai_acl_mapping_entry_key_fields(uint8 lchip, sai_attribute_t *attr_list, c
             case SAI_ACL_ENTRY_ATTR_FIELD_FDB_NPU_META_DST_HIT:
             case SAI_ACL_ENTRY_ATTR_FIELD_NEIGHBOR_NPU_META_DST_HIT:
             case SAI_ACL_ENTRY_ATTR_FIELD_ROUTE_NPU_META_DST_HIT:
+            case SAI_ACL_ENTRY_ATTR_FIELD_BTH_OPCODE:
+            case SAI_ACL_ENTRY_ATTR_FIELD_AETH_SYNDROME:
                 break;
             case SAI_ACL_ENTRY_ATTR_FIELD_ACL_RANGE_TYPE:
                 for (loop = 0; loop < attr_list[i].value.aclfield.data.objlist.count; loop++)
@@ -3406,7 +3440,7 @@ static sai_status_t
 _ctc_sai_acl_add_bind_point_key_field_usw(uint8 lchip, sai_object_id_t bind_point_oid, uint32 entry_id)
 {
     uint32 bind_point_value = 0;
-    sai_acl_bind_point_type_t bind_point_type;
+    sai_acl_bind_point_type_t bind_point_type = 0;
     ctc_object_id_t ctc_object_id = {0};
     ctc_field_key_t field_key;
     ctc_field_port_t field_port;
@@ -3472,7 +3506,7 @@ static sai_status_t
 _ctc_sai_acl_add_bind_point_key_field_gg(uint8 lchip, sai_object_id_t bind_point_oid, ctc_acl_entry_t *p_acl_entry, ctc_scl_entry_t *p_scl_entry)
 {
     uint32 bind_point_value = 0;
-    sai_acl_bind_point_type_t bind_point_type;
+    sai_acl_bind_point_type_t bind_point_type = 0;
     ctc_object_id_t ctc_object_id = {0};
     ctc_scl_tcam_ipv4_key_t *p_scl_v4_key = NULL;
     ctc_scl_tcam_ipv6_key_t *p_scl_v6_key = NULL;
@@ -6762,6 +6796,12 @@ static ctc_sai_attr_fn_entry_t acl_table_attr_fn_entries[] = {
     { SAI_ACL_TABLE_ATTR_FIELD_ICMP_CODE,
       NULL,
       NULL },
+    { SAI_ACL_TABLE_ATTR_FIELD_ICMPV6_TYPE,
+      NULL,
+      NULL },
+    { SAI_ACL_TABLE_ATTR_FIELD_ICMPV6_CODE,
+      NULL,
+      NULL },
     { SAI_ACL_TABLE_ATTR_FIELD_PACKET_VLAN,
       NULL,
       NULL },
@@ -6790,6 +6830,12 @@ static ctc_sai_attr_fn_entry_t acl_table_attr_fn_entries[] = {
       NULL,
       NULL },
     { SAI_ACL_TABLE_ATTR_FIELD_ROUTE_NPU_META_DST_HIT,
+      NULL,
+      NULL },
+    { SAI_ACL_TABLE_ATTR_FIELD_BTH_OPCODE,
+      NULL,
+      NULL },
+    { SAI_ACL_TABLE_ATTR_FIELD_AETH_SYNDROME,
       NULL,
       NULL },
     { SAI_ACL_TABLE_ATTR_USER_DEFINED_FIELD_GROUP_MIN,
@@ -6943,6 +6989,12 @@ static ctc_sai_attr_fn_entry_t acl_entry_attr_fn_entries[] = {
     { SAI_ACL_ENTRY_ATTR_FIELD_ICMP_CODE,
       ctc_sai_acl_get_acl_entry_info,
       ctc_sai_acl_set_acl_entry_info },
+    { SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_TYPE,
+      ctc_sai_acl_get_acl_entry_info,
+      ctc_sai_acl_set_acl_entry_info },
+    { SAI_ACL_ENTRY_ATTR_FIELD_ICMPV6_CODE,
+      ctc_sai_acl_get_acl_entry_info,
+      ctc_sai_acl_set_acl_entry_info },
     { SAI_ACL_ENTRY_ATTR_FIELD_PACKET_VLAN,
       ctc_sai_acl_get_acl_entry_info,
       ctc_sai_acl_set_acl_entry_info },
@@ -6971,6 +7023,12 @@ static ctc_sai_attr_fn_entry_t acl_entry_attr_fn_entries[] = {
       NULL,
       NULL },
     { SAI_ACL_ENTRY_ATTR_FIELD_ROUTE_NPU_META_DST_HIT,
+      NULL,
+      NULL },
+    { SAI_ACL_ENTRY_ATTR_FIELD_BTH_OPCODE,
+      NULL,
+      NULL },
+    { SAI_ACL_ENTRY_ATTR_FIELD_AETH_SYNDROME,
       NULL,
       NULL },
     { SAI_ACL_ENTRY_ATTR_USER_DEFINED_FIELD_GROUP_MIN,

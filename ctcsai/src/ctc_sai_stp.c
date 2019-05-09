@@ -63,7 +63,7 @@ ctc_sai_stp_get_stp_info(sai_object_key_t *key, sai_attribute_t* attr, uint32 at
     uint32 port_num = 0;
     uint32 vlan_num =0;
     sai_object_id_t*bridge_ports;
-    sai_status_t status;
+    sai_status_t status = SAI_STATUS_SUCCESS;
     ctc_sai_stp_info_t *p_db_stp;
     ctc_sai_switch_master_t* p_switch_master = NULL;
 
@@ -221,7 +221,7 @@ static sai_status_t _ctc_sai_stp_create_stp_port(sai_object_id_t      *stp_port_
                                                 uint32_t               attr_count,
                                                 const sai_attribute_t *attr_list)
 {
-    sai_status_t status;
+    sai_status_t status = SAI_STATUS_SUCCESS;
     uint32   stp_index, bridge_port_index, state_index;
     const sai_attribute_value_t *stp, *bridge_port, *state;
     ctc_object_id_t   stp_oid;

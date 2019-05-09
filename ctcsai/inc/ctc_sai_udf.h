@@ -14,52 +14,52 @@ This module defines SAI UDF.
  The UDF Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                |   SUPPORT CHIPS LIST   |
-\t  |  create_udf                          |    CTC8096,CTC7148     |
-\t  |  remove_udf                          |    CTC8096,CTC7148     |
-\t  |  set_udf_attribute                   |    CTC8096,CTC7148     |
-\t  |  get_udf_attribute                   |    CTC8096,CTC7148     |
-\t  |  create_udf_match                    |    CTC8096,CTC7148     |
-\t  |  remove_udf_match                    |    CTC8096,CTC7148     |
-\t  |  set_udf_match_attribute             |    CTC8096,CTC7148     |
-\t  |  get_udf_match_attribute             |    CTC8096,CTC7148     |
-\t  |  create_udf_group                    |    CTC8096,CTC7148     |
-\t  |  remove_udf_group                    |    CTC8096,CTC7148     |
-\t  |  set_udf_group_attribute             |    CTC8096,CTC7148     |
-\t  |  get_udf_group_attribute             |    CTC8096,CTC7148     |
+\t  |   API                                |       SUPPORT CHIPS LIST       |
+\t  |  create_udf                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_udf                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_udf_attribute                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_udf_attribute                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_udf_match                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_udf_match                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_udf_match_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_udf_match_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_udf_group                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_udf_group                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_udf_group_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_udf_group_attribute             |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The UDF GROUP attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                          |   SUPPORT CHIPS LIST   |
-\t  |  SAI_UDF_GROUP_ATTR_UDF_LIST         |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_GROUP_ATTR_TYPE             |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_GROUP_ATTR_LENGTH           |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                          |       SUPPORT CHIPS LIST       |
+\t  |  SAI_UDF_GROUP_ATTR_UDF_LIST         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_GROUP_ATTR_TYPE             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_GROUP_ATTR_LENGTH           |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The UDF MATCH attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                          |   SUPPORT CHIPS LIST   |
-\t  |  SAI_UDF_MATCH_ATTR_L2_TYPE          |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_MATCH_ATTR_L3_TYPE          |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_MATCH_ATTR_GRE_TYPE         |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_MATCH_ATTR_PRIORITY         |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                          |       SUPPORT CHIPS LIST       |
+\t  |  SAI_UDF_MATCH_ATTR_L2_TYPE          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_MATCH_ATTR_L3_TYPE          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_MATCH_ATTR_GRE_TYPE         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_MATCH_ATTR_PRIORITY         |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The UDF attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                          |   SUPPORT CHIPS LIST   |
-\t  |  SAI_UDF_ATTR_MATCH_ID               |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_ATTR_GROUP_ID               |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_ATTR_BASE                   |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_ATTR_OFFSET                 |    CTC8096,CTC7148     |
-\t  |  SAI_UDF_ATTR_HASH_MASK              |        CTC7148         |
+\t  |   ATTRIBUTE                          |       SUPPORT CHIPS LIST       |
+\t  |  SAI_UDF_ATTR_MATCH_ID               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_ATTR_GROUP_ID               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_ATTR_BASE                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_ATTR_OFFSET                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_UDF_ATTR_HASH_MASK              |         CTC7148,CTC7132        |
 \b
 
 */

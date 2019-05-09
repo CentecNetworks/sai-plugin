@@ -14,25 +14,25 @@ This module defines SAI Route.
  The Route Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                  |   SUPPORT CHIPS LIST   |
-\t  |  create_route_entry                    |    CTC8096,CTC7148     |
-\t  |  remove_route_entry                    |    CTC8096,CTC7148     |
-\t  |  set_route_entry_attribute             |    CTC8096,CTC7148     |
-\t  |  get_route_entry_attribute             |    CTC8096,CTC7148     |
-\t  |  create_route_entries                  |    CTC8096,CTC7148     |
-\t  |  remove_route_entries                  |    CTC8096,CTC7148     |
-\t  |  set_route_entries_attribute           |    CTC8096,CTC7148     |
-\t  |  get_route_entries_attribute           |    CTC8096,CTC7148     |
+\t  |   API                                  |       SUPPORT CHIPS LIST       |
+\t  |  create_route_entry                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_route_entry                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_route_entry_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_route_entry_attribute             |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_route_entries                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_route_entries                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_route_entries_attribute           |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_route_entries_attribute           |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Route attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                            |   SUPPORT CHIPS LIST   |
-\t  |  SAI_ROUTE_ENTRY_ATTR_PACKET_ACTION    |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTE_ENTRY_ATTR_USER_TRAP_ID     |           -            |
-\t  |  SAI_ROUTE_ENTRY_ATTR_NEXT_HOP_ID      |    CTC8096,CTC7148     |
-\t  |  SAI_ROUTE_ENTRY_ATTR_META_DATA        |        CTC7148         |
+\t  |   ATTRIBUTE                            |       SUPPORT CHIPS LIST       |
+\t  |  SAI_ROUTE_ENTRY_ATTR_PACKET_ACTION    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTE_ENTRY_ATTR_USER_TRAP_ID     |              -                 |
+\t  |  SAI_ROUTE_ENTRY_ATTR_NEXT_HOP_ID      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_ROUTE_ENTRY_ATTR_META_DATA        |         CTC7148,CTC7132        |
 \b
 
 */

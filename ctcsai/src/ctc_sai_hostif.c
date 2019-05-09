@@ -154,6 +154,26 @@ _ctc_sai_hostif_trap_type_to_ctc_reason_id(uint8 lchip, sai_hostif_trap_type_t t
                 *p_custom_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_UDLD_INDEX;
                 break;
 
+            case SAI_HOSTIF_TRAP_TYPE_CDP:
+                *p_ctc_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX;
+                *p_custom_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX;
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_VTP:
+                *p_ctc_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX;
+                *p_custom_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX;
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_DTP:
+                *p_ctc_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_DTP_INDEX;
+                *p_custom_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_DTP_INDEX;
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_PAGP:
+                *p_ctc_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX;
+                *p_custom_cpu_reson = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX;
+                break;
+
             /* router trap */
             case SAI_HOSTIF_TRAP_TYPE_ARP_REQUEST:
                 *p_ctc_cpu_reson = CTC_PKT_CPU_REASON_L3_PDU + CTC_L3PDU_ACTION_INDEX_ARP;
@@ -2221,6 +2241,36 @@ _ctc_sai_hostif_add_acl_field(uint8 lchip, uint32 entry_id, uint32 custom_reason
             is_drop = true;
             break;
 
+         case CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX: /* SAI_HOSTIF_TRAP_TYPE_CDP */
+            sal_memset(&key_field, 0, sizeof(ctc_field_key_t));
+            key_field.type = CTC_FIELD_KEY_CPU_REASON_ID;
+            key_field.data = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX;
+            key_field.mask = CTC_SAI_CTC_CPU_REASON_ID_MASK;
+            CTC_SAI_ERROR_RETURN(ctcs_acl_add_key_field(lchip, entry_id, &key_field));
+            is_drop = true;
+            break;
+
+         case CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX: /* SAI_HOSTIF_TRAP_TYPE_VTP */
+            sal_memset(&key_field, 0, sizeof(ctc_field_key_t));
+            key_field.type = CTC_FIELD_KEY_CPU_REASON_ID;
+            key_field.data = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX;
+            key_field.mask = CTC_SAI_CTC_CPU_REASON_ID_MASK;
+            CTC_SAI_ERROR_RETURN(ctcs_acl_add_key_field(lchip, entry_id, &key_field));
+            is_drop = true;
+            break;
+
+        case CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_DTP_INDEX: /* SAI_HOSTIF_TRAP_TYPE_DTP */
+            return SAI_STATUS_NOT_SUPPORTED;
+
+        case CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX: /* SAI_HOSTIF_TRAP_TYPE_PAGP */
+            sal_memset(&key_field, 0, sizeof(ctc_field_key_t));
+            key_field.type = CTC_FIELD_KEY_CPU_REASON_ID;
+            key_field.data = CTC_PKT_CPU_REASON_L2_PDU + CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX;
+            key_field.mask = CTC_SAI_CTC_CPU_REASON_ID_MASK;
+            CTC_SAI_ERROR_RETURN(ctcs_acl_add_key_field(lchip, entry_id, &key_field));
+            is_drop = true;
+            break;
+
         /* router trap */
         /*arp request:0x0001 arp response:0x0002*/
         case CTC_PKT_CPU_REASON_L3_PDU + CTC_L3PDU_ACTION_INDEX_ARP: /*SAI_HOSTIF_TRAP_TYPE_ARP_REQUEST*/
@@ -2720,6 +2770,21 @@ _ctc_sai_hostif_set_port_trap_enable(uint8 lchip, uint32 custom_reason_id, sai_o
 
             case SAI_HOSTIF_TRAP_TYPE_UDLD:
                 CTC_SAI_CTC_ERROR_RETURN(ctcs_l2pdu_set_port_action(lchip, gport, CTC_HOSTIF_L2PDU_ACTION_UDLD_INDEX, action));
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_CDP:
+                CTC_SAI_CTC_ERROR_RETURN(ctcs_l2pdu_set_port_action(lchip, gport, CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX, action));
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_VTP:
+                CTC_SAI_CTC_ERROR_RETURN(ctcs_l2pdu_set_port_action(lchip, gport, CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX, action));
+                break;
+
+            case SAI_HOSTIF_TRAP_TYPE_DTP:
+                return SAI_STATUS_NOT_SUPPORTED;
+
+            case SAI_HOSTIF_TRAP_TYPE_PAGP:
+                CTC_SAI_CTC_ERROR_RETURN(ctcs_l2pdu_set_port_action(lchip, gport, CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX, action));
                 break;
 
             /* router trap */
@@ -4449,6 +4514,35 @@ ctc_sai_hostif_db_init(uint8 lchip)
     l2pdu_entry.action_index = CTC_HOSTIF_L2PDU_ACTION_PVRST_INDEX;
     l2pdu_entry.entry_valid = 1;
     CTC_SAI_ERROR_RETURN(ctcs_l2pdu_set_global_action(lchip, CTC_PDU_L2PDU_TYPE_MACDA, CTC_HOSTIF_L2PDU_PVRST_INDEX, &l2pdu_entry));
+
+    /* CDP */
+    sal_memset(&pdu_l2pdu, 0, sizeof(ctc_pdu_l2pdu_key_t));
+    pdu_l2pdu.l2hdr_proto = 0X2000;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_classify_l2pdu(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_CDP_INDEX, &pdu_l2pdu));
+    sal_memset(&l2pdu_entry, 0, sizeof(ctc_pdu_global_l2pdu_action_t));
+    l2pdu_entry.action_index = CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX;
+    l2pdu_entry.entry_valid = 1;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_set_global_action(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_CDP_INDEX, &l2pdu_entry));
+
+    /* VTP */
+    /* VTP packets are sent in either Inter-Switch Link (ISL) frames or in IEEE 802.1Q (dot1q) frames.
+    These packets are sent to the destination MAC address 01-00-0C-CC-CC-CC with a logical link control (LLC) code of Subnetwork Access Protocol (SNAP) (AAAA) and a type of 2003 (in the SNAP header).  */
+    sal_memset(&pdu_l2pdu, 0, sizeof(ctc_pdu_l2pdu_key_t));
+    pdu_l2pdu.l2hdr_proto = 0X2003;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_classify_l2pdu(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_VTP_INDEX, &pdu_l2pdu));
+    sal_memset(&l2pdu_entry, 0, sizeof(ctc_pdu_global_l2pdu_action_t));
+    l2pdu_entry.action_index = CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX;
+    l2pdu_entry.entry_valid = 1;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_set_global_action(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_VTP_INDEX, &l2pdu_entry));
+
+    /* PAGP */
+    sal_memset(&pdu_l2pdu, 0, sizeof(ctc_pdu_l2pdu_key_t));
+    pdu_l2pdu.l2hdr_proto = 0X0104;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_classify_l2pdu(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_PAGP_INDEX, &pdu_l2pdu));
+    sal_memset(&l2pdu_entry, 0, sizeof(ctc_pdu_global_l2pdu_action_t));
+    l2pdu_entry.action_index = CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX;
+    l2pdu_entry.entry_valid = 1;
+    CTC_SAI_ERROR_RETURN(ctcs_l2pdu_set_global_action(lchip, CTC_PDU_L2PDU_TYPE_L2HDR_PROTO, CTC_HOSTIF_L2PDU_PAGP_INDEX, &l2pdu_entry));
 
     /*BGPV6*/
     sal_memset(&action, 0, sizeof(ctc_pdu_global_l3pdu_action_t));

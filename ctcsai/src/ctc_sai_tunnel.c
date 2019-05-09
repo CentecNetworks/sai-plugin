@@ -1372,9 +1372,12 @@ ctc_sai_tunnel_create_tunnel(
         status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_TUNNEL_ATTR_OVERLAY_INTERFACE, &attr_val, &attr_idx);
         if (CTC_SAI_ERROR(status))
         {
-            CTC_SAI_LOG_ERROR(SAI_API_TUNNEL, "Missing mandatory attribute tunnel overlay if on create of tunnel\n");
-            status = SAI_STATUS_MANDATORY_ATTRIBUTE_MISSING;
-            goto roll_back_0;
+            if (SAI_TUNNEL_TYPE_VXLAN != p_tunnel->tunnel_type)
+            {
+                CTC_SAI_LOG_ERROR(SAI_API_TUNNEL, "Missing mandatory attribute tunnel overlay if on create of tunnel\n");
+                status = SAI_STATUS_MANDATORY_ATTRIBUTE_MISSING;
+                goto roll_back_0;
+            }
         }
         else if ((!CTC_SAI_ERROR(status)) && (false == ctc_sai_db_check_object_property_exist(lchip, attr_val->oid)))
         {
@@ -1593,7 +1596,7 @@ static sai_status_t
 ctc_sai_tunnel_get_tunnel_stats(
         sai_object_id_t tunnel_id,
         uint32_t number_of_counters,
-        const sai_tunnel_stat_t *counter_ids,
+        const sai_stat_id_t *counter_ids,
         uint64_t *counters)
 {
     ctc_sai_tunnel_t* p_tunnel = NULL;
@@ -1655,7 +1658,7 @@ static sai_status_t
 ctc_sai_tunnel_get_tunnel_stats_ext(
         sai_object_id_t tunnel_id,
         uint32_t number_of_counters,
-        const sai_tunnel_stat_t *counter_ids,
+        const sai_stat_id_t *counter_ids,
         sai_stats_mode_t mode,
         uint64_t *counters)
 {
@@ -1737,7 +1740,7 @@ static sai_status_t
 ctc_sai_tunnel_clear_tunnel_stats(
         sai_object_id_t tunnel_id,
         uint32_t number_of_counters,
-        const sai_tunnel_stat_t *counter_ids)
+        const sai_stat_id_t *counter_ids)
 {
     ctc_sai_tunnel_t* p_tunnel = NULL;
     uint8 lchip = 0;

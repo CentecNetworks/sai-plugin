@@ -3,13 +3,16 @@
 echo "Which switch chip you want to use:"
 echo "1. CTC7148"
 echo "2. CTC8096"
+echo "3. CTC7132"
 read -p "Your choice:" chipname
 if [ $chipname == 1 ]; then
     chipname="duet2"
 elif [ $chipname == 2 ]; then
     chipname="goldengate"
+elif [ $chipname == 3 ]; then
+    chipname="tsingma"
 else
-    echo "Must be 1 or 2!"
+    echo "Must be 1, 2 or 3!"
     exit
 fi
 
@@ -33,8 +36,8 @@ cd $sdkpath
 sedsdkpath=`echo $sdkpath | sed -n 's/\//\\\\\//g;p'`
 read -p "Do you need to compile SDK?(yes/no)" needCompile
 if [[ $needCompile == "yes" || $needCompile = "y" ]];then
-    make clean CHIPNAME=$chipname SUBCHIPNAME=$chipname targetbase=linux BOARD=linux-board ARCH=x86 auto=yes cpp=no  ChipAgent=FALSE M64=TRUE VER=r ONE_LIB=yes SO_LIB=yes
-    make CHIPNAME=$chipname SUBCHIPNAME=$chipname targetbase=linux BOARD=linux-board ARCH=x86 auto=yes cpp=no  ChipAgent=FALSE M64=TRUE VER=r ONE_LIB=yes SO_LIB=yes
+     make clean targetbase=linux BOARD=linux-board ARCH=x86 ChipAgent=FALSE CHIPNAME=$chipname SUBCHIPNAME=$chipname VER=r M64=TRUE auto=yes CPU=x86 ONE_LIB=yes SO_LIB=yes
+     make image targetbase=linux BOARD=linux-board ARCH=x86 ChipAgent=FALSE CHIPNAME=$chipname SUBCHIPNAME=$chipname VER=r M64=TRUE auto=yes CPU=x86 ONE_LIB=yes SO_LIB=yes CTC_CFLAGS="-Wall -Werror -O2 -g"
     if [ ! $? ];then
         echo "compile SDK fail"
     exit

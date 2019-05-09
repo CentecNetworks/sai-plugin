@@ -82,6 +82,8 @@ typedef enum ctc_sai_db_id_type_e
     CTC_SAI_DB_ID_TYPE_SDK_ACL_ENTRY_ID,
     /* MAX FRAME SIZE INDEX*/
     CTC_SAI_DB_ID_TYPE_MAX_FRAME_SIZE,
+    /* ISOLATION GROUP ID*/
+    CTC_SAI_DB_ID_TYPE_ISOLATION_GROUP,
     CTC_SAI_DB_ID_TYPE_MAX,
 }ctc_sai_db_id_type_t;
 

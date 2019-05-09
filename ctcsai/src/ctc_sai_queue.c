@@ -647,7 +647,7 @@ sai_status_t
 ctc_sai_queue_get_stats(
         _In_ sai_object_id_t queue_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_queue_stat_t *counter_ids,
+        _In_ const sai_stat_id_t *counter_ids,
         _Out_ uint64_t *counters)
 {
     uint32_t         attr_idx    = 0;
@@ -718,7 +718,7 @@ sai_status_t
 ctc_sai_queue_get_stats_ext(
         _In_ sai_object_id_t queue_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_queue_stat_t *counter_ids,
+        _In_ const sai_stat_id_t *counter_ids,
         _In_ sai_stats_mode_t mode,
         _Out_ uint64_t *counters)
 {
@@ -798,7 +798,7 @@ sai_status_t
 ctc_sai_queue_clear_stats(
         _In_ sai_object_id_t queue_id,
         _In_ uint32_t number_of_counters,
-        _In_ const sai_queue_stat_t *counter_ids)
+        _In_ const sai_stat_id_t *counter_ids)
 {
     ctc_qos_queue_stats_t queue_stats;
     ctc_object_id_t ctc_oid;
@@ -874,6 +874,7 @@ ctc_sai_queue_db_init(uint8 lchip)
     sal_memset(&que_cfg, 0, sizeof(que_cfg));
     que_cfg.type = CTC_QOS_QUEUE_CFG_QUEUE_STATS_EN;
     que_cfg.value.stats.stats_en = 1;
+    que_cfg.value.stats.queue.queue_type = CTC_QUEUE_TYPE_NETWORK_EGRESS;
     if (ctcs_get_chip_type(lchip) == CTC_CHIP_GOLDENGATE)
     {
         ctc_global_panel_ports_t local_panel_ports;

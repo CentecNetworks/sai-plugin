@@ -68,7 +68,7 @@ class LocalMirrorCreateTest(sai_base_test.ThriftInterfaceDataPlane):
             None, None, None,
             None, None, None,
             None)
-        print "ingress_localmirror_id = %d" %ingress_localmirror_id
+        print "ingress_localmirror_id = 0x%x" %ingress_localmirror_id
         
         warmboot(self.client)
         try:

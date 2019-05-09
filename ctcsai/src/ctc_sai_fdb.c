@@ -439,9 +439,23 @@ ctc_sai_fdb_flush_fdb( sai_object_id_t        switch_id,
     }
 
     status =  ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_FDB_FLUSH_ATTR_ENTRY_TYPE, &attr_value, &attr_index);
-    if (status == SAI_STATUS_SUCCESS && attr_value->u32 == SAI_FDB_ENTRY_TYPE_STATIC )
+    if (status == SAI_STATUS_SUCCESS)
     {
-        Flush.flush_flag = CTC_L2_FDB_ENTRY_STATIC;
+        switch (attr_value->u32)
+        {
+        case SAI_FDB_FLUSH_ENTRY_TYPE_DYNAMIC:
+            Flush.flush_flag = CTC_L2_FDB_ENTRY_DYNAMIC;
+            break;
+        case SAI_FDB_FLUSH_ENTRY_TYPE_STATIC:
+            Flush.flush_flag = CTC_L2_FDB_ENTRY_STATIC;
+            break;
+        case SAI_FDB_FLUSH_ENTRY_TYPE_ALL:
+            Flush.flush_flag = CTC_L2_FDB_ENTRY_ALL;
+            break;
+        default:
+            status = SAI_STATUS_INVALID_PARAMETER;
+            goto out;
+        }
     }
 
     if (bv_id_found_flag && port_found_flag)

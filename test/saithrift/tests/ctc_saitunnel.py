@@ -754,7 +754,8 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
         vlan_oid = sai_thrift_create_vlan(self.client, vlan_id)
         vlan_member1 = sai_thrift_create_vlan_member(self.client, vlan_oid, port1, SAI_VLAN_TAGGING_MODE_UNTAGGED)
         vlan_member2 = sai_thrift_create_vlan_member(self.client, vlan_oid, port2, SAI_VLAN_TAGGING_MODE_UNTAGGED)
-        
+        rif_lp_inner_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
+       
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_encap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_encap_type)
@@ -764,7 +765,7 @@ class TunnelCreateVxlanVlanMappingTest(sai_base_test.ThriftInterfaceDataPlane):
      
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
-        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
+        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list, underlay_if=rif_lp_inner_id)
         print "tunnel_id = %lx" %tunnel_id
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)
@@ -899,7 +900,7 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac=''
+        mac=router_mac
         inner_mac_da = '00:00:AA:AA:00:00'
         inner_mac_sa = '00:00:AA:AA:11:11'
         tunnel_map_decap_type = SAI_TUNNEL_MAP_TYPE_VNI_TO_BRIDGE_IF
@@ -917,7 +918,8 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
         vr_id = sai_thrift_get_default_router_id(self.client)
         bridge_id = sai_thrift_create_bridge(self.client, SAI_BRIDGE_TYPE_1D)
         bport1_id = sai_thrift_create_bridge_sub_port(self.client, port1, bridge_id, vlan_id)
-        
+        rif_lp_inner_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
+
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
         tunnel_map_encap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_encap_type)
@@ -927,7 +929,7 @@ class TunnelCreateVxlanBridgeMappingTest(sai_base_test.ThriftInterfaceDataPlane)
      
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
-        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
+        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list, underlay_if=rif_lp_inner_id)
         print "tunnel_id = %lx" %tunnel_id
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)
@@ -1060,7 +1062,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
         port3 = port_list[3]
         v4_enabled = 1
         v6_enabled = 1
-        mac=''
+        mac=router_mac
         inner_mac_da = '00:00:AA:AA:00:00'
         inner_mac_sa = '00:00:AA:AA:11:11'
         tunnel_map_decap_type = SAI_TUNNEL_MAP_TYPE_VNI_TO_VIRTUAL_ROUTER_ID
@@ -1078,6 +1080,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
         vr_id = sai_thrift_get_default_router_id(self.client)
         rif_encap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port2, 0, v4_enabled, v6_enabled, mac)
         rif_decap_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_PORT, port1, 0, v4_enabled, v6_enabled, mac)
+        rif_lp_inner_id = sai_thrift_create_router_interface(self.client, vr_id, SAI_ROUTER_INTERFACE_TYPE_LOOPBACK, port1, 0, v4_enabled, v6_enabled, mac)
 
         tunnel_map_decap_id = sai_thrift_create_tunnel_map(self.client, tunnel_map_decap_type)
         print "tunnel_map_decap_id = %lx" %tunnel_map_decap_id
@@ -1088,7 +1091,7 @@ class TunnelCreateVxlanDefaultVrfMappingTest(sai_base_test.ThriftInterfaceDataPl
      
         encap_mapper_list=[tunnel_map_encap_id, tunnel_map_decap_id]
         decap_mapper_list=[tunnel_map_decap_id, tunnel_map_encap_id]
-        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list)
+        tunnel_id = sai_thrift_create_tunnel_vxlan(self.client, ip_addr=ip_outer_addr_sa, encap_mapper_list=encap_mapper_list, decap_mapper_list=decap_mapper_list, underlay_if=rif_lp_inner_id)
         print "tunnel_id = %lx" %tunnel_id
 
         tunnel_term_table_entry_id = sai_thrift_create_tunnel_term_table_entry(self.client, vr_id, ip_outer_addr_da, ip_outer_addr_sa, tunnel_id, tunnel_type=SAI_TUNNEL_TYPE_VXLAN)

@@ -1811,6 +1811,8 @@ static sai_status_t ctc_sai_mcast_create_l2mc_entry(
 
     CTC_SAI_LOG_ENTER(SAI_API_L2MC);
 
+    sal_memset(&action, 0, sizeof(sai_packet_action_t));
+
     if (!l2mc_entry)
     {
         CTC_SAI_LOG_ERROR(SAI_API_L2MC,"NULL l2mc entry param\n");
@@ -2399,6 +2401,7 @@ static sai_status_t ctc_sai_mcast_create_mcast_fdb_entry(
 
     CTC_SAI_LOG_ENTER(SAI_API_MCAST_FDB);
     sal_memset(&grp_param, 0, sizeof(ctc_l2_mcast_addr_t));
+    sal_memset(&action, 0, sizeof(sai_packet_action_t));
 
     if (!mcast_fdb_entry)
     {
@@ -3868,7 +3871,7 @@ static sai_status_t ctc_sai_mcast_create_ipmc_entry(
     ctc_sai_entry_property_t *p_entry_property = NULL;
     ctc_sai_rpf_group_property_t *rpf_grp_data = NULL;
     sai_status_t    status = SAI_STATUS_SUCCESS;
-    sai_packet_action_t   action;
+    sai_packet_action_t   action = 0;
     uint32                        attr_idx;
     uint32                        nh_id = 0;
     uint8                          loop = 0, loop1 = 0;

@@ -14,143 +14,143 @@
  The Hostif Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                          |   SUPPORT CHIPS LIST   |
-\t  |  create_hostif                                 |    CTC8096,CTC7148     |
-\t  |  remove_hostif                                 |    CTC8096,CTC7148     |
-\t  |  set_hostif_attribute                          |    CTC8096,CTC7148     |
-\t  |  get_hostif_attribute                          |    CTC8096,CTC7148     |
-\t  |  create_hostif_table_entry                     |    CTC8096,CTC7148     |
-\t  |  remove_hostif_table_entry                     |    CTC8096,CTC7148     |
-\t  |  set_hostif_table_entry_attribute              |    CTC8096,CTC7148     |
-\t  |  get_hostif_table_entry_attribute              |    CTC8096,CTC7148     |
-\t  |  create_hostif_trap_group                      |    CTC8096,CTC7148     |
-\t  |  remove_hostif_trap_group                      |    CTC8096,CTC7148     |
-\t  |  get_hostif_trap_group_attribute               |    CTC8096,CTC7148     |
-\t  |  get_hostif_trap_group_attribute               |    CTC8096,CTC7148     |
-\t  |  create_hostif_trap                            |    CTC8096,CTC7148     |
-\t  |  remove_hostif_trap                            |    CTC8096,CTC7148     |
-\t  |  set_hostif_trap_attribute                     |    CTC8096,CTC7148     |
-\t  |  get_hostif_trap_attribute                     |    CTC8096,CTC7148     |
-\t  |  create_hostif_user_defined_trap               |    CTC8096,CTC7148     |
-\t  |  remove_hostif_user_defined_trap               |    CTC8096,CTC7148     |
-\t  |  set_hostif_user_defined_trap_attribute        |    CTC8096,CTC7148     |
-\t  |  get_hostif_user_defined_trap_attribute        |    CTC8096,CTC7148     |
-\t  |  recv_hostif_packet                            |           -            |
-\t  |  send_hostif_packet                            |    CTC8096,CTC7148     |
+\t  |   API                                          |       SUPPORT CHIPS LIST       |
+\t  |  create_hostif                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_hostif                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_hostif_attribute                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_attribute                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_hostif_table_entry                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_hostif_table_entry                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_hostif_table_entry_attribute              |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_table_entry_attribute              |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_hostif_trap_group                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_hostif_trap_group                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_trap_group_attribute               |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_trap_group_attribute               |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_hostif_trap                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_hostif_trap                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_hostif_trap_attribute                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_trap_attribute                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_hostif_user_defined_trap               |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_hostif_user_defined_trap               |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_hostif_user_defined_trap_attribute        |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_user_defined_trap_attribute        |    CTC8096,CTC7148,CTC7132     |
+\t  |  recv_hostif_packet                            |              -                 |
+\t  |  send_hostif_packet                            |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Hostif trap group attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_ADMIN_STATE               |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_QUEUE                     |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_POLICER                   |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_ADMIN_STATE               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_QUEUE                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_GROUP_ATTR_POLICER                   |    CTC8096,CTC7148,CTC7132     |
 \b
  The Hostif trap attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_TYPE                       |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_ATTR_PACKET_ACTION                   |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_PRIORITY                   |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_ATTR_EXCLUDE_PORT_LIST               |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_GROUP                      |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_ATTR_MIRROR_SESSION                  |           -            |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_TYPE                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_ATTR_PACKET_ACTION                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_PRIORITY                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_ATTR_EXCLUDE_PORT_LIST               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_ATTR_TRAP_GROUP                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_ATTR_MIRROR_SESSION                  |              -                 |
 \b
  The Hostif user defined trap attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TYPE               |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TRAP_PRIORITY      |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TRAP_GROUP         |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TYPE               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TRAP_PRIORITY      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_ATTR_TRAP_GROUP         |    CTC8096,CTC7148,CTC7132     |
 \b
  The Hostif attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_ATTR_TYPE                                 |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_ATTR_OBJ_ID                               |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_ATTR_NAME                                 |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_ATTR_OPER_STATUS                          |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_ATTR_QUEUE                                |           -            |
-\t  |  SAI_HOSTIF_ATTR_VLAN_TAG                             |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_ATTR_TYPE                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_ATTR_OBJ_ID                               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_ATTR_NAME                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_ATTR_OPER_STATUS                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_ATTR_QUEUE                                |              -                 |
+\t  |  SAI_HOSTIF_ATTR_VLAN_TAG                             |    CTC8096,CTC7148,CTC7132     |
 \b
  The Hostif table entry attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_TYPE                     |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_OBJ_ID                   |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_TRAP_ID                  |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_CHANNEL_TYPE             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_HOST_IF                  |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_TYPE                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_OBJ_ID                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_TRAP_ID                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_CHANNEL_TYPE             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TABLE_ENTRY_ATTR_HOST_IF                  |    CTC8096,CTC7148,CTC7132     |
 \b
  The Hostif packet attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_PACKET_ATTR_HOSTIF_TRAP_ID                |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_INGRESS_PORT                  |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_INGRESS_LAG                   |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_HOSTIF_TX_TYPE                |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_EGRESS_PORT_OR_LAG            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_BRIDGE_ID                     |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_PACKET_ATTR_TIMESTAMP                     |           -            |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_PACKET_ATTR_HOSTIF_TRAP_ID                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_INGRESS_PORT                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_INGRESS_LAG                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_HOSTIF_TX_TYPE                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_EGRESS_PORT_OR_LAG            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_BRIDGE_ID                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_PACKET_ATTR_TIMESTAMP                     |              -                 |
 \b
  The Hostif trap type supported by centec devices:
 \p
 \b
-\t  |   TRAP TYPE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_TRAP_TYPE_STP                             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_LACP                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_EAPOL                           |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_LLDP                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PVRST                           |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_QUERY                 |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_LEAVE                 |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V1_REPORT             |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V2_REPORT             |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V3_REPORT             |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_SAMPLEPACKET                    |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_ARP_REQUEST                     |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_ARP_RESPONSE                    |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_DHCP                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_OSPF                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PIM                             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_VRRP                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_DHCPV6                          |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_OSPFV6                          |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_VRRPV6                          |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_NEIGHBOR_DISCOVERY         |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_V2                  |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_REPORT              |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_DONE                |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_MLD_V2_REPORT                   |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_UNKNOWN_L3_MULTICAST            |        CTC7148         |
-\t  |  SAI_HOSTIF_TRAP_TYPE_IP2ME                           |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_SSH                             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_SNMP                            |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_BGP                             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_BGPV6                           |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_L3_MTU_ERROR                    |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_TTL_ERROR                       |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_TRAP_TYPE_STATIC_FDB_MOVE                 |           -            |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_EGRESS_BUFFER  |           -            |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_WRED           |           -            |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_ROUTER         |           -            |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PTP                             |           -            |
-\t  |  SAI_HOSTIF_TRAP_TYPE_PTP_TX_EVENT                    |           -            |
+\t  |   TRAP TYPE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_TRAP_TYPE_STP                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_LACP                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_EAPOL                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_LLDP                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PVRST                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_QUERY                 |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_LEAVE                 |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V1_REPORT             |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V2_REPORT             |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IGMP_TYPE_V3_REPORT             |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_SAMPLEPACKET                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_ARP_REQUEST                     |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_ARP_RESPONSE                    |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_DHCP                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_OSPF                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PIM                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_VRRP                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_DHCPV6                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_OSPFV6                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_VRRPV6                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_NEIGHBOR_DISCOVERY         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_V2                  |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_REPORT              |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IPV6_MLD_V1_DONE                |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_MLD_V2_REPORT                   |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_UNKNOWN_L3_MULTICAST            |        CTC7148,CTC7132         |
+\t  |  SAI_HOSTIF_TRAP_TYPE_IP2ME                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_SSH                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_SNMP                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_BGP                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_BGPV6                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_L3_MTU_ERROR                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_TTL_ERROR                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_TRAP_TYPE_STATIC_FDB_MOVE                 |              -                 |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_EGRESS_BUFFER  |              -                 |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_WRED           |              -                 |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PIPELINE_DISCARD_ROUTER         |              -                 |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PTP                             |              -                 |
+\t  |  SAI_HOSTIF_TRAP_TYPE_PTP_TX_EVENT                    |              -                 |
 \b
  The Hostif user defined trap type supported by centec devices:
 \p
 \b
-\t  |   USER DEFINED TRAP TYPE                              |   SUPPORT CHIPS LIST   |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_ROUTER             |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_NEIGHBOR           |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_ACL                |    CTC8096,CTC7148     |
-\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_FDB                |    CTC8096,CTC7148     |
+\t  |   USER DEFINED TRAP TYPE                              |       SUPPORT CHIPS LIST       |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_ROUTER             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_NEIGHBOR           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_ACL                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_HOSTIF_USER_DEFINED_TRAP_TYPE_FDB                |    CTC8096,CTC7148,CTC7132     |
 \b
 */
 
@@ -176,6 +176,10 @@ typedef enum ctc_hostif_l2pdu_index_s
 {
     CTC_HOSTIF_L2PDU_PVRST_INDEX = 1,
     CTC_HOSTIF_L2PDU_UDLD_INDEX,
+    CTC_HOSTIF_L2PDU_CDP_INDEX,
+    CTC_HOSTIF_L2PDU_VTP_INDEX,
+    CTC_HOSTIF_L2PDU_DDP_INDEX,
+    CTC_HOSTIF_L2PDU_PAGP_INDEX,
 
 }ctc_hostif_l2pdu_index_t;
 
@@ -183,6 +187,10 @@ typedef enum ctc_hostif_l2pdu_action_index_s
 {
     CTC_HOSTIF_L2PDU_ACTION_PVRST_INDEX = CTC_L2PDU_ACTION_INDEX_FIP+1,
     CTC_HOSTIF_L2PDU_ACTION_UDLD_INDEX,
+    CTC_HOSTIF_L2PDU_ACTION_CDP_INDEX,
+    CTC_HOSTIF_L2PDU_ACTION_VTP_INDEX,
+    CTC_HOSTIF_L2PDU_ACTION_DTP_INDEX,
+    CTC_HOSTIF_L2PDU_ACTION_PAGP_INDEX,
 
 }ctc_hostif_l2pdu_action_index_t;
 

@@ -550,7 +550,7 @@ def sai_thrift_create_virtual_router(client, v4_enabled, v6_enabled):
     vr_id = client.sai_thrift_create_virtual_router(thrift_attr_list=vr_attr_list)
     return vr_id
 
-def sai_thrift_create_router_interface(client, vr_oid, type, port_oid, vlan_oid, v4_enabled, v6_enabled, mac):
+def sai_thrift_create_router_interface(client, vr_oid, type, port_oid, vlan_oid, v4_enabled, v6_enabled, mac, dot1d_bridge_id = 0, is_virtual = False):
     #vrf attribute
     rif_attr_list = []
     rif_attribute1_value = sai_thrift_attribute_value_t(oid=vr_oid)
@@ -561,6 +561,14 @@ def sai_thrift_create_router_interface(client, vr_oid, type, port_oid, vlan_oid,
     rif_attribute2 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_TYPE,
                                             value=rif_attribute2_value)
     rif_attr_list.append(rif_attribute2)
+    
+    rif_attribute3_value = sai_thrift_attribute_value_t(oid=dot1d_bridge_id)
+    rif_attribute3 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID, value=rif_attribute3_value)
+    rif_attr_list.append(rif_attribute3)
+    
+    rif_attribute_virtual_value = sai_thrift_attribute_value_t(booldata=is_virtual)
+    rif_attribute_virtual = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL, value=rif_attribute_virtual_value)
+    rif_attr_list.append(rif_attribute_virtual)
 
     if type == SAI_ROUTER_INTERFACE_TYPE_PORT:
         #port type and port id
@@ -589,27 +597,27 @@ def sai_thrift_create_router_interface(client, vr_oid, type, port_oid, vlan_oid,
                                                 value=rif_attribute4_value)
         rif_attr_list.append(rif_attribute4)
 
-
-    #v4_enabled
-    rif_attribute4_value = sai_thrift_attribute_value_t(booldata=v4_enabled)
-    rif_attribute4 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE,
-                                            value=rif_attribute4_value)
-    rif_attr_list.append(rif_attribute4)
-	
-    rif_attribute4_1_value = sai_thrift_attribute_value_t(booldata=v4_enabled)
-    rif_attribute4_1 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE,
-                                            value=rif_attribute4_1_value)
-    rif_attr_list.append(rif_attribute4_1)
-    #v6_enabled
-    rif_attribute5_value = sai_thrift_attribute_value_t(booldata=v6_enabled)
-    rif_attribute5 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE,
-                                            value=rif_attribute5_value)
-    rif_attr_list.append(rif_attribute5)
-	
-    rif_attribute5_1_value = sai_thrift_attribute_value_t(booldata=v6_enabled)
-    rif_attribute5_1 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE,
-                                            value=rif_attribute5_1_value)
-    rif_attr_list.append(rif_attribute5_1)
+    if( not is_virtual):
+        #v4_enabled
+        rif_attribute4_value = sai_thrift_attribute_value_t(booldata=v4_enabled)
+        rif_attribute4 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE,
+                                                value=rif_attribute4_value)
+        rif_attr_list.append(rif_attribute4)
+        
+        rif_attribute4_1_value = sai_thrift_attribute_value_t(booldata=v4_enabled)
+        rif_attribute4_1 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE,
+                                                value=rif_attribute4_1_value)
+        rif_attr_list.append(rif_attribute4_1)
+        #v6_enabled
+        rif_attribute5_value = sai_thrift_attribute_value_t(booldata=v6_enabled)
+        rif_attribute5 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE,
+                                                value=rif_attribute5_value)
+        rif_attr_list.append(rif_attribute5)
+        
+        rif_attribute5_1_value = sai_thrift_attribute_value_t(booldata=v6_enabled)
+        rif_attribute5_1 = sai_thrift_attribute_t(id=SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE,
+                                                value=rif_attribute5_1_value)
+        rif_attr_list.append(rif_attribute5_1)
 
     if mac:
         rif_attribute6_value = sai_thrift_attribute_value_t(mac=mac)
@@ -2245,7 +2253,7 @@ def sai_thrift_create_tunnel_gre(client, underlay_if, overlay_if, ip_addr, gre_k
     
     return client.sai_thrift_create_tunnel(tunnel_attr_list)
 
-def sai_thrift_create_tunnel_vxlan(client, ip_addr, encap_mapper_list, decap_mapper_list):
+def sai_thrift_create_tunnel_vxlan(client, ip_addr, encap_mapper_list, decap_mapper_list, underlay_if):
     tunnel_attr_list = []
     
     tunnel_attribute1_value = sai_thrift_attribute_value_t(s32=SAI_TUNNEL_TYPE_VXLAN)
@@ -2253,14 +2261,19 @@ def sai_thrift_create_tunnel_vxlan(client, ip_addr, encap_mapper_list, decap_map
                                             value=tunnel_attribute1_value)
     tunnel_attr_list.append(tunnel_attribute1)
 
+    tunnel_attribute2_value = sai_thrift_attribute_value_t(oid=underlay_if)
+    tunnel_attribute2 = sai_thrift_attribute_t(id=SAI_TUNNEL_ATTR_UNDERLAY_INTERFACE,
+                                            value=tunnel_attribute2_value)
+    tunnel_attr_list.append(tunnel_attribute2)
+    
     addr = sai_thrift_ip_t(ip4=ip_addr)
     ipaddr = sai_thrift_ip_address_t(addr_family=SAI_IP_ADDR_FAMILY_IPV4, addr=addr)
     #addr = sai_thrift_ip_t(ip6=ip_addr)
     #ipaddr = sai_thrift_ip_address_t(addr_family=SAI_IP_ADDR_FAMILY_IPV6, addr=addr)
-    tunnel_attribute2_value = sai_thrift_attribute_value_t(ipaddr=ipaddr)
-    tunnel_attribute2 = sai_thrift_attribute_t(id=SAI_TUNNEL_ATTR_ENCAP_SRC_IP,
-                                             value=tunnel_attribute2_value)
-    tunnel_attr_list.append(tunnel_attribute2)
+    tunnel_attribute3_value = sai_thrift_attribute_value_t(ipaddr=ipaddr)
+    tunnel_attribute3 = sai_thrift_attribute_t(id=SAI_TUNNEL_ATTR_ENCAP_SRC_IP,
+                                             value=tunnel_attribute3_value)
+    tunnel_attr_list.append(tunnel_attribute3)
 
     #Encap mapper list
     if encap_mapper_list:
@@ -2318,3 +2331,37 @@ def sai_thrift_create_tunnel_term_table_entry(client, vr_id, ip_sa, ip_da, tunne
 
     return client.sai_thrift_create_tunnel_term_table_entry(tunnel_attr_list)
     
+def sai_thrift_create_isolation_group(client, type):
+    attr_list = []
+    
+    attr_value = sai_thrift_attribute_value_t(u32=type)
+    attr = sai_thrift_attribute_t(id=SAI_ISOLATION_GROUP_ATTR_TYPE,
+                                            value=attr_value)
+    attr_list.append(attr)                                      
+    return client.sai_thrift_create_isolation_group(attr_list)                                 
+
+def sai_thrift_remove_isolation_group(client, iso_grp_oid):                                      
+    return client.sai_thrift_remove_isolation_group(iso_grp_oid)   
+
+def sai_thrift_create_isolation_group_member(client, group_oid, member_oid):
+    attr_list = []
+    
+    attr_value = sai_thrift_attribute_value_t(oid=group_oid)
+    attr = sai_thrift_attribute_t(id=SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_GROUP_ID, value=attr_value)
+    attr_list.append(attr)
+
+    attr_value = sai_thrift_attribute_value_t(oid=member_oid)
+    attr = sai_thrift_attribute_t(id=SAI_ISOLATION_GROUP_MEMBER_ATTR_ISOLATION_OBJECT, value=attr_value)
+    attr_list.append(attr)
+    
+    return client.sai_thrift_create_isolation_group_member(attr_list)
+
+def sai_thrift_remove_isolation_group_member(client, member_oid):                                      
+    return client.sai_thrift_remove_isolation_group_member(member_oid)  
+    
+def sai_thrift_get_isolation_group_attributes(client, isolation_group_oid):  
+    attr_list = client.sai_thrift_get_isolation_group_attributes(isolation_group_oid)
+    return attr_list
+    
+def sai_thrift_get_isolation_group_member_attributes(client, member_oid):
+    return client.sai_thrift_get_isolation_group_member_attributes(member_oid)

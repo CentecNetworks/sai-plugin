@@ -14,118 +14,118 @@ This module defines SAI Tunnel.
  The Tunnel Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                                     |   SUPPORT CHIPS LIST   |
-\t  |  create_tunnel_map                                        |    CTC8096,CTC7148     |
-\t  |  remove_tunnel_map                                        |    CTC8096,CTC7148     |
-\t  |  set_tunnel_map_attribute                                 |    CTC8096,CTC7148     |
-\t  |  get_tunnel_map_attribute                                 |    CTC8096,CTC7148     |
-\t  |  create_tunnel                                            |    CTC8096,CTC7148     |
-\t  |  remove_tunnel                                            |    CTC8096,CTC7148     |
-\t  |  set_tunnel_attribute                                     |    CTC8096,CTC7148     |
-\t  |  get_tunnel_attribute                                     |    CTC8096,CTC7148     |
-\t  |  get_tunnel_stats                                         |    CTC8096,CTC7148     |
-\t  |  get_tunnel_stats_ext                                     |    CTC8096,CTC7148     |
-\t  |  clear_tunnel_stats                                       |    CTC8096,CTC7148     |
-\t  |  create_tunnel_term_table_entry                           |    CTC8096,CTC7148     |
-\t  |  get_hostif_trap_group_attribute                          |    CTC8096,CTC7148     |
-\t  |  create_hostif_trap                                       |    CTC8096,CTC7148     |
-\t  |  remove_tunnel_term_table_entry                           |    CTC8096,CTC7148     |
-\t  |  set_tunnel_term_table_entry_attribute                    |    CTC8096,CTC7148     |
-\t  |  get_tunnel_term_table_entry_attribute                    |    CTC8096,CTC7148     |
-\t  |  create_tunnel_map_entry                                  |    CTC8096,CTC7148     |
-\t  |  remove_tunnel_map_entry                                  |    CTC8096,CTC7148     |
-\t  |  set_tunnel_map_entry_attribute                           |    CTC8096,CTC7148     |
-\t  |  get_tunnel_map_entry_attribute                           |    CTC8096,CTC7148     |
+\t  |   API                                                     |       SUPPORT CHIPS LIST       |
+\t  |  create_tunnel_map                                        |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_tunnel_map                                        |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_tunnel_map_attribute                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_map_attribute                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_tunnel                                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_tunnel                                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_tunnel_attribute                                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_attribute                                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_stats                                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_stats_ext                                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  clear_tunnel_stats                                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_tunnel_term_table_entry                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_hostif_trap_group_attribute                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_hostif_trap                                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_tunnel_term_table_entry                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_tunnel_term_table_entry_attribute                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_term_table_entry_attribute                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  create_tunnel_map_entry                                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_tunnel_map_entry                                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_tunnel_map_entry_attribute                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_tunnel_map_entry_attribute                           |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Tunnel map type supported by centec devices:
 \p
 \b
-\t  |   TRAP TYPE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_MAP_TYPE_OECN_TO_UECN                         |           -            |
-\t  |  SAI_TUNNEL_MAP_TYPE_UECN_OECN_TO_OECN                    |           -            |
-\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_VLAN_ID                       |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_TYPE_VLAN_ID_TO_VNI                       |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_BRIDGE_IF                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_TYPE_BRIDGE_IF_TO_VNI                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_VIRTUAL_ROUTER_ID             |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_TYPE_VIRTUAL_ROUTER_ID_TO_VNI             |    CTC8096,CTC7148     |
+\t  |   TRAP TYPE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_MAP_TYPE_OECN_TO_UECN                         |              -                 |
+\t  |  SAI_TUNNEL_MAP_TYPE_UECN_OECN_TO_OECN                    |              -                 |
+\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_VLAN_ID                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_TYPE_VLAN_ID_TO_VNI                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_BRIDGE_IF                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_TYPE_BRIDGE_IF_TO_VNI                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_TYPE_VNI_TO_VIRTUAL_ROUTER_ID             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_TYPE_VIRTUAL_ROUTER_ID_TO_VNI             |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Tunnel map entry attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_TUNNEL_MAP_TYPE                |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_TUNNEL_MAP                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_OECN_KEY                       |           -            |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_OECN_VALUE                     |           -            |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_UECN_KEY                       |           -            |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_UECN_VALUE                     |           -            |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VLAN_ID_KEY                    |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VLAN_ID_VALUE                  |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VNI_ID_KEY                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VNI_ID_VALUE                   |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_BRIDGE_ID_KEY                  |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_BRIDGE_ID_VALUE                |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VIRTUAL_ROUTER_ID_KEY          |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VIRTUAL_ROUTER_ID_VALUE        |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_TUNNEL_MAP_TYPE                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_TUNNEL_MAP                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_OECN_KEY                       |              -                 |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_OECN_VALUE                     |              -                 |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_UECN_KEY                       |              -                 |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_UECN_VALUE                     |              -                 |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VLAN_ID_KEY                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VLAN_ID_VALUE                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VNI_ID_KEY                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VNI_ID_VALUE                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_BRIDGE_ID_KEY                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_BRIDGE_ID_VALUE                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VIRTUAL_ROUTER_ID_KEY          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ENTRY_ATTR_VIRTUAL_ROUTER_ID_VALUE        |    CTC8096,CTC7148,CTC7132     |
 \b
  The Tunnel map attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_MAP_ATTR_TYPE                                 |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_MAP_ATTR_ENTRY_LIST                           |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_MAP_ATTR_TYPE                                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_MAP_ATTR_ENTRY_LIST                           |    CTC8096,CTC7148,CTC7132     |
 \b
  The Tunnel type supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_TYPE_IPINIP                                   |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TYPE_IPINIP_GRE                               |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TYPE_VXLAN                                    |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TYPE_MPLS                                     |           -            |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_TYPE_IPINIP                                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TYPE_IPINIP_GRE                               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TYPE_VXLAN                                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TYPE_MPLS                                     |              -                 |
 \b
  The Tunnel attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_ATTR_TYPE                                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_UNDERLAY_INTERFACE                       |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_OVERLAY_INTERFACE                        |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_SRC_IP                             |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_TTL_MODE                           |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_TTL_VAL                            |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_DSCP_MODE                          |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_DSCP_VAL                           |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_GRE_KEY_VALID                      |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_GRE_KEY                            |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_ECN_MODE                           |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_ENCAP_MAPPERS                            |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_DECAP_ECN_MODE                           |           -            |
-\t  |  SAI_TUNNEL_ATTR_DECAP_MAPPERS                            |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_DECAP_TTL_MODE                           |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_DECAP_DSCP_MODE                          |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_ATTR_TERM_TABLE_ENTRY_LIST                    |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_ATTR_TYPE                                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_UNDERLAY_INTERFACE                       |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_OVERLAY_INTERFACE                        |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_SRC_IP                             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_TTL_MODE                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_TTL_VAL                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_DSCP_MODE                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_DSCP_VAL                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_GRE_KEY_VALID                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_GRE_KEY                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_ECN_MODE                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_ENCAP_MAPPERS                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_DECAP_ECN_MODE                           |              -                 |
+\t  |  SAI_TUNNEL_ATTR_DECAP_MAPPERS                            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_DECAP_TTL_MODE                           |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_DECAP_DSCP_MODE                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_ATTR_TERM_TABLE_ENTRY_LIST                    |    CTC8096,CTC7148,CTC7132     |
 \b
  The Tunnel term table entry type supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_TYPE_P2P                     |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_TYPE_P2MP                    |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_TYPE_P2P                     |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_TYPE_P2MP                    |    CTC8096,CTC7148,CTC7132     |
 \b
  The Tunnel term table entry attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                               |   SUPPORT CHIPS LIST   |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_VR_ID                   |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TYPE                    |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP                  |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP                  |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TUNNEL_TYPE             |    CTC8096,CTC7148     |
-\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID        |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                               |       SUPPORT CHIPS LIST       |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_VR_ID                   |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TYPE                    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TUNNEL_TYPE             |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID        |    CTC8096,CTC7148,CTC7132     |
 \b
 */
 

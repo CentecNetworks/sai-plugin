@@ -231,7 +231,7 @@ _ctc_app_get_dma_cfg(ctc_dma_global_cfg_t* p_dma_cfg)
     CTC_BIT_SET(p_dma_cfg->func_en_bitmap, CTC_DMA_FUNC_STATS);
 #endif
 
-#if defined (DUET2)
+#if defined (DUET2) || defined (TSINGMA)
     p_dma_cfg->learning.desc_num   = 128;
     p_dma_cfg->learning.priority       = SAL_TASK_PRIO_DEF;
     p_dma_cfg->learning.dmasel       = 0;
@@ -279,6 +279,7 @@ static int32
 _ctc_app_get_profile(uint8 lchip, char* init_cfg, char* datapath_cfg, ctc_init_cfg_t* p_init_config, ctc_init_chip_info_t* p_chip_info)
 {
     int32 ret = 0;
+    uint8 index = 0;
 
     /*read chip profile.cfg*/
     ret = ctc_app_get_chip_profile((uint8*)init_cfg, p_init_config, p_chip_info);

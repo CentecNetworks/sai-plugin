@@ -625,4 +625,11 @@ service switch_sai_rpc {
 
     //log set
     sai_thrift_status_t sai_thrift_log_set(1: i32 sai_api_id,  2: i32 log_level);
+
+    sai_thrift_object_id_t sai_thrift_create_isolation_group(1: list<sai_thrift_attribute_t> thrift_attr_list);
+    sai_thrift_status_t sai_thrift_remove_isolation_group(1: sai_thrift_object_id_t iso_group_oid);
+    sai_thrift_object_id_t sai_thrift_create_isolation_group_member(1: list<sai_thrift_attribute_t> thrift_attr_list);
+    sai_thrift_status_t sai_thrift_remove_isolation_group_member(1: sai_thrift_object_id_t member_oid);
+    sai_thrift_attribute_list_t sai_thrift_get_isolation_group_attributes(1: sai_thrift_object_id_t iso_group_oid);
+    sai_thrift_attribute_list_t sai_thrift_get_isolation_group_member_attributes(1: sai_thrift_object_id_t member_oid);
 }

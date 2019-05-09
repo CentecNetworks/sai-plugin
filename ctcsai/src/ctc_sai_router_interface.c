@@ -47,6 +47,7 @@ _ctc_sai_router_interface_build_db(uint8 lchip, sai_object_id_t router_interface
     if (CTC_SAI_ERROR(status))
     {
         mem_free(p_rif_info);
+        return status;
     }
     p_rif_info->neighbor_miss_action = SAI_PACKET_ACTION_TRAP;
     p_rif_info->v4_state = 1;
@@ -191,38 +192,58 @@ _ctc_sai_router_interface_set_attr_hw(sai_object_id_t router_interface_id)
     {
         return SAI_STATUS_SUCCESS;
     }
-
-    ctc_sai_oid_get_l3if_id(router_interface_id, &l3if_id);
-
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_VRF_ID;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->vrf_id;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_VRF_EN;
-    l3if_prop_value[l3if_prop_cnt++] = 1;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV4_UCAST;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v4_state;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV6_UCAST;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v6_state;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV4_MCAST;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v4_mc_state;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV6_MCAST;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v6_mc_state;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_SIZE;
-    l3if_prop_value[l3if_prop_cnt++] = p_rif_info->mtu;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_EN;
-    l3if_prop_value[l3if_prop_cnt++] = 1;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_EXCEPTION_EN;
-    l3if_prop_value[l3if_prop_cnt++] = 1;
-    l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MPLS_EN;
-    l3if_prop_value[l3if_prop_cnt++] = 1;
-
-    for (i = 0; i < l3if_prop_cnt; i++)
+    if (!p_rif_info->is_virtual)
     {
-        CTC_SAI_CTC_ERROR_RETURN(ctcs_l3if_set_property(lchip, l3if_id, l3if_prop[i], l3if_prop_value[i]));
+        ctc_sai_oid_get_l3if_id(router_interface_id, &l3if_id);
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_VRF_ID;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->vrf_id;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_VRF_EN;
+        l3if_prop_value[l3if_prop_cnt++] = 1;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV4_UCAST;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v4_state;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV6_UCAST;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v6_state;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV4_MCAST;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v4_mc_state;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_IPV6_MCAST;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->v6_mc_state;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_SIZE;
+        l3if_prop_value[l3if_prop_cnt++] = p_rif_info->mtu;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_EN;
+        l3if_prop_value[l3if_prop_cnt++] = 1;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MTU_EXCEPTION_EN;
+        l3if_prop_value[l3if_prop_cnt++] = 1;
+        l3if_prop[l3if_prop_cnt] = CTC_L3IF_PROP_MPLS_EN;
+        l3if_prop_value[l3if_prop_cnt++] = 1;
+
+        for (i = 0; i < l3if_prop_cnt; i++)
+        {
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_l3if_set_property(lchip, l3if_id, l3if_prop[i], l3if_prop_value[i]));
+        }
+    }
+    else
+    {
+        l3if_id = p_rif_info->actual_l3if_id;
     }
 
     sal_memset(&router_mac, 0, sizeof(router_mac));
     router_mac.num = 1;
-    sal_memcpy(router_mac.mac[0], p_rif_info->src_mac, sizeof(sai_mac_t));
+    if(p_rif_info->is_virtual && !(CTC_CHIP_GOLDENGATE== ctcs_get_chip_type(lchip)))
+    {
+        router_mac.dir = CTC_INGRESS;
+        router_mac.mode = CTC_L3IF_APPEND_ROUTE_MAC;
+        sal_memcpy(router_mac.mac[0], p_rif_info->src_mac, sizeof(sai_mac_t));
+    }
+    else if(p_rif_info->is_virtual)
+    {
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_l3if_set_interface_router_mac(lchip, l3if_id, router_mac));
+        sal_memcpy(router_mac.mac[router_mac.num], p_rif_info->src_mac, sizeof(sai_mac_t));
+        router_mac.num += 1;
+    }
+    else
+    {
+        sal_memcpy(router_mac.mac[0], p_rif_info->src_mac, sizeof(sai_mac_t));
+    }
     CTC_SAI_CTC_ERROR_RETURN(ctcs_l3if_set_interface_router_mac(lchip, l3if_id, router_mac));
 
     return SAI_STATUS_SUCCESS;
@@ -255,25 +276,51 @@ _ctc_sai_router_interface_set_attr(sai_object_key_t* key, const sai_attribute_t*
         sal_memcpy(p_rif_info->src_mac, attr->value.mac, sizeof(sai_mac_t));
         break;
     case SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->v4_state = (attr->value.booldata)? 1:0;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->v6_state = (attr->value.booldata)? 1:0;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_MTU:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->mtu = attr->value.u32;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL:
+        return SAI_STATUS_NOT_SUPPORTED;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_EGRESS_ACL:
+        return SAI_STATUS_NOT_SUPPORTED;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_NEIGHBOR_MISS_PACKET_ACTION:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->neighbor_miss_action = attr->value.s32;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->v4_mc_state = (attr->value.booldata)? 1:0;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         p_rif_info->v6_mc_state = (attr->value.booldata)? 1:0;
         break;
     default:
@@ -323,27 +370,57 @@ _ctc_sai_router_interface_get_attr(sai_object_key_t* key, sai_attribute_t* attr,
         sal_memcpy(attr->value.mac, p_rif_info->src_mac, sizeof(sai_mac_t));
         break;
     case SAI_ROUTER_INTERFACE_ATTR_ADMIN_V4_STATE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.booldata = p_rif_info->v4_state;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_ADMIN_V6_STATE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.booldata = p_rif_info->v6_state;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_MTU:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.u32 = p_rif_info->mtu;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_INGRESS_ACL:
+        return SAI_STATUS_NOT_SUPPORTED;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_EGRESS_ACL:
+        return SAI_STATUS_NOT_SUPPORTED;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_NEIGHBOR_MISS_PACKET_ACTION:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.s32 = p_rif_info->neighbor_miss_action;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_V4_MCAST_ENABLE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.booldata = p_rif_info->v4_mc_state;
         break;
     case SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE:
+        if(p_rif_info->is_virtual)
+        {
+            return SAI_STATUS_INVALID_PARAMETER;
+        }
         attr->value.booldata = p_rif_info->v6_mc_state;
         break;
+    case SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID:
+        attr->value.oid = p_rif_info->dot1d_bridge_id;
+    case SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL:
+        attr->value.booldata = p_rif_info->is_virtual;
     default:
         return SAI_STATUS_NOT_SUPPORTED;
         break;
@@ -575,6 +652,12 @@ static  ctc_sai_attr_fn_entry_t rif_attr_fn_entries[] = {
     { SAI_ROUTER_INTERFACE_ATTR_V6_MCAST_ENABLE,
       _ctc_sai_router_interface_get_attr,
       _ctc_sai_router_interface_set_attr},
+    { SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID,
+      _ctc_sai_router_interface_get_attr,
+      NULL},
+    { SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL,
+      _ctc_sai_router_interface_get_attr,
+      NULL},
     {CTC_SAI_FUNC_ATTR_END_ID,NULL,NULL}
 };
 
@@ -814,7 +897,7 @@ void ctc_sai_router_interface_dump(uint8 lchip, sal_file_t p_file, ctc_sai_dump_
 #define ________SAI_API________
 static sai_status_t
 ctc_sai_router_interface_get_stats(sai_object_id_t router_interface_id, uint32_t number_of_counters,
-const sai_router_interface_stat_t *counter_ids, uint64_t *counters)
+const sai_stat_id_t *counter_ids, uint64_t *counters)
 {
     uint8 lchip = 0;
     uint8 index = 0;
@@ -884,7 +967,7 @@ out:
 
 static sai_status_t
 ctc_sai_router_interface_get_stats_ext(sai_object_id_t router_interface_id, uint32_t number_of_counters,
-const sai_router_interface_stat_t *counter_ids, sai_stats_mode_t mode, uint64_t *counters)
+const sai_stat_id_t *counter_ids, sai_stats_mode_t mode, uint64_t *counters)
 {
     uint8 lchip = 0;
     sai_status_t status = SAI_STATUS_SUCCESS;
@@ -972,7 +1055,7 @@ out:
 
 static sai_status_t
 ctc_sai_router_interface_clear_stats(sai_object_id_t router_interface_id, uint32_t number_of_counters,
-const sai_router_interface_stat_t *counter_ids)
+const sai_stat_id_t *counter_ids)
 {
     uint8 lchip = 0;
     sai_status_t status = SAI_STATUS_SUCCESS;
@@ -1026,6 +1109,7 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     sai_status_t           status = SAI_STATUS_SUCCESS;
     uint8 lchip = 0;
     uint32 l3if_id = 0;
+    uint16 actual_l3if_id = 0;
     sai_object_id_t rif_obj_id = 0;
     ctc_sai_router_interface_t* p_rif_info = NULL;
     const sai_attribute_value_t *attr_value;
@@ -1043,6 +1127,8 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     uint16 vlan_ptr = 0;
     ctc_stats_statsid_t stats_statsid_in;
     ctc_stats_statsid_t stats_statsid_eg;
+    sai_object_id_t dot1d_bridge_id = 0;
+    ctc_l3if_router_mac_t router_mac;
 
     CTC_SAI_LOG_ENTER(SAI_API_ROUTER_INTERFACE);
     CTC_SAI_PTR_VALID_CHECK(router_interface_id);
@@ -1054,7 +1140,9 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     sal_memset(&l3if, 0, sizeof(ctc_l3if_t));
     sal_memset(&stats_statsid_in, 0, sizeof(stats_statsid_in));
     sal_memset(&stats_statsid_eg, 0, sizeof(stats_statsid_eg));
+    sal_memset(&router_mac, 0, sizeof(ctc_l3if_router_mac_t));
     l3if.l3if_type = MAX_L3IF_TYPE_NUM;
+    CTC_SAI_ERROR_GOTO(ctc_sai_db_alloc_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, &l3if_id), status, out);
     CTC_SAI_ERROR_GOTO(ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_TYPE, &attr_value, &index), status, out);
     if (SAI_ROUTER_INTERFACE_TYPE_VLAN == attr_value->s32)
     {
@@ -1073,13 +1161,20 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
         l3if.l3if_type = CTC_L3IF_TYPE_VLAN_IF;
         is_1d_bridge = 1;
     }
-
-    CTC_SAI_ERROR_GOTO(ctc_sai_db_alloc_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, &l3if_id), status, out);
-
     rif_obj_id = ctc_sai_create_object_id(SAI_OBJECT_TYPE_ROUTER_INTERFACE, lchip, attr_value->s32, 0, l3if_id);
     CTC_SAI_LOG_INFO(SAI_API_ROUTER_INTERFACE, "create router_interface_id = 0x%"PRIx64"\n", rif_obj_id);
     CTC_SAI_ERROR_GOTO(_ctc_sai_router_interface_build_db(lchip, rif_obj_id, &p_rif_info), status, error1);
-
+    CTC_SAI_ERROR_GOTO(ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID, &attr_value, &index), status, out);
+    dot1d_bridge_id = attr_value->oid;
+    status = (ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL, &attr_value, &index));
+    if (!CTC_SAI_ERROR(status))
+    {
+        p_rif_info->is_virtual = attr_value->booldata;
+    }
+    else
+    {
+        p_rif_info->is_virtual = 0;
+    }
     status = (ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_ROUTER_INTERFACE_ATTR_VLAN_ID, &attr_value, &index));
     if (!CTC_SAI_ERROR(status))
     {
@@ -1093,53 +1188,73 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
         p_rif_info->gport = l3if.gport;
         port_valid = 1;
     }
+    if(p_rif_info->is_virtual)
+    {
+        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_l3if_id(lchip, &l3if, &actual_l3if_id), status, out);
+        CTC_SAI_ERROR_GOTO(ctcs_l3if_get_interface_router_mac(lchip, actual_l3if_id, &router_mac), status, out);
+        if (((CTC_CHIP_GOLDENGATE == ctcs_get_chip_type(lchip)) || (CTC_CHIP_DUET2 == ctcs_get_chip_type(lchip))) && router_mac.num >= 4)
+        {
+            return SAI_STATUS_NO_MEMORY;
+        }
+        else if ((CTC_CHIP_TSINGMA == ctcs_get_chip_type(lchip)) && router_mac.num >= 8)
+        {
+            return SAI_STATUS_NO_MEMORY;
+        }
+        p_rif_info->actual_l3if_id = actual_l3if_id;
+    }
 
-    if (!is_1d_bridge && (MAX_L3IF_TYPE_NUM != l3if.l3if_type))
+    p_rif_info->dot1d_bridge_id = dot1d_bridge_id;
+
+    if (!is_1d_bridge && (MAX_L3IF_TYPE_NUM != l3if.l3if_type) && !p_rif_info->is_virtual)
     {
         CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_create(lchip, l3if_id, &l3if), status, error2);
     }
-    stats_statsid_in.dir = CTC_INGRESS;
-    stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
-    status = ctcs_stats_create_statsid(lchip, &stats_statsid_in);
-    if (CTC_E_NONE != status)
+    if (!p_rif_info->is_virtual)
     {
-        stats_statsid_in.stats_id = 0;/*0 means invalid*/
-        p_rif_info->ing_statsid = 0;
-    }
-    else
-    {
-        status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_STATS, stats_statsid_in.stats_id);
-        if(CTC_E_NONE != status)
+        stats_statsid_in.dir = CTC_INGRESS;
+        stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
+        status = ctcs_stats_create_statsid(lchip, &stats_statsid_in);
+        if (CTC_E_NONE != status)
         {
+            stats_statsid_in.stats_id = 0;/*0 means invalid*/
             p_rif_info->ing_statsid = 0;
         }
         else
         {
-            p_rif_info->ing_statsid = stats_statsid_in.stats_id;
+            status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_STATS, stats_statsid_in.stats_id);
+            if (CTC_E_NONE != status)
+            {
+                p_rif_info->ing_statsid = 0;
+            }
+            else
+            {
+                p_rif_info->ing_statsid = stats_statsid_in.stats_id;
+            }
+
         }
 
-    }
-    stats_statsid_eg.dir = CTC_EGRESS;
-    stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
-    status = ctcs_stats_create_statsid(lchip, &stats_statsid_eg);
-    if (CTC_E_NONE != status)
-    {
-        stats_statsid_eg.stats_id = 0;/*0 means invalid*/
-    }
-    else
-    {
-        status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_EGS_STATS, stats_statsid_eg.stats_id);
-        if(CTC_E_NONE != status)
+        stats_statsid_eg.dir = CTC_EGRESS;
+        stats_statsid_in.type = CTC_STATS_STATSID_TYPE_L3IF;
+        status = ctcs_stats_create_statsid(lchip, &stats_statsid_eg);
+        if (CTC_E_NONE != status)
         {
-            p_rif_info->egs_statsid = 0;
+            stats_statsid_eg.stats_id = 0;/*0 means invalid*/
         }
         else
         {
-            p_rif_info->egs_statsid = stats_statsid_eg.stats_id;
+            status = ctcs_l3if_set_property(lchip, l3if_id, CTC_L3IF_PROP_EGS_STATS, stats_statsid_eg.stats_id);
+            if (CTC_E_NONE != status)
+            {
+                p_rif_info->egs_statsid = 0;
+            }
+            else
+            {
+                p_rif_info->egs_statsid = stats_statsid_eg.stats_id;
+            }
         }
     }
 
-    if (CTC_L3IF_TYPE_PHY_IF == l3if.l3if_type)
+    if (CTC_L3IF_TYPE_PHY_IF == l3if.l3if_type && !p_rif_info->is_virtual)
     {
         if (CTC_IS_LINKAGG_PORT(l3if.gport))
         {
@@ -1157,7 +1272,7 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
         }
 
     }
-    else if (CTC_L3IF_TYPE_SUB_IF == l3if.l3if_type)
+    else if (CTC_L3IF_TYPE_SUB_IF == l3if.l3if_type && !p_rif_info->is_virtual)
     {
         ctc_port_scl_property_t port_scl_property;
         sal_memset(&port_scl_property, 0, sizeof(ctc_port_scl_property_t));
@@ -1169,6 +1284,12 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
     key.key.object_id = rif_obj_id;
     while (loop < attr_count)
     {
+        if (SAI_ROUTER_INTERFACE_ATTR_BRIDGE_ID == (&attr_list[loop])->id ||
+            SAI_ROUTER_INTERFACE_ATTR_IS_VIRTUAL == (&attr_list[loop])->id)
+        {
+            loop++ ;
+            continue;
+        }
         status = ctc_sai_set_attribute(&key, NULL, SAI_OBJECT_TYPE_ROUTER_INTERFACE,  rif_attr_fn_entries, &attr_list[loop]);
         if(CTC_SAI_ERROR(status))
         {
@@ -1199,7 +1320,7 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
         }
     }
 
-    if (MAX_L3IF_TYPE_NUM != l3if.l3if_type)
+    if (MAX_L3IF_TYPE_NUM != l3if.l3if_type || !p_rif_info->is_virtual)
     {
         if (CTC_L3IF_TYPE_VLAN_IF != l3if.l3if_type)
         {
@@ -1228,7 +1349,10 @@ ctc_sai_router_interface_create_rif(sai_object_id_t *router_interface_id, sai_ob
         ctc_sai_get_sai_object_id(SAI_OBJECT_TYPE_BRIDGE_PORT, &ctc_bridge_port_id, &bridge_port_id);
         attr_list.id = SAI_FDB_FLUSH_ATTR_BRIDGE_PORT_ID;
         attr_list.value.oid = bridge_port_id;
-        ctc_sai_fdb_flush_fdb(switch_id, 1, &attr_list);
+        if (!p_rif_info->is_virtual)
+        {
+            ctc_sai_fdb_flush_fdb(switch_id, 1, &attr_list);
+        }
     }
 
     goto out;
@@ -1261,7 +1385,10 @@ error2:
     _ctc_sai_router_interface_remove_db(lchip, rif_obj_id);
 error1:
     CTC_SAI_LOG_ERROR(SAI_API_ROUTER_INTERFACE, "rollback to error1\n");
-    ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
+    if(p_rif_info && !p_rif_info->is_virtual)
+    {
+        ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
+    }
 out:
     CTC_SAI_DB_UNLOCK(lchip);
     return status;
@@ -1281,6 +1408,7 @@ ctc_sai_router_interface_remove_rif(sai_object_id_t router_interface_id)
     uint8 index = 0;
     uint16 vlan_ptr = 0;
     uint8 exist = 0;
+    ctc_l3if_router_mac_t router_mac;
 
     CTC_SAI_ERROR_RETURN(ctc_sai_oid_get_lchip(router_interface_id, &lchip));
     CTC_SAI_DB_LOCK(lchip);
@@ -1318,18 +1446,19 @@ ctc_sai_router_interface_remove_rif(sai_object_id_t router_interface_id)
            goto out;
        }
    }
-
-    if ((CTC_L3IF_TYPE_VLAN_IF != l3if.l3if_type) && (MAX_L3IF_TYPE_NUM != l3if.l3if_type))
-    {
-        ctc_sai_hostif_l3if_en(lchip, p_rif_info->gport, false);
-    }
-
+   if (!p_rif_info->is_virtual)
+   {
+       if ((CTC_L3IF_TYPE_VLAN_IF != l3if.l3if_type) && (MAX_L3IF_TYPE_NUM != l3if.l3if_type))
+       {
+           ctc_sai_hostif_l3if_en(lchip, p_rif_info->gport, false);
+       }
+   }
    l3if.gport = p_rif_info->gport;
    if (p_rif_info->vlan_oid)
    {
        ctc_sai_vlan_get_vlan_id(p_rif_info->vlan_oid, &l3if.vlan_id);
    }
-   if (CTC_L3IF_TYPE_PHY_IF == l3if.l3if_type)
+   if (CTC_L3IF_TYPE_PHY_IF == l3if.l3if_type && !p_rif_info->is_virtual)
    {
        if (CTC_IS_LINKAGG_PORT(l3if.gport))
        {
@@ -1347,27 +1476,55 @@ ctc_sai_router_interface_remove_rif(sai_object_id_t router_interface_id)
        }
        ctcs_port_set_phy_if_en(lchip, l3if.gport, 0);
    }
-   else if (CTC_L3IF_TYPE_SUB_IF == l3if.l3if_type)
+   else if (CTC_L3IF_TYPE_SUB_IF == l3if.l3if_type && !p_rif_info->is_virtual)
    {
        ctc_port_scl_property_t port_scl_property;
        sal_memset(&port_scl_property, 0, sizeof(ctc_port_scl_property_t));
        port_scl_property.hash_type = CTC_PORT_IGS_SCL_HASH_TYPE_DISABLE;
        ctcs_port_set_scl_property(lchip, l3if.gport, &port_scl_property);
    }
-   else if (CTC_L3IF_TYPE_VLAN_IF == l3if.l3if_type)
+   else if (CTC_L3IF_TYPE_VLAN_IF == l3if.l3if_type && !p_rif_info->is_virtual)
    {
        ctc_sai_oid_get_vlanptr(p_rif_info->vlan_oid, &vlan_ptr);
        ctcs_vlan_set_property(lchip, vlan_ptr, CTC_VLAN_PROP_ARP_EXCP_TYPE, CTC_EXCP_NORMAL_FWD);
        ctcs_vlan_set_property(lchip, vlan_ptr, CTC_VLAN_PROP_DHCP_EXCP_TYPE, CTC_EXCP_NORMAL_FWD);
    }
    ctc_sai_oid_get_l3if_id(router_interface_id, &l3if_id);
-   if (MAX_L3IF_TYPE_NUM != l3if.l3if_type)
+   if (MAX_L3IF_TYPE_NUM != l3if.l3if_type  && !p_rif_info->is_virtual)
    {
         ctcs_l3if_destory(lchip, l3if_id, &l3if);
    }
    ctc_sai_db_free_id(lchip, CTC_SAI_DB_ID_TYPE_L3IF, l3if_id);
-   ctcs_stats_destroy_statsid(lchip, p_rif_info->ing_statsid);
-   ctcs_stats_destroy_statsid(lchip, p_rif_info->egs_statsid);
+   if(!p_rif_info->is_virtual)
+   {
+       ctcs_stats_destroy_statsid(lchip, p_rif_info->ing_statsid);
+       ctcs_stats_destroy_statsid(lchip, p_rif_info->egs_statsid);
+   }
+   else
+   {
+       int i=0;
+       sal_memset(&router_mac, 0, sizeof(router_mac));
+       if ((CTC_CHIP_GOLDENGATE == ctcs_get_chip_type(lchip)))
+       {
+           CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_get_interface_router_mac(lchip, p_rif_info->actual_l3if_id, &router_mac), status, out);
+           for (i=0; i<router_mac.num; i++)
+           {
+               if (!sal_memcmp(router_mac.mac[i], p_rif_info->src_mac, sizeof(sai_mac_t)))
+               {
+                   sal_memset(router_mac.mac[i], 0, sizeof(sai_mac_t));
+                   router_mac.num--;
+                   break;
+               }
+           }
+       }
+       else
+       {
+           sal_memcpy(router_mac.mac[0], p_rif_info->src_mac, sizeof(sai_mac_t));
+           router_mac.dir = CTC_INGRESS;
+           router_mac.mode = CTC_L3IF_DELETE_ROUTE_MAC;
+       }
+       CTC_SAI_CTC_ERROR_GOTO(ctcs_l3if_set_interface_router_mac(lchip, p_rif_info->actual_l3if_id, router_mac), status, out);
+   }
    _ctc_sai_router_interface_remove_db(lchip, router_interface_id);
 
 out:

@@ -605,6 +605,7 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
         vlan_valid = 1;
     }
 
+#if 0
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_VLAN_ID, &attr_value, &attr_index);
     if (status != SAI_STATUS_SUCCESS )
     {
@@ -621,9 +622,14 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
             return SAI_STATUS_INVALID_PARAMETER;
         }
     }
+#endif
 
     for (loop_i = SAI_MIRROR_SESSION_ATTR_ERSPAN_ENCAPSULATION_TYPE; loop_i < SAI_MIRROR_SESSION_ATTR_END; loop_i++)
     {
+        if (SAI_MIRROR_SESSION_ATTR_POLICER == loop_i)
+        {
+            continue;
+        }
         status = ctc_sai_find_attrib_in_list(attr_count, attr_list, loop_i, &attr_value, &attr_index);
         if (status != SAI_STATUS_SUCCESS )
         {
@@ -888,6 +894,15 @@ _ctc_sai_mirr_set_attr(sai_object_key_t* key, const sai_attribute_t* attr)
         break;
     case SAI_MIRROR_SESSION_ATTR_VLAN_HEADER_VALID:
         p_mirr_session->vlan_hdr_valid = attr->value.booldata;
+        break;
+    case SAI_MIRROR_SESSION_ATTR_CONGESTION_MODE:
+        {
+            if(attr->value.u8 != SAI_MIRROR_SESSION_CONGESTION_MODE_INDEPENDENT)
+            {
+                return SAI_STATUS_NOT_SUPPORTED;
+            }
+        }
+        break;
     default:
         return SAI_STATUS_NOT_SUPPORTED;
     }
@@ -993,7 +1008,9 @@ _ctc_sai_mirr_get_attr(sai_object_key_t* key, sai_attribute_t* attr, uint32 attr
         case SAI_MIRROR_SESSION_ATTR_GRE_PROTOCOL_TYPE:
             attr->value.u16 =  p_mirr_sess->gre_pro_type;
             break;
-
+        case SAI_MIRROR_SESSION_ATTR_CONGESTION_MODE:
+            attr->value.u8 = SAI_MIRROR_SESSION_CONGESTION_MODE_INDEPENDENT;
+            break;
         default: /* SAI_MIRROR_SESSION_ATTR_TC */
             return SAI_STATUS_ATTR_NOT_SUPPORTED_0 + attr_idx;
     }
@@ -1021,6 +1038,7 @@ _ctc_sai_mirr_get_attr(sai_object_key_t* key, sai_attribute_t* attr, uint32 attr
     { SAI_MIRROR_SESSION_ATTR_SRC_MAC_ADDRESS, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_DST_MAC_ADDRESS, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { SAI_MIRROR_SESSION_ATTR_GRE_PROTOCOL_TYPE, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
+    { SAI_MIRROR_SESSION_ATTR_CONGESTION_MODE, _ctc_sai_mirr_get_attr, _ctc_sai_mirr_set_attr},
     { CTC_SAI_FUNC_ATTR_END_ID, NULL, NULL }
 };
 
@@ -1301,7 +1319,7 @@ _ctc_sai_mirror_binding_mirr_param_chk(uint8 lchip, uint8 binding_module, const 
             if (NULL == p_mir_session)
             {
                 CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to binding mirror session to %s, invalid mirror_session_id 0x%"PRIx64"!\n",\
-                    attr->value.aclaction.parameter.objlist.list[loop_i], print_str);
+                     print_str, attr->value.aclaction.parameter.objlist.list[loop_i]);
                 return SAI_STATUS_ITEM_NOT_FOUND;
             }
             if(0xFFFFFFFF == truncated_size_fst)

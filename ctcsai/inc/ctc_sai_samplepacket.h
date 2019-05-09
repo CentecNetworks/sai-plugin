@@ -14,20 +14,20 @@ This module defines SAI Samplepacket.
  The Samplepacket Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                               |   SUPPORT CHIPS LIST   |
-\t  |  create_samplepacket                                |    CTC8096,CTC7148     |
-\t  |  remove_samplepacket                                |    CTC8096,CTC7148     |
-\t  |  set_samplepacket_attribute                         |    CTC8096,CTC7148     |
-\t  |  get_samplepacket_attribute                         |    CTC8096,CTC7148     |
+\t  |   API                                               |       SUPPORT CHIPS LIST       |
+\t  |  create_samplepacket                                |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_samplepacket                                |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_samplepacket_attribute                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_samplepacket_attribute                         |    CTC8096,CTC7148,CTC7132     |
 \b
 \p
  The Samplepacket attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                         |   SUPPORT CHIPS LIST   |
-\t  |  SAI_SAMPLEPACKET_ATTR_SAMPLE_RATE                  |    CTC8096,CTC7148     |
-\t  |  SAI_SAMPLEPACKET_ATTR_TYPE                         |    CTC8096,CTC7148     |
-\t  |  SAI_SAMPLEPACKET_ATTR_MODE                         |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                         |       SUPPORT CHIPS LIST       |
+\t  |  SAI_SAMPLEPACKET_ATTR_SAMPLE_RATE                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_SAMPLEPACKET_ATTR_TYPE                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_SAMPLEPACKET_ATTR_MODE                         |    CTC8096,CTC7148,CTC7132     |
 \b
 */
 

@@ -32,6 +32,7 @@
 #include "ctc_sai_buffer.h"
 #include "ctc_sai_tunnel.h"
 #include "ctc_sai_mpls.h"
+#include "ctc_sai_isolation_group.h"
 
 extern ctc_sai_db_t* g_sai_db[CTC_SAI_MAX_CHIP_NUM];
 
@@ -531,22 +532,45 @@ _ctc_sai_get_single_attribute(sai_object_type_t object_type, sai_object_key_t ke
             return ((sai_tunnel_api_t*)g_api_master.module_api[SAI_API_TUNNEL])->get_tunnel_map_entry_attribute(key.key.object_id, 1, attr_tmp);
         case SAI_OBJECT_TYPE_TAM:
             return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_STAT:
-            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_stat_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_SNAPSHOT:
-            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_snapshot_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_TRANSPORTER:
-            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_transporter_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_THRESHOLD:
-            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_threshold_attribute(key.key.object_id, 1, attr_tmp);
         case SAI_OBJECT_TYPE_SEGMENTROUTE_SIDLIST:
             return ((sai_segmentroute_api_t*)g_api_master.module_api[SAI_API_SEGMENTROUTE])->get_segmentroute_sidlist_attribute(key.key.object_id, 1, attr_tmp);
         case SAI_OBJECT_TYPE_PORT_POOL:
             return ((sai_port_api_t*)g_api_master.module_api[SAI_API_PORT])->get_port_pool_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_HISTOGRAM:
-            return ((sai_uburst_api_t*)g_api_master.module_api[SAI_API_UBURST])->get_tam_histogram_attribute(key.key.object_id, 1, attr_tmp);
-        case SAI_OBJECT_TYPE_TAM_MICROBURST:
-            return ((sai_uburst_api_t*)g_api_master.module_api[SAI_API_UBURST])->get_tam_microburst_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_DTEL:
+            return ((sai_dtel_api_t*)g_api_master.module_api[SAI_API_DTEL])->get_dtel_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_DTEL_QUEUE_REPORT:
+            return ((sai_dtel_api_t*)g_api_master.module_api[SAI_API_DTEL])->get_dtel_queue_report_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_DTEL_INT_SESSION:
+            return ((sai_dtel_api_t*)g_api_master.module_api[SAI_API_DTEL])->get_dtel_int_session_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_DTEL_REPORT_SESSION:
+            return ((sai_dtel_api_t*)g_api_master.module_api[SAI_API_DTEL])->get_dtel_report_session_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_DTEL_EVENT:
+            return ((sai_dtel_api_t*)g_api_master.module_api[SAI_API_DTEL])->get_dtel_event_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_BFD_SESSION:
+            return ((sai_bfd_api_t*)g_api_master.module_api[SAI_API_BFD])->get_bfd_session_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_ISOLATION_GROUP:
+            return ((sai_isolation_group_api_t*)g_api_master.module_api[SAI_API_ISOLATION_GROUP])->get_isolation_group_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_ISOLATION_GROUP_MEMBER:
+            return ((sai_isolation_group_api_t*)g_api_master.module_api[SAI_API_ISOLATION_GROUP])->get_isolation_group_member_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_MATH_FUNC:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_math_func_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_REPORT:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_report_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_EVENT_THRESHOLD:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_event_threshold_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_TEL_TYPE:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_tel_type_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_TRANSPORT:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_transport_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_TELEMETRY:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_telemetry_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_COLLECTOR:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_collector_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_EVENT_ACTION:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_event_action_attribute(key.key.object_id, 1, attr_tmp);
+        case SAI_OBJECT_TYPE_TAM_EVENT:
+            return ((sai_tam_api_t*)g_api_master.module_api[SAI_API_TAM])->get_tam_event_attribute(key.key.object_id, 1, attr_tmp);
+
         default:
             return SAI_STATUS_NOT_IMPLEMENTED;
     }
@@ -743,6 +767,7 @@ sai_api_initialize( uint64_t flags,  const sai_service_method_table_t* services)
     ctc_sai_scheduler_api_init();
     ctc_sai_scheduler_group_api_init();
     ctc_sai_buffer_api_init();
+    ctc_sai_isolation_group_api_init();
 
     g_api_master.api_status = true;
     /*init sai all module*/
@@ -860,6 +885,7 @@ sai_status_t sai_log_set( sai_api_t sai_api_id,  sai_log_level_t log_level)
             ctc_debug_set_flag("chip", "chip", 1, debug_level, TRUE);
             break;
         case SAI_API_PORT             :
+        case SAI_API_ISOLATION_GROUP  :
             ctc_debug_set_flag("port", "port", 1, debug_level, TRUE);
             ctc_debug_set_flag("port", "mac", 1, debug_level, TRUE);
             ctc_debug_set_flag("port", "cl73", 1, debug_level, TRUE);
@@ -958,8 +984,6 @@ sai_status_t sai_log_set( sai_api_t sai_api_id,  sai_log_level_t log_level)
             break;
         case SAI_API_MPLS             :
             ctc_debug_set_flag("mpls", "mpls", 1, debug_level, TRUE);
-            break;
-        case SAI_API_UBURST           :
             break;
         default:
             break;
@@ -1236,8 +1260,9 @@ sai_dbg_generate_dump(const char *dump_file_name)
             ctc_sai_mpls_dump(lchip, p_file, &dump_grep_param);
         }
 
-        if (CTC_BMP_ISSET(dump_grep_param.api_bmp, SAI_API_UBURST))
+        if (CTC_BMP_ISSET(dump_grep_param.api_bmp, SAI_API_ISOLATION_GROUP))
         {
+            ctc_sai_isolation_group_dump(lchip, p_file, &dump_grep_param);
         }
 
         CTC_SAI_DB_UNLOCK(lchip);
@@ -1316,21 +1341,32 @@ sai_get_maximum_attribute_count(
         SAI_BRIDGE_PORT_ATTR_END,              /*SAI_OBJECT_TYPE_BRIDGE_PORT              = 58*/
         SAI_TUNNEL_MAP_ENTRY_ATTR_END,         /*SAI_OBJECT_TYPE_TUNNEL_MAP_ENTRY         = 59*/
         SAI_TAM_ATTR_END,                      /*SAI_OBJECT_TYPE_TAM                      = 60*/
-        SAI_TAM_STAT_ATTR_END,                 /*SAI_OBJECT_TYPE_TAM_STAT                 = 61*/
-        SAI_TAM_SNAPSHOT_ATTR_END,             /*SAI_OBJECT_TYPE_TAM_SNAPSHOT             = 62*/
-        SAI_TAM_TRANSPORTER_ATTR_END,          /*SAI_OBJECT_TYPE_TAM_TRANSPORTER          = 63*/
-        SAI_TAM_THRESHOLD_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_THRESHOLD            = 64*/
-        SAI_SEGMENTROUTE_SIDLIST_ATTR_END,     /*SAI_OBJECT_TYPE_SEGMENTROUTE_SIDLIST     = 65*/
-        SAI_PORT_POOL_ATTR_END,                /*SAI_OBJECT_TYPE_PORT_POOL                = 66*/
-        SAI_INSEG_ENTRY_ATTR_END,              /*SAI_OBJECT_TYPE_INSEG_ENTRY              = 67*/
-        SAI_TAM_HISTOGRAM_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_HISTOGRAM            = 68*/
-        SAI_TAM_MICROBURST_ATTR_END,           /*SAI_OBJECT_TYPE_TAM_MICROBURST           = 69*/
-        0                                      /*SAI_OBJECT_TYPE_MAX                      = 70*/
+        SAI_SEGMENTROUTE_SIDLIST_ATTR_END,     /*SAI_OBJECT_TYPE_SEGMENTROUTE_SIDLIST     = 61*/
+        SAI_PORT_POOL_ATTR_END,                /*SAI_OBJECT_TYPE_PORT_POOL                = 62*/
+        SAI_INSEG_ENTRY_ATTR_END,              /*SAI_OBJECT_TYPE_INSEG_ENTRY              = 63*/
+        SAI_DTEL_ATTR_END,                     /*SAI_OBJECT_TYPE_DTEL                     = 64*/
+        SAI_DTEL_QUEUE_REPORT_ATTR_END,        /*SAI_OBJECT_TYPE_DTEL_QUEUE_REPORT        = 65*/
+        SAI_DTEL_INT_SESSION_ATTR_END,         /*SAI_OBJECT_TYPE_DTEL_INT_SESSION         = 66*/
+        SAI_DTEL_REPORT_SESSION_ATTR_END,      /*SAI_OBJECT_TYPE_DTEL_REPORT_SESSION      = 67*/
+        SAI_DTEL_EVENT_ATTR_END,               /*SAI_OBJECT_TYPE_DTEL_EVENT               = 68*/
+        SAI_BFD_SESSION_ATTR_END,              /*SAI_OBJECT_TYPE_BFD_SESSION              = 69*/
+        SAI_ISOLATION_GROUP_ATTR_END,          /*SAI_OBJECT_TYPE_ISOLATION_GROUP          = 70*/
+        SAI_ISOLATION_GROUP_MEMBER_ATTR_END,   /*SAI_OBJECT_TYPE_ISOLATION_GROUP_MEMBER   = 71*/
+        SAI_TAM_MATH_FUNC_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_MATH_FUNC            = 72*/
+        SAI_TAM_REPORT_ATTR_END,               /*SAI_OBJECT_TYPE_TAM_REPORT               = 73*/
+        SAI_TAM_EVENT_THRESHOLD_ATTR_END,      /*SAI_OBJECT_TYPE_TAM_EVENT_THRESHOLD      = 74*/
+        SAI_TAM_TEL_TYPE_ATTR_END,             /*SAI_OBJECT_TYPE_TAM_TEL_TYPE             = 75*/
+        SAI_TAM_TRANSPORT_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_TRANSPORT            = 76*/
+        SAI_TAM_TELEMETRY_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_TELEMETRY            = 77*/
+        SAI_TAM_COLLECTOR_ATTR_END,            /*SAI_OBJECT_TYPE_TAM_COLLECTOR            = 78*/
+        SAI_TAM_EVENT_ACTION_ATTR_END,         /*SAI_OBJECT_TYPE_TAM_EVENT_ACTION         = 79*/
+        SAI_TAM_EVENT_ATTR_END,                /*SAI_OBJECT_TYPE_TAM_EVENT                = 80*/
+        0                                      /*SAI_OBJECT_TYPE_MAX                      = 81*/
     };
 
     CTC_SAI_PTR_VALID_CHECK(count);
     if (!ctc_sai_is_object_type_valid(object_type)
-        ||(object_type > SAI_OBJECT_TYPE_TAM_MICROBURST))
+        ||(object_type > SAI_OBJECT_TYPE_ISOLATION_GROUP_MEMBER))
     {
         return SAI_STATUS_INVALID_PARAMETER;
     }
@@ -1379,7 +1415,7 @@ sai_status_t
 sai_get_object_key(
         _In_ sai_object_id_t switch_id,
         _In_ sai_object_type_t object_type,
-        _In_ uint32_t object_count,
+        _Inout_ uint32_t *object_count,
         _Inout_ sai_object_key_t *object_list)
 {
     uint8 lchip = 0;
@@ -1400,13 +1436,13 @@ sai_get_object_key(
     if (SAI_OBJECT_TYPE_FDB_ENTRY == object_type)
     {
         cnt = ctc_sai_fdb_get_fdb_count(lchip);
-        if (object_count < cnt)
+        if (*object_count < cnt)
         {
             CTC_SAI_DB_UNLOCK(lchip);
             return SAI_STATUS_BUFFER_OVERFLOW;
         }
         cnt = 0;
-        ctc_sai_fdb_dump_fdb_entrys(lchip, object_count, object_list);
+        ctc_sai_fdb_dump_fdb_entrys(lchip, *object_count, object_list);
     }
     else if ((SAI_OBJECT_TYPE_NEIGHBOR_ENTRY == object_type)
     || (SAI_OBJECT_TYPE_ROUTE_ENTRY == object_type)
@@ -1418,7 +1454,7 @@ sai_get_object_key(
         ctc_sai_db_entry_type_t db_entry_type = 0;
         ctc_sai_db_get_db_entry_type(object_type, &db_entry_type);
         ctc_sai_db_entry_property_get_cnt(lchip, db_entry_type, &cnt);
-        if (object_count < cnt)
+        if (*object_count < cnt)
         {
             CTC_SAI_DB_UNLOCK(lchip);
             return SAI_STATUS_BUFFER_OVERFLOW;
@@ -1430,7 +1466,7 @@ sai_get_object_key(
     else
     {
         ctc_sai_db_get_object_property_count(lchip, object_type, &cnt);
-        if (object_count < cnt)
+        if (*object_count < cnt)
         {
             CTC_SAI_DB_UNLOCK(lchip);
             return SAI_STATUS_BUFFER_OVERFLOW;

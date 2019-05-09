@@ -54,6 +54,7 @@
 #define SYS_WB_VERSION_VIRTUALROUTER      CTC_WB_VERSION(1,0)
 #define SYS_WB_VERSION_VLAN               CTC_WB_VERSION(1,0)
 #define SYS_WB_VERSION_WRED               CTC_WB_VERSION(1,0)
+#define SYS_WB_VERSION_ISOLATION_GROUP    CTC_WB_VERSION(1,0)
 
 typedef enum ctc_sai_wb_user_def_sub_type_e
 {

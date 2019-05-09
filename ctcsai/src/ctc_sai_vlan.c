@@ -1389,7 +1389,7 @@ sai_status_t ctc_sai_vlan_remove_vlan_members( uint32_t                 object_c
  */
 static sai_status_t ctc_sai_vlan_get_vlan_stats( sai_object_id_t        sai_vlan_id,
                                                 uint32_t               number_of_counters,
-                                                const sai_vlan_stat_t *counter_ids,
+                                                const sai_stat_id_t *counter_ids,
                                                 uint64_t             *counters)
 {
     uint8 lchip = 0;
@@ -1463,7 +1463,7 @@ out:
 static sai_status_t
 ctc_sai_vlan_get_vlan_stats_ext( sai_object_id_t        sai_vlan_id,
                                                 uint32_t               number_of_counters,
-                                                const sai_vlan_stat_t *counter_ids,
+                                                const sai_stat_id_t *counter_ids,
                                                 sai_stats_mode_t mode,
                                                 uint64_t             *counters)
 {
@@ -1563,7 +1563,7 @@ out:
  */
 static sai_status_t ctc_sai_vlan_clear_vlan_stats( sai_object_id_t        sai_vlan_id,
                                                   uint32_t               number_of_counters,
-                                                  const sai_vlan_stat_t *counter_ids)
+                                                  const sai_stat_id_t *counter_ids)
 {
     uint8 lchip = 0;
     sai_status_t status = 0;

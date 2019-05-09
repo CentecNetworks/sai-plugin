@@ -14,37 +14,39 @@ This module defines SAI MIRROR.
  The MIRROR Module APIs supported by centec devices:
 \p
 \b
-\t  |   API                                                 |   SUPPORT CHIPS LIST   |
-\t  |  create_mirror_session                                |    CTC8096,CTC7148     |
-\t  |  remove_mirror_session                                |    CTC8096,CTC7148     |
-\t  |  set_mirror_session_attribute                         |    CTC8096,CTC7148     |
-\t  |  get_mirror_session_attribute                         |    CTC8096,CTC7148     |
+\t  |   API                                                 |       SUPPORT CHIPS LIST       |
+\t  |  create_mirror_session                                |    CTC8096,CTC7148,CTC7132     |
+\t  |  remove_mirror_session                                |    CTC8096,CTC7148,CTC7132     |
+\t  |  set_mirror_session_attribute                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  get_mirror_session_attribute                         |    CTC8096,CTC7148,CTC7132     |
 \b
 
 \p
  The MIRROR attributes supported by centec devices:
 \p
 \b
-\t  |   ATTRIBUTE                                           |   SUPPORT CHIPS LIST   |
-\t  |  SAI_MIRROR_SESSION_ATTR_TYPE                         |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_MONITOR_PORT                 |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE                |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE                  |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_TC                           |           -            |
-\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_TPID                    |           -            |
-\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_ID                      |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_PRI                     |           -            |
-\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_CFI                     |           -            |
-\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_HEADER_VALID            |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_ERSPAN_ENCAPSULATION_TYPE    |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_IPHDR_VERSION                |           -            |
-\t  |  SAI_MIRROR_SESSION_ATTR_TOS                          |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_TTL                          |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_SRC_IP_ADDRESS               |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_DST_IP_ADDRESS               |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_SRC_MAC_ADDRESS              |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_DST_MAC_ADDRESS              |    CTC8096,CTC7148     |
-\t  |  SAI_MIRROR_SESSION_ATTR_GRE_PROTOCOL_TYPE            |    CTC8096,CTC7148     |
+\t  |   ATTRIBUTE                                           |       SUPPORT CHIPS LIST       |
+\t  |  SAI_MIRROR_SESSION_ATTR_TYPE                         |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_MONITOR_PORT                 |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_TRUNCATE_SIZE                |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_SAMPLE_RATE                  |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_TC                           |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_TPID                    |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_ID                      |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_PRI                     |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_CFI                     |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_VLAN_HEADER_VALID            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_ERSPAN_ENCAPSULATION_TYPE    |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_IPHDR_VERSION                |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_TOS                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_TTL                          |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_SRC_IP_ADDRESS               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_DST_IP_ADDRESS               |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_SRC_MAC_ADDRESS              |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_DST_MAC_ADDRESS              |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_GRE_PROTOCOL_TYPE            |    CTC8096,CTC7148,CTC7132     |
+\t  |  SAI_MIRROR_SESSION_ATTR_CONGESTION_MODE              |              -                 |
+\t  |  SAI_MIRROR_SESSION_ATTR_POLICER                      |              -                 |
 \b
 
 */

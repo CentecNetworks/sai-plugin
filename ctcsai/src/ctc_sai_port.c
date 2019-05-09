@@ -14,6 +14,7 @@
 #include "ctc_sai_scheduler.h"
 #include "ctc_sai_scheduler_group.h"
 #include "ctc_sai_fdb.h"
+#include "ctc_sai_isolation_group.h"
 /*sdk include file*/
 #include "ctcs_api.h"
 
@@ -324,6 +325,7 @@ static sai_status_t ctc_sai_port_get_basic_info(  sai_object_key_t   *key, sai_a
     ctc_port_isolation_t port_isolation;
     sai_object_id_t ports[CTC_MAX_PHY_PORT];
     ctc_sai_port_db_t* p_port_db = NULL;
+    ctc_port_speed_t speed_mode;
 
     CTC_SAI_LOG_ENTER(SAI_API_PORT);
 
@@ -695,6 +697,76 @@ static sai_status_t ctc_sai_port_get_basic_info(  sai_object_key_t   *key, sai_a
         CTC_SAI_ATTR_ERROR_RETURN(ctcs_port_get_property(lchip, gport, CTC_PORT_PROP_TRANSMIT_EN, &value), attr_idx);
         attr->value.booldata = (bool)value;
         break;
+    case SAI_PORT_ATTR_ISOLATION_GROUP:
+        {
+            ctc_port_restriction_t port_restriction;
+
+            sal_memset(&port_restriction, 0, sizeof(ctc_port_restriction_t));
+
+            port_restriction.mode = CTC_PORT_RESTRICTION_PORT_ISOLATION;
+            port_restriction.type = CTC_PORT_ISOLATION_ALL;
+            port_restriction.dir = CTC_INGRESS;
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_port_get_restriction(lchip, gport, &port_restriction));
+            if (0 != port_restriction.isolated_id)
+            {
+                attr->value.oid = ctc_sai_create_object_id(SAI_OBJECT_TYPE_ISOLATION_GROUP, lchip, 0, 0, port_restriction.isolated_id);
+            }
+            else
+            {
+                attr->value.oid = SAI_NULL_OBJECT_ID;
+            }
+        }
+        break;
+    case SAI_PORT_ATTR_OPER_SPEED:
+        speed_mode = CTC_PORT_SPEED_MAX;
+        bool is_up = 0;
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_get_mac_link_up(lchip, gport, &is_up));
+        if(!is_up)
+        {
+            attr->value.u32 = 0;
+            break;
+        }
+        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_get_speed(lchip, gport, &speed_mode));
+        switch (speed_mode)
+        {
+        case CTC_PORT_SPEED_10M:
+            attr->value.u32 = 10;
+            break;
+        case CTC_PORT_SPEED_100M:
+            attr->value.u32 = 100;
+            break;
+        case CTC_PORT_SPEED_1G:
+            attr->value.u32 = 1000;
+            break;
+        case CTC_PORT_SPEED_2G5:
+            attr->value.u32 = 2500;
+            break;
+        case CTC_PORT_SPEED_10G:
+            attr->value.u32 = 10000;
+            break;
+        case CTC_PORT_SPEED_20G:
+            attr->value.u32 = 20000;
+            break;
+        case CTC_PORT_SPEED_40G:
+            attr->value.u32 = 40000;
+            break;
+        case CTC_PORT_SPEED_100G:
+            attr->value.u32 = 100000;
+            break;
+        case CTC_PORT_SPEED_5G:
+            attr->value.u32 = 5000;
+            break;
+        case CTC_PORT_SPEED_25G:
+            attr->value.u32 = 25000;
+            break;
+        case CTC_PORT_SPEED_50G:
+            attr->value.u32 = 50000;
+            break;
+        default:
+            CTC_SAI_LOG_ERROR(SAI_API_PORT, "get port wrong port speed\n");
+            return  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0;
+        }
+        break;
     default:
         CTC_SAI_LOG_ERROR(SAI_API_PORT, "port attribute not implement\n");
         return  SAI_STATUS_ATTR_NOT_IMPLEMENTED_0+attr_idx;
@@ -938,6 +1010,27 @@ static sai_status_t ctc_sai_port_set_basic_info(  sai_object_key_t   *key, const
             CTC_BIT_SET(port_isolation.pbm[index_tmp1], index_tmp2);
         }
         CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_isolation(lchip, &port_isolation));
+        break;
+    case SAI_PORT_ATTR_ISOLATION_GROUP:
+        {
+            ctc_port_restriction_t port_restriction;
+            ctc_sai_isolation_group_t* p_ist_grp = NULL;
+            ctc_object_id_t ctc_object_id;
+            sal_memset(&ctc_object_id, 0, sizeof(ctc_object_id_t));
+            sal_memset(&port_restriction, 0, sizeof(ctc_port_restriction_t));
+
+            p_ist_grp = ctc_sai_db_get_object_property(lchip, attr->value.oid);
+            if (NULL == p_ist_grp)
+            {
+                return SAI_STATUS_INVALID_OBJECT_ID;
+            }
+            ctc_sai_get_ctc_object_id(SAI_OBJECT_TYPE_PORT, attr->value.oid, &ctc_object_id);
+            port_restriction.mode = CTC_PORT_RESTRICTION_PORT_ISOLATION;
+            port_restriction.type = CTC_PORT_ISOLATION_ALL;
+            port_restriction.dir = CTC_INGRESS;
+            port_restriction.isolated_id = ctc_object_id.value;
+            CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_restriction(lchip, gport, &port_restriction));
+        }
         break;
     case SAI_PORT_ATTR_PKT_TX_ENABLE:
         CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_property(lchip, gport, CTC_PORT_PROP_TRANSMIT_EN, attr->value.booldata?1:0));
@@ -1748,7 +1841,9 @@ static  ctc_sai_attr_fn_entry_t  port_attr_fn_entries[] =
     {SAI_PORT_ATTR_EEE_IDLE_TIME,                                  NULL,  NULL},
     {SAI_PORT_ATTR_EEE_WAKE_TIME,                                  NULL,  NULL},
     {SAI_PORT_ATTR_PORT_POOL_LIST,                                 NULL,  NULL},
+    {SAI_PORT_ATTR_ISOLATION_GROUP,                                ctc_sai_port_get_basic_info,  ctc_sai_port_set_basic_info},
     {SAI_PORT_ATTR_PKT_TX_ENABLE,                                  ctc_sai_port_get_basic_info,  ctc_sai_port_set_basic_info},
+    {SAI_PORT_ATTR_OPER_SPEED,                                  ctc_sai_port_get_basic_info,  NULL},
     {CTC_SAI_FUNC_ATTR_END_ID,NULL,NULL}
 
 };
@@ -1972,13 +2067,19 @@ ctc_sai_port_create_port( sai_object_id_t     * port_id,
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_PORT_ATTR_META_DATA, &attr_value, &attr_index);
     if (status == SAI_STATUS_SUCCESS)
     {
-        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_0, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)));
-        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_1, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)));
-        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_2, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)));
-        CTC_SAI_CTC_ERROR_RETURN(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_3, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)));
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_0, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)), status, out);
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_1, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)), status, out);
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_2, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)), status, out);
+        CTC_SAI_CTC_ERROR_GOTO(ctcs_port_set_direction_property(lchip, gport, CTC_PORT_DIR_PROP_ACL_CLASSID_3, CTC_INGRESS, CTC_SAI_META_DATA_SAI_TO_CTC(attr_value->u32)), status, out);
     }
 
-    return SAI_STATUS_SUCCESS;
+    status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_PORT_ATTR_ISOLATION_GROUP, &attr_value, &attr_index);
+    if (status == SAI_STATUS_SUCCESS)
+    {
+        sai_object_key_t key = { .key.object_id = *port_id };
+        CTC_SAI_ERROR_GOTO(ctc_sai_port_set_basic_info(&key, &attr_list[attr_index]), status, out);
+    }
+
 out:
     CTC_SAI_DB_UNLOCK(lchip);
     return status;
@@ -2151,7 +2252,7 @@ error_return:
 static sai_status_t
 ctc_sai_port_get_port_stats( sai_object_id_t        port_id,
                             uint32_t               number_of_counters,
-                            const sai_port_stat_t *counter_ids,
+                            const sai_stat_id_t *counter_ids,
                             uint64_t             *counters)
 {
     ctc_object_id_t ctc_object_id ;
@@ -2329,7 +2430,7 @@ ctc_sai_port_get_port_stats( sai_object_id_t        port_id,
 static sai_status_t
 ctc_sai_port_get_port_stats_ext( sai_object_id_t        port_id,
                             uint32_t               number_of_counters,
-                            const sai_port_stat_t *counter_ids,
+                            const sai_stat_id_t *counter_ids,
                             sai_stats_mode_t mode,
                             uint64_t             *counters)
 {
@@ -2537,7 +2638,7 @@ ctc_sai_port_get_port_stats_ext( sai_object_id_t        port_id,
 static sai_status_t
 ctc_sai_port_clear_port_stats( sai_object_id_t        port_id,
                                            uint32_t               number_of_counters,
-                                           const sai_port_stat_t *counter_ids)
+                                           const sai_stat_id_t *counter_ids)
 {
     ctc_object_id_t ctc_object_id ;
     sai_status_t status = 0;
@@ -2678,7 +2779,7 @@ ctc_sai_port_get_port_pool_attribute( sai_object_id_t     port_pool_id,
 static sai_status_t
 ctc_sai_port_get_port_pool_stats( sai_object_id_t             port_pool_id,
                                               uint32_t                    number_of_counters,
-                                              const sai_port_pool_stat_t *counter_ids,
+                                              const sai_stat_id_t *counter_ids,
                                               uint64_t                  *counters)
 {
     return SAI_STATUS_NOT_IMPLEMENTED;
@@ -2687,7 +2788,7 @@ ctc_sai_port_get_port_pool_stats( sai_object_id_t             port_pool_id,
 static sai_status_t
 ctc_sai_port_get_port_pool_stats_ext( sai_object_id_t             port_pool_id,
                                               uint32_t                    number_of_counters,
-                                              const sai_port_pool_stat_t *counter_ids,
+                                              const sai_stat_id_t *counter_ids,
                                               sai_stats_mode_t mode,
                                               uint64_t                  *counters)
 {
@@ -2706,7 +2807,7 @@ ctc_sai_port_get_port_pool_stats_ext( sai_object_id_t             port_pool_id,
 static sai_status_t
 ctc_sai_port_clear_port_pool_stats( sai_object_id_t             port_pool_id,
                                                 uint32_t                    number_of_counters,
-                                                const sai_port_pool_stat_t *counter_ids)
+                                                const sai_stat_id_t *counter_ids)
 {
     return SAI_STATUS_NOT_IMPLEMENTED;
 }
