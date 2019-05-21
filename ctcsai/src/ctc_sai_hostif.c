@@ -3024,21 +3024,21 @@ ctc_sai_hostif_get_trap_property(sai_object_key_t* key, sai_attribute_t* attr, u
             attr->value.s32 = p_hostif_trap->action;
             break;
         case SAI_HOSTIF_TRAP_ATTR_TRAP_PRIORITY:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0+attr_idx;
             }
             attr->value.u32 = p_hostif_trap->priority;
             break;
         case SAI_HOSTIF_TRAP_ATTR_EXCLUDE_PORT_LIST:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0+attr_idx;
             }
             CTC_SAI_ERROR_RETURN(ctc_sai_fill_object_list(sizeof(sai_object_id_t), p_hostif_trap->exclude_port_list.list, p_hostif_trap->exclude_port_list.count, &attr->value.objlist));
             break;
         case SAI_HOSTIF_TRAP_ATTR_TRAP_GROUP:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0+attr_idx;
             }
@@ -3090,14 +3090,14 @@ ctc_sai_hostif_set_trap_property(sai_object_key_t* key, const sai_attribute_t* a
             CTC_SAI_ERROR_RETURN(_ctc_sai_hostif_set_trap_action(lchip, p_hostif_trap));
             break;
         case SAI_HOSTIF_TRAP_ATTR_TRAP_PRIORITY:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0;
             }
             p_hostif_trap->priority = attr->value.u32;
             break;
         case SAI_HOSTIF_TRAP_ATTR_EXCLUDE_PORT_LIST:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0;
             }
@@ -3124,7 +3124,7 @@ ctc_sai_hostif_set_trap_property(sai_object_key_t* key, const sai_attribute_t* a
             }
             break;
         case SAI_HOSTIF_TRAP_ATTR_TRAP_GROUP:
-            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_LOG != p_hostif_trap->action))
+            if ((SAI_PACKET_ACTION_TRAP != p_hostif_trap->action) && (SAI_PACKET_ACTION_COPY != p_hostif_trap->action))
             {
                 return SAI_STATUS_INVALID_ATTR_VALUE_0;
             }
@@ -3813,6 +3813,7 @@ _ctc_sai_hostif_packet_send_to_sdk(uint8 lchip, ctc_sai_hostif_t *p_hostif, uint
 
     pkt_tx.mode = CTC_PKT_MODE_DMA;
     pkt_tx.lchip = 0;
+    pkt_tx.tx_info.ttl = 1;
     pkt_tx.tx_info.oper_type = CTC_PKT_OPER_NORMAL;
     pkt_tx.tx_info.is_critical = TRUE;
     return ctcs_packet_tx(lchip, &pkt_tx);

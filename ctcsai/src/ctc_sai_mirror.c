@@ -566,7 +566,6 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
     const sai_attribute_value_t *attr_value;
     uint8 mirr_type;
     uint32 attr_index = 0;
-    uint8  vlan_valid = 0;
     uint8  loop_i = 0;
 
     status = ctc_sai_find_attrib_in_list(attr_count, attr_list, SAI_MIRROR_SESSION_ATTR_TYPE, &attr_value, &attr_index);
@@ -602,7 +601,6 @@ _ctc_sai_mirror_create_mirr_session_attr_chk(uint32_t attr_count, const sai_attr
             CTC_SAI_LOG_ERROR(SAI_API_MIRROR, "Failed to create mirror session, mirror type is not match with the attr; mirror type: % d, attr id: % d !\n", mirr_type, SAI_MIRROR_SESSION_ATTR_VLAN_ID);
             return SAI_STATUS_INVALID_PARAMETER;
         }
-        vlan_valid = 1;
     }
 
 #if 0
